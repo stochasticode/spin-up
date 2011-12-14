@@ -1,10 +1,10 @@
 #include <World.h>
 #include <SpinGame.h>
-#include <Surface.h>
 #include <Entity.h>
-#include <Tile.h>
 #include <chipmunk.h>
+#include <tinyxml.h>
 #include <cstdio>
+#include <sstream>
 
 using namespace spin;
 
@@ -13,24 +13,15 @@ World::World(): space( cpSpaceNew() ), delta_tick( 1000 / 80 ), delta_tick_secon
 	// set up space
 	cpSpaceSetGravity( space, cpv( 0, -70 ) ); 
 	cpSpaceSetIterations( space, 8 );
+
+	// set up background quad
+	background.size.x = 1300;
+	background.size.y = 1024;
+	background.texture_key = "space";
 }
 
 World::~World()
 {
-	// delete space
-	if( space != 0 )
-		cpSpaceFree( space );
-
-	// delete surfaces
-	for( int i = 0; i < surfaces.size(); i++ )
-	{
-		if( surfaces[i] != 0 )
-		{
-			delete surfaces[i];
-			surfaces[i] = 0;
-		}
-	}
-
 	// delete entities
 	for( int i = 0; i < entities.size(); i++ )
 	{
@@ -40,23 +31,24 @@ World::~World()
 			entities[i] = 0;
 		}
 	}
+	// delete space
+	if( space != 0 )
+		cpSpaceFree( space );
 }
 
 void World::Render()
 {
-	// render tiles
-	for( int i = 0; i < tiles.size(); i++ )
-		tiles[i]->Render();
+	// render background
+	background.Render();
 
-	// render surfaces
-	for( int i = 0; i < surfaces.size(); i++ )
-		surfaces[i]->Render();
+	glPushMatrix();
+	SPIN.camera.Apply();
 
 	// render entities
 	for( int i = 0; i < entities.size(); i++ )
 		entities[i]->Render();
 
-
+	glPopMatrix();
 }
 
 bool World::Tick( int milliseconds )
@@ -65,15 +57,23 @@ bool World::Tick( int milliseconds )
 	int ticks_to_run = new_delta_tick / delta_tick;
 	if( ticks_to_run > 0 )
 	{
-		// reap any dead entities 
-		ReapEntities();
-
 		// run normal sized ticks
 		for( int tick = 0; tick < ticks_to_run; tick++ )
 		{
 			// tick entities
-			for( int i = 0; i < entities.size(); i++ )
-				entities[i]->Tick( delta_tick );
+			for( std::vector<Entity*>::iterator it = entities.begin(); it != entities.end(); it++ )
+			{
+				(*it)->Tick( delta_tick );
+				// reap dead
+				if( (*it)->dead )
+				{
+					delete *it;
+					entities.erase( it );
+					entities.erase( it );
+					it--;
+				}
+			}
+
 			// step physics
 			cpSpaceStep( space, delta_tick_seconds );
 		}
@@ -84,48 +84,106 @@ bool World::Tick( int milliseconds )
 	return false;
 }
 
-Surface* World::AddSurface( Surface* surface )
-{
-	cpShape* shape = (cpShape*)surface->shape;
-	shape->body = space->staticBody;
-	cpSpaceAddShape( space, shape );
-	surfaces.push_back( surface );
-	return surface;
-}
-
 Entity* World::AddEntity( Entity* entity )
 {
-	cpSpaceAddBody( space, entity->body );
-	cpSpaceAddShape( space, entity->shape );
 	entities.push_back( entity );
 	return entity;
 }
 
-Tile* World::AddTile( Tile* tile )
+bool World::LoadLevel( const char* xml_path )
 {
-	tiles.push_back( tile );
-	return tile;
-}
-
-void World::KillEntity( Entity* entity )
-{
-	dead_entities.push_back( entity );
-}
-
-void World::ReapEntities()
-{
-	for( std::vector<Entity*>::iterator it = dead_entities.begin(); it != dead_entities.end(); it++ )
+	// load document
+	TiXmlDocument doc( xml_path );
+	if( !doc.LoadFile() )
 	{
-		for( std::vector<Entity*>::iterator it2 = entities.begin(); it2 != entities.end(); it2++ )
-		{
-			if( *it == *it2 )
-			{
-				delete *it;
-				entities.erase( it2 );
-				break;
-			}
-		}
-		dead_entities.erase( it );
-		it--;
+		fprintf( stdout, "Unable to load level xml: %s\n", xml_path );
+		return false;
 	}
+
+	// find root
+	TiXmlElement* root = doc.FirstChildElement( "spin_level" );
+	if( !root )
+	{
+		fprintf( stdout, "Unable to find tag 'spin_levl' in  level xml: %s\n", xml_path );
+		return false;
+	}
+
+	// iterate through children
+	TiXmlElement* child = root->FirstChildElement();
+	while( child != 0 )
+	{
+		// surface
+		if( strcmp( "surface", child->Value() ) == 0 )
+		{
+			if( !AddSurfaceElement( child, Vector( 0.0, 0.0 ), 1.0 ) )
+				return false;
+		}
+		// background
+		if( strcmp( "background", child->Value() ) == 0 )
+		{
+			background.texture_key = child->Attribute( "texture_key" );
+		}
+		child = child->NextSiblingElement();
+	}
+
+	return true;
+}
+
+bool World::AddSurfaceElement( TiXmlElement* element, Vector position, float scale )
+{
+	// stringstream used to convert char* from XML to other types
+	std::stringstream convert_stream;
+
+	const char* x1_str = element->Attribute( "x1" );
+	const char* y1_str = element->Attribute( "y1" );
+	const char* x2_str = element->Attribute( "x2" );
+	const char* y2_str = element->Attribute( "y2" );
+			
+	if( !x1_str || !y1_str || !x2_str || !y2_str )
+	{
+		fprintf( stdout, "Surface tag missing one of the attributes: x1, y1, x2, y2\n" );
+		return false;
+	}
+
+	float x1 = 0;
+	float y1 = 0;
+	float x2 = 0;
+	float y2 = 0;
+	float radius = 1;
+	float friction = 1;
+
+	// convert coordinates
+	convert_stream << x1_str << std::endl << y1_str << std::endl << x2_str << std::endl << y2_str << std::endl;
+	convert_stream >> x1 >> y1 >> x2 >> y2;
+
+	// get surface parameters
+	TiXmlElement* surface_element = element->FirstChildElement( "surface_param" );
+	while( surface_element != 0 )
+	{
+		const char* param_name = surface_element->Attribute( "name" );
+		const char* param_value = surface_element->Attribute( "value" );
+				
+		if( !param_name || !param_value )
+		{
+			fprintf( stdout, "surface_param missing either name or value attribute\n" );
+			return false;
+		}
+
+		// radius
+		if( strcmp( param_name, "radius" ) == 0 )
+		{
+			convert_stream << param_value << std::endl;
+			convert_stream >> radius;
+		}
+		// friction
+		else if( strcmp( param_name, "friction" ) == 0 )
+		{
+			convert_stream << param_value << std::endl;
+			convert_stream >> friction;
+		}
+		surface_element = surface_element->NextSiblingElement( "surface_param" );
+	}
+
+	AddEntity( new SurfaceEntity( position.x+scale*x1, position.y+scale*y1, position.x+scale*x2, position.y+scale*y2, scale*radius, friction ) );
+	return true;
 }

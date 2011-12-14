@@ -1,0 +1,21 @@
+<spin_level>
+	<background texture_key="space" />
+
+	<surface x1="-100" y1="-100" x2="100" y2="-100" >
+		<surface_param name="radius" value="3" />
+		<surface_param name="friction" value="1" />
+	</surface>
+	<surface x1="-100" y1="100" x2="100" y2="100" >
+		<surface_param name="radius" value="3" />
+		<surface_param name="friction" value="1" />
+	</surface>
+	<surface x1="-100" y1="-100" x2="-100" y2="100" >
+		<surface_param name="radius" value="3" />
+		<surface_param name="friction" value="1" />
+	</surface>
+	<surface x1="100" y1="-100" x2="100" y2="100" >
+		<surface_param name="radius" value="3" />
+		<surface_param name="friction" value="1" />
+	</surface>
+
+</spin_level>

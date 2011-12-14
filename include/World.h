@@ -1,20 +1,18 @@
 #ifndef GAL_WORLD_H
 #define GAL_WORLD_H
 
-//#include <Entity.h>
-//#include <Surface.h>
+#include <Vector.h>
 #include <vector>
-//#include <Tile.h>
+#include <Entity.h>
 
 struct cpSpace;
 struct cpShape;
 struct cpBody;
+struct TiXmlElement;
 
 namespace spin
 {
 	class Entity;
-	class Surface;
-	class Tile;
 
 	class World
 	{
@@ -22,29 +20,26 @@ namespace spin
 		World();
 		~World();
 
-		enum CollisionType { COL_TYPE_OTHER, COL_TYPE_SURFACE };
+		enum CollisionType { COL_TYPE_OTHER, COL_TYPE_SURFACE, COL_TYPE_PROJECTILE, COL_TYPE_GRAPPLE };
 
-		void Render();
 		bool Tick( int milliseconds );
-		Surface* AddSurface( Surface* surface );
-		Entity* AddEntity( Entity* entity );
-		Tile* AddTile( Tile* entity );
-		void KillEntity( Entity* entity );
+		void Render();
 
-		cpSpace* GetSpace() { return space; }
+		cpSpace* GetCPSpace() { return space; }
+
+		Entity* AddEntity( Entity* entity );
+
+		bool LoadLevel( const char* xml_path );
+		bool AddSurfaceElement( TiXmlElement* element, Vector position, float scale );
 
 		private:
 		cpSpace* space;
+		QuadEntity background;
 		int delta_tick;
 		float delta_tick_seconds;
 		int last_tick;
 
-		std::vector<Surface*> surfaces;
 		std::vector<Entity*> entities;
-		std::vector<Entity*> dead_entities;
-		std::vector<Tile*> tiles;
-
-		void ReapEntities();
 	};
 }
 #endif

@@ -2,7 +2,7 @@
 #define SPIN_GAME_H
 
 #include <Camera.h>
-#include <Quad.h>
+#include <Kevin.h>
 #include <World.h>
 #include <Resources.h>
 
@@ -34,15 +34,16 @@ namespace spin
 		private:
 		float mouse_x;
 		float mouse_y;
+		Kevin* kevin;
 		//float fps;
 		//int last_fps_time;
 		//int frames_since_last_fps;
 
-		Quad background;
 
 		SpinGame() {}
 		SpinGame( SpinGame const& game );
 		void operator = ( SpinGame const& game );
 	};
 }
+
 #endif

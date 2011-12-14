@@ -2,11 +2,12 @@
 #include <GL/glut.h>
 #include <GL/glu.h>
 #include <SpinGame.h>
-#include <Surface.h>
+#include <Kevin.h>
 #include <Resources.h>
 #include <Entity.h>
 #include <cstdio>
 #include <cstring>
+#include <math.h>
 
 using namespace spin;
 
@@ -24,30 +25,14 @@ bool SpinGame::Init( int argc, char** argv )
 	// load textures, etc
 	LoadResources();
 
-	// set up background
-	background.texture_key = "space";
-	background.size.x = 1300;
-	background.size.y = 1024;
-
 	// set up camera
 	camera.zoom = 3.0;
 
+	if( !world.LoadLevel( "assets/levels/test.xml" ) )
+		return false;
 
-	// test stuff
-	world.AddSurface( new Surface( 0, 0, 100, -100, 3, 1 ) );
-	world.AddSurface( new Surface( -100, -100, 100, -100, 3, 1 ) );
-	world.AddSurface( new Surface( -100, 100, 100, 100, 3, 1 ) );
-	world.AddSurface( new Surface( -100, -100, -100, 100, 3, 1 ) );
-	world.AddSurface( new Surface( 100, -100, 100, 100, 3, 1 ) );
-
-	for( int i = 0; i < 100; i++ )
-	{
-		Entity* entity = world.AddEntity( new CircleEntity( 1, 5, 0.5 ) );
-		entity->texture_key = "creature";
-		entity->size.x = 10;
-		entity->size.y = 10;
-	}
-
+	kevin = (Kevin*)world.AddEntity( new Kevin() );
+	//world.AddEntity( new SurfaceEntity( -10, -10, 10, -10, 1.0, 1.0  ) );
 
 	return true;
 }
@@ -57,27 +42,24 @@ bool SpinGame::InitGraphics()
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glEnable( GL_TEXTURE_2D );
+	glClearColor( 0.0, 0.0, 0.0, 1.0 );
 	return true;
 }
 
 bool SpinGame::LoadResources()
 {
-	resources.LoadPNG( "assets/space.png", "space" );
-	resources.LoadPNG( "assets/creature.png", "creature" );
+	resources.LoadPNG( "assets/textures/space.png", "space" );
+	resources.LoadPNG( "assets/textures/kevin.png", "kevin" );
+	resources.LoadPNG( "assets/textures/creature.png", "creature" );
+	resources.LoadPNG( "assets/textures/burst.png", "burst" );
+	resources.LoadPNG( "assets/textures/beagle.png", "beagle" );
 	return true;
 }
 
 void SpinGame::Render()
 {
-	// render background
-	background.Render();
-
-	// render world
-	glPushMatrix();
-	camera.Apply();
+	glClear( GL_COLOR_BUFFER_BIT );
 	world.Render();
-	glPopMatrix();
-
 	glutSwapBuffers();
 }
 
@@ -89,7 +71,6 @@ void SpinGame::Reshape( int width, int height )
 
 void SpinGame::Idle()
 {
-	// tick the world
 	int milliseconds = glutGet( GLUT_ELAPSED_TIME );
 	if( world.Tick( milliseconds ) )
 		glutPostRedisplay();
@@ -113,4 +94,30 @@ void SpinGame::Motion( int x, int y )
 
 void SpinGame::Mouse( int button, int state, int x, int y )
 {
+	int milliseconds = glutGet( GLUT_ELAPSED_TIME );
+
+	if( state == GLUT_DOWN )
+	{
+		if( kevin != 0 )
+		{
+			float kevin_x = kevin->position.x;
+			float kevin_y = kevin->position.y;
+
+			camera.Transform( kevin_x, kevin_y );
+
+			Vector direction;
+			direction.x = ( mouse_x - camera.w_half_width ) - kevin_x;
+			direction.y = ( mouse_y - camera.w_half_height ) - kevin_y;
+
+			float direction_mag = sqrt( direction.x*direction.x + direction.y*direction.y );
+
+			direction.x /= direction_mag;
+			direction.y /= direction_mag;
+
+			if( button == GLUT_LEFT_BUTTON )
+				kevin->FirePrimary( direction  );
+			else if( button == GLUT_RIGHT_BUTTON )
+				kevin->FireSecondary( direction  );
+		}
+	}
 }

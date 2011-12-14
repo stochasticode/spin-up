@@ -3,6 +3,7 @@
 #include <GL/glu.h>
 #include <Camera.h>
 #include <math.h>
+#include <cstdio>
 
 using namespace spin;
 
@@ -20,11 +21,14 @@ void Camera::Reshape( int width, int height )
 
 	w_width = width;
 	w_height = height;
-
-	float w_half_width = width / 2;
-	float w_half_height = height / 2;
+	w_half_width = width / 2;
+	w_half_height = height / 2;
 
 	gluOrtho2D(-w_half_width, w_half_width, -w_half_height, w_half_height );
+	glMatrixMode(GL_MODELVIEW);
+
+	printf( "RESHAPED\n" );
+	fflush( stdout );
 }
 
 void Camera::Transform( float& x, float& y )

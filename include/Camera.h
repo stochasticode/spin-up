@@ -11,6 +11,8 @@ namespace spin
 		float zoom;
 		int w_width;
 		int w_height;
+		int w_half_width;
+		int w_half_height;
 
 		void Apply();
 		void Reshape( int width, int height );

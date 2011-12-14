@@ -45,8 +45,8 @@ void World::Render()
 	SPIN.camera.Apply();
 
 	// render entities
-	for( int i = 0; i < entities.size(); i++ )
-		entities[i]->Render();
+	for( std::map<unsigned long,Entity*>::iterator it = entities.begin(); it != entities.end(); it++ )
+		(*it).second->Render();
 
 	glPopMatrix();
 }
@@ -61,14 +61,13 @@ bool World::Tick( int milliseconds )
 		for( int tick = 0; tick < ticks_to_run; tick++ )
 		{
 			// tick entities
-			for( std::vector<Entity*>::iterator it = entities.begin(); it != entities.end(); it++ )
+			for( std::map<unsigned long,Entity*>::iterator it = entities.begin(); it != entities.end(); it++ )
 			{
-				(*it)->Tick( delta_tick );
+				(*it).second->Tick( delta_tick );
 				// reap dead
-				if( (*it)->dead )
+				if( (*it).second->dead )
 				{
-					delete *it;
-					entities.erase( it );
+					delete (*it).second;
 					entities.erase( it );
 					it--;
 				}
@@ -84,10 +83,20 @@ bool World::Tick( int milliseconds )
 	return false;
 }
 
-Entity* World::AddEntity( Entity* entity )
+unsigned long World::AddEntity( Entity* entity )
 {
-	entities.push_back( entity );
-	return entity;
+	last_entity_id++;
+	entities[last_entity_id] = entity;
+	return last_entity_id;
+}
+
+Entity* World::GetEntity( unsigned long entity_id )
+{
+	std::map<unsigned long,Entity*>::iterator it = entities.find( entity_id );
+	if( it == entities.end() )
+		return 0;
+	else
+		return (*it).second;
 }
 
 bool World::LoadLevel( const char* xml_path )

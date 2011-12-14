@@ -2,7 +2,8 @@
 #define GAL_WORLD_H
 
 #include <Vector.h>
-#include <vector>
+//#include <vector>
+#include <map>
 #include <Entity.h>
 
 struct cpSpace;
@@ -27,7 +28,8 @@ namespace spin
 
 		cpSpace* GetCPSpace() { return space; }
 
-		Entity* AddEntity( Entity* entity );
+		unsigned long AddEntity( Entity* entity );
+		Entity* GetEntity( unsigned long entity_id );
 
 		bool LoadLevel( const char* xml_path );
 		bool AddSurfaceElement( TiXmlElement* element, Vector position, float scale );
@@ -39,7 +41,8 @@ namespace spin
 		float delta_tick_seconds;
 		int last_tick;
 
-		std::vector<Entity*> entities;
+		std::map<unsigned long,Entity*> entities;
+		unsigned long last_entity_id;
 	};
 }
 #endif

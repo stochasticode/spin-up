@@ -2,6 +2,7 @@
 #define SPIN_GRAPPLE_GUN_H
 
 #include <Entity.h>
+#include <Vector.h>
 #include <vector>
 
 namespace spin
@@ -13,6 +14,7 @@ namespace spin
 
 		int life_left;
 
+		void Render();
 		void Tick( int milliseconds );
 	};
 
@@ -21,16 +23,16 @@ namespace spin
 		public:
 		GrappleGun( int new_max_hooks );
 
-		void ActivateHook( int hook_index );
-		void DeactivateHook( int hook_index );
+		void ActivateHook( Vector position, Vector direction );
+		void DeactivateHook();
 
 		// hooks are Entities so they render themselves but we need to render the "ropes"
 		void Render();
-		void Tick( int milliseconds );
 
 		private:
+		int current_hook;
 		int max_hooks;
-		std::vector<GrappleHook*> hooks;
+		std::vector<unsigned long> hooks;
 	};
 };
 

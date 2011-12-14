@@ -28,11 +28,11 @@ bool SpinGame::Init( int argc, char** argv )
 	// set up camera
 	camera.zoom = 3.0;
 
+	kevin = new Kevin();
+	world.AddEntity( kevin );
+
 	if( !world.LoadLevel( "assets/levels/test.xml" ) )
 		return false;
-
-	kevin = (Kevin*)world.AddEntity( new Kevin() );
-	//world.AddEntity( new SurfaceEntity( -10, -10, 10, -10, 1.0, 1.0  ) );
 
 	return true;
 }

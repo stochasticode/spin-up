@@ -23,8 +23,6 @@ namespace spin
 		virtual void Tick( int milliseconds ) {}
 		virtual void Render() {}
 
-		//unsigned long entity_id;
-
 		bool dead;
 		// this might not make much of a difference over just calling the methods...
 		bool do_tick;
@@ -54,6 +52,7 @@ namespace spin
 		virtual ~QuadEntity() {}
 
 		virtual void Render();
+
 
 		std::string texture_key;
 		Vector position;
@@ -87,6 +86,9 @@ namespace spin
 		public:
 		virtual ~BodyEntity();
 
+		void SetPosition( Vector new_position );
+		void SetVelocity( Vector new_velocity );
+
 		friend class ConstraintEntity;
 
 		protected:
@@ -96,6 +98,7 @@ namespace spin
 
 		void ChipmunkCleanup();
 		void InitBodyCircle( float mass, float radius, float friction );
+
 
 		void RemoveConstraint( ConstraintEntity* constraint_removed );
 

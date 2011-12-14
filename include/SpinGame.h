@@ -31,10 +31,11 @@ namespace spin
 		Resources resources;
 		Camera camera;
 
+		Kevin* kevin;
+
 		private:
 		float mouse_x;
 		float mouse_y;
-		Kevin* kevin;
 		//float fps;
 		//int last_fps_time;
 		//int frames_since_last_fps;

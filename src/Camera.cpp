@@ -26,9 +26,6 @@ void Camera::Reshape( int width, int height )
 
 	gluOrtho2D(-w_half_width, w_half_width, -w_half_height, w_half_height );
 	glMatrixMode(GL_MODELVIEW);
-
-	printf( "RESHAPED\n" );
-	fflush( stdout );
 }
 
 void Camera::Transform( float& x, float& y )

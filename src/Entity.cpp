@@ -123,6 +123,19 @@ void BodyEntity::Tick( int milliseconds )
 	}
 }
 
+void BodyEntity::SetPosition( Vector new_position )
+{
+	position.x = new_position.x;
+	position.y = new_position.y;
+	cpBodySetPos( body, cpv( new_position.x, new_position.y ) );
+}
+
+void BodyEntity::SetVelocity( Vector new_velocity )
+{
+		body->v.x = new_velocity.x;
+		body->v.y = new_velocity.y;
+}
+
 void BodyEntity::RemoveConstraint( ConstraintEntity* constraint_removed )
 {
 	for( std::vector<ConstraintEntity*>::iterator it = constraints.begin(); it != constraints.end(); it++ )

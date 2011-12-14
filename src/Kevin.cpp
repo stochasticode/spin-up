@@ -8,7 +8,7 @@
 
 using namespace spin;
 
-Kevin::Kevin(): BodyEntity()//: grapple_gun( 1 )
+Kevin::Kevin(): BodyEntity(), grapple_gun( 3 )
 {
 	size.x = 8.0;
 	size.y = 8.0; 
@@ -60,7 +60,7 @@ void Kevin::Tick( int milliseconds )
 
 void Kevin::FirePrimary( Vector direction )
 {
-	//grapple_gun.ActivateHook( 0 );
+	grapple_gun.ActivateHook( position, direction );
 }
 
 void Kevin::FireSecondary( Vector direction )

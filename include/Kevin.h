@@ -2,7 +2,7 @@
 #define SPIN_KEVIN_H
 
 #include <Entity.h>
-//#include <GrappleGun.h>
+#include <GrappleGun.h>
 //#include <Vector.h>
 
 namespace spin
@@ -23,7 +23,7 @@ namespace spin
 		void FireSecondary( Vector direction );
 
 		private:
-		//GrappleGun grapple_gun;
+		GrappleGun grapple_gun;
 	};
 }
 #endif

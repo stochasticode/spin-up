@@ -68,6 +68,8 @@ namespace spin
 		ConstraintEntity();
 		virtual ~ConstraintEntity();
 
+		void Render();
+
 		void ChipmunkCleanup();
 		void InitConstraintSlideJoint( BodyEntity* new_body_a, BodyEntity* new_body_b, float min_length, float max_length );
 		void InitConstraintSlideJoint( BodyEntity* new_body_a, Vector static_anchor, float min_length, float max_length );
@@ -91,6 +93,8 @@ namespace spin
 
 		friend class ConstraintEntity;
 
+		std::vector<ConstraintEntity*> constraints;
+
 		protected:
 		BodyEntity();
 
@@ -102,7 +106,6 @@ namespace spin
 
 		void RemoveConstraint( ConstraintEntity* constraint_removed );
 
-		std::vector<ConstraintEntity*> constraints;
 
 		cpBody *body;
 		cpShape *shape;

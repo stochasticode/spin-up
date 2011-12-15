@@ -13,11 +13,14 @@ World::World(): space( cpSpaceNew() ), delta_tick( 1000 / 80 ), delta_tick_secon
 	// set up space
 	cpSpaceSetGravity( space, cpv( 0, -70 ) ); 
 	cpSpaceSetIterations( space, 8 );
+	cpSpaceSetDamping( space, 0.9 );
 
 	// set up background quad
 	background.size.x = 1300;
 	background.size.y = 1024;
 	background.texture_key = "space";
+
+	cpSpaceAddCollisionHandler( space, World::COL_TYPE_GRAPPLE, World::COL_TYPE_SURFACE, 0, 0, GrappleGun::PostSolveGrapple, 0, 0);
 }
 
 World::~World()

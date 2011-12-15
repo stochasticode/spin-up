@@ -65,7 +65,7 @@ void Kevin::FirePrimary( Vector direction )
 
 void Kevin::FireSecondary( Vector direction )
 {
-	//grapple_gun.DeactivateHook( 0 );
+	grapple_gun.DeactivateHook();
 }
 
 /*

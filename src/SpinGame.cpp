@@ -34,6 +34,7 @@ bool SpinGame::Init( int argc, char** argv )
 	if( !world.LoadLevel( "assets/levels/test.xml" ) )
 		return false;
 
+
 	return true;
 }
 

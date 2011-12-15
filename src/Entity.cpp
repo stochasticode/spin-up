@@ -138,15 +138,18 @@ void BodyEntity::SetVelocity( Vector new_velocity )
 
 void BodyEntity::RemoveConstraint( ConstraintEntity* constraint_removed )
 {
+	bool found_constraint = false;
 	for( std::vector<ConstraintEntity*>::iterator it = constraints.begin(); it != constraints.end(); it++ )
 	{
 		if( (*it) == constraint_removed )
 		{
 			constraints.erase( it );
+			found_constraint = true;
 			break;
 		}
 	}
-	fprintf( stderr, "BodyEntity::RemoveConstraint -> no matching constraint found!\n" );
+	if( !found_constraint )
+		fprintf( stderr, "BodyEntity::RemoveConstraint -> no matching constraint found!\n" );
 }
 
 ConstraintEntity::ConstraintEntity(): Entity(), body_a( 0 ), body_b( 0 ), constraint( 0 )
@@ -178,6 +181,40 @@ void ConstraintEntity::ChipmunkCleanup()
 	}
 }
 
+void ConstraintEntity::Render()
+{
+	cpDampedSpring* spring = (cpDampedSpring*)constraint;
+	cpBody* a = spring->constraint.a;
+	cpBody* b = spring->constraint.b;
+
+	// rope
+	glDisable( GL_TEXTURE_2D );
+	glBegin( GL_LINES );
+		glColor3f( 1.0, 1.0, 1.0 );
+		glVertex3f( cpBodyGetPos( a ).x + spring->anchr1.x, cpBodyGetPos( a ).y + spring->anchr1.y, 0 );
+		glVertex3f( cpBodyGetPos( b ).x + spring->anchr2.x, cpBodyGetPos( b ).y + spring->anchr2.y, 0 );
+	glEnd();
+	glEnable( GL_TEXTURE_2D );
+
+	// hook
+	glPushMatrix();
+	glTranslatef( cpBodyGetPos( a ).x + spring->anchr1.x, cpBodyGetPos( a ).y + spring->anchr1.y, 0 );
+
+	SPIN.resources.BindTexture( "burst" );
+	glBegin(GL_TRIANGLES);
+		glColor4f( 1.0, 1.0, 1.0, 1.0 );
+		glTexCoord2d( 0.0, 1.0 ); glVertex3f( -2.5, -2.5, 0.0 );
+		glTexCoord2d( 1.0, 1.0 ); glVertex3f(  2.5, -2.5, 0.0 );
+		glTexCoord2d( 0.0, 0.0 ); glVertex3f( -2.5,  2.5, 0.0 );
+
+		glTexCoord2d( 1.0, 1.0 ); glVertex3f(  2.5, -2.5, 0 );
+		glTexCoord2d( 0.0, 0.0 ); glVertex3f( -2.5,  2.5, 0 );
+		glTexCoord2d( 1.0, 0.0 ); glVertex3f(  2.5,  2.5, 0 );
+	glEnd();
+
+	glPopMatrix();
+}
+
 // slide joint between two bodies
 void ConstraintEntity::InitConstraintSlideJoint( BodyEntity* new_body_a, BodyEntity* new_body_b, float min_length, float max_length )
 {
@@ -186,7 +223,9 @@ void ConstraintEntity::InitConstraintSlideJoint( BodyEntity* new_body_a, BodyEnt
 	{
 		constraint = cpSpaceAddConstraint( SPIN.world.GetCPSpace(), cpSlideJointNew( new_body_a->body, new_body_b->body, cpvzero, cpvzero, min_length, max_length ) );
 		body_a = new_body_a;
+		body_a->constraints.push_back( this );
 		body_b = new_body_b;
+		body_b->constraints.push_back( this );
 	}
 	else
 		fprintf( stderr, "ConstraintEntity::InitConstraintSlideJoint -> failed due to null pointer!\n" );
@@ -198,8 +237,10 @@ void ConstraintEntity::InitConstraintSlideJoint( BodyEntity* new_body_a, Vector 
 	ChipmunkCleanup();
 	if( new_body_a != 0 && new_body_a->body != 0 )
 	{
-		constraint = cpSpaceAddConstraint( SPIN.world.GetCPSpace(), cpSlideJointNew( SPIN.world.GetCPSpace()->staticBody, new_body_a->body, cpv( static_anchor.x, static_anchor.y ), cpvzero, min_length, max_length ) );
+		//constraint = cpSpaceAddConstraint( SPIN.world.GetCPSpace(), cpSlideJointNew( SPIN.world.GetCPSpace()->staticBody, new_body_a->body, cpv( static_anchor.x, static_anchor.y ), cpvzero, min_length, max_length ) );
+		constraint = cpSpaceAddConstraint( SPIN.world.GetCPSpace(), cpDampedSpringNew( SPIN.world.GetCPSpace()->staticBody, new_body_a->body, cpv( static_anchor.x, static_anchor.y ), cpvzero, 0.0, 20.0, 1.0 ) );
 		body_a = new_body_a;
+		body_a->constraints.push_back( this );
 	}
 	else
 		fprintf( stderr, "ConstraintEntity::InitConstraintSlideJoint -> failed due to null pointer!\n" );

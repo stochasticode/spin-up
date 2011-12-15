@@ -1,4 +1,5 @@
 #include <GrappleGun.h>
+#include <GrappleConstraint.h>
 #include <SpinGame.h>
 #include <World.h>
 #include <Entity.h>
@@ -48,7 +49,24 @@ GrappleGun::GrappleGun( int new_max_hooks ): max_hooks( new_max_hooks ), current
 	{
 		hooks.push_back( 0 );
 		constraints.push_back( 0 );
+		grapple_types.push_back( GrappleConstraint::GRAPPLE_WINCH );
 	}
+}
+
+void GrappleGun::SetGrappleType( int hook_index, GrappleConstraint::Type type )
+{
+	if( hook_index < 0 || hook_index >= max_hooks )
+		fprintf( stderr, "GrappleGun::SetGrappleType -> invalid hook_index: %d!\n", hook_index );
+	else
+		grapple_types[hook_index] = type;
+}
+
+void GrappleGun::SwitchHook( int hook_index )
+{
+	if( hook_index < 0 || hook_index >= max_hooks )
+		fprintf( stderr, "GrappleGun::SwitchHook -> invalid hook_index: %d!\n", hook_index );
+	else
+		current_hook = hook_index;
 }
 
 void GrappleGun::ActivateHook( Vector position, Vector direction )
@@ -57,6 +75,8 @@ void GrappleGun::ActivateHook( Vector position, Vector direction )
 
 	GrappleHook* hook = new GrappleHook( 800, this );
 	unsigned long hook_id = SPIN.world.AddEntity( hook );
+	hook->hook_index = current_hook;
+	hook->grapple_type = grapple_types[current_hook];
 	hook->SetPosition( Vector( position.x, position.y ) );
 	hook->SetVelocity( Vector( 300*direction.x, 300*direction.y ) );
 
@@ -86,9 +106,6 @@ void GrappleGun::Render()
 //cpSpaceAddCollisionHandler( space, World::COL_TYPE_GRAPPLE, World::COL_TYPE_SURFACE, 0, 0, GrappleGun::PostSolveGrapple, 0, 0);
 void GrappleGun::PostSolveGrapple( cpArbiter *arb, cpSpace *space, void *unused )
 {
-	printf( "GRAPPLE\n" );
-	fflush( stdout );
-
 	cpShape *a, *b;
 	cpArbiterGetShapes(arb, &a, &b);
 
@@ -104,17 +121,24 @@ void GrappleGun::PostStepGrapple( cpSpace* space, cpShape* shape, void* unused )
 {
 	if( shape->data != 0 )
 	{
-
 		GrappleHook* grapple = (GrappleHook*)shape->data;
 		GrappleGun* gun = grapple->parent_gun;
 
-		ConstraintEntity* old_constraint = (ConstraintEntity*)SPIN.world.GetEntity( gun->constraints[gun->current_hook] );
+		ConstraintEntity* old_constraint = (ConstraintEntity*)SPIN.world.GetEntity( gun->constraints[grapple->hook_index] );
 		if( old_constraint != 0 )
 			old_constraint->dead = true;
 
-		ConstraintEntity* constraint = new ConstraintEntity();
+		ConstraintEntity* constraint = 0;
+		switch( grapple->grapple_type )
+		{
+			case GrappleConstraint::GRAPPLE_WINCH:
+				constraint = new GrappleConstraintWinch( SPIN.kevin, Vector( grapple->position.x, grapple->position.y ) );
+				break;
+			default:
+				constraint = new GrappleConstraintSpringy( SPIN.kevin, Vector( grapple->position.x, grapple->position.y ) );
+		}
+
 		unsigned long new_constraint_id = SPIN.world.AddEntity( constraint );
-		constraint->InitConstraintSlideJoint( SPIN.kevin, Vector( grapple->position.x, grapple->position.y ), 0, 100 );
 		gun->constraints[gun->current_hook] = new_constraint_id;
 	}
 }

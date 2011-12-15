@@ -79,6 +79,12 @@ void SpinGame::Idle()
 
 void SpinGame::Keyboard( unsigned char key, int x, int y )
 {
+	if( key == 'w' )
+		kevin->grapple_gun.SwitchHook( 0 );
+	if( key == 'e' )
+		kevin->grapple_gun.SwitchHook( 1 );
+	if( key == 'r' )
+		kevin->grapple_gun.SwitchHook( 2 );
 }
 
 void SpinGame::KeyboardUp( unsigned char key, int x, int y )

@@ -237,13 +237,43 @@ void ConstraintEntity::InitConstraintSlideJoint( BodyEntity* new_body_a, Vector 
 	ChipmunkCleanup();
 	if( new_body_a != 0 && new_body_a->body != 0 )
 	{
-		//constraint = cpSpaceAddConstraint( SPIN.world.GetCPSpace(), cpSlideJointNew( SPIN.world.GetCPSpace()->staticBody, new_body_a->body, cpv( static_anchor.x, static_anchor.y ), cpvzero, min_length, max_length ) );
-		constraint = cpSpaceAddConstraint( SPIN.world.GetCPSpace(), cpDampedSpringNew( SPIN.world.GetCPSpace()->staticBody, new_body_a->body, cpv( static_anchor.x, static_anchor.y ), cpvzero, 0.0, 20.0, 1.0 ) );
+		constraint = cpSpaceAddConstraint( SPIN.world.GetCPSpace(), cpSlideJointNew( SPIN.world.GetCPSpace()->staticBody, new_body_a->body, cpv( static_anchor.x, static_anchor.y ), cpvzero, min_length, max_length ) );
 		body_a = new_body_a;
 		body_a->constraints.push_back( this );
 	}
 	else
 		fprintf( stderr, "ConstraintEntity::InitConstraintSlideJoint -> failed due to null pointer!\n" );
+}
+
+// spring between two bodies
+void ConstraintEntity::InitConstraintSpring( BodyEntity* new_body_a, BodyEntity* new_body_b, float length, float strength, float damping )
+{
+	ChipmunkCleanup();
+	if( new_body_a != 0 && new_body_a->body != 0 && new_body_b != 0 && new_body_b->body != 0 )
+	{
+		//constraint = cpSpaceAddConstraint( SPIN.world.GetCPSpace(), cpSpringNew( new_body_a->body, new_body_b->body, cpvzero, cpvzero, min_length, max_length ) );
+		constraint = cpSpaceAddConstraint( SPIN.world.GetCPSpace(), cpDampedSpringNew( new_body_a->body, new_body_a->body, cpvzero, cpvzero, length, strength, damping ) );
+		body_a = new_body_a;
+		body_a->constraints.push_back( this );
+		body_b = new_body_b;
+		body_b->constraints.push_back( this );
+	}
+	else
+		fprintf( stderr, "ConstraintEntity::InitConstraintSpring -> failed due to null pointer!\n" );
+}
+
+// spring between body and static body
+void ConstraintEntity::InitConstraintSpring( BodyEntity* new_body_a, Vector static_anchor, float length, float strength, float damping )
+{
+	ChipmunkCleanup();
+	if( new_body_a != 0 && new_body_a->body != 0 )
+	{
+		constraint = cpSpaceAddConstraint( SPIN.world.GetCPSpace(), cpDampedSpringNew( SPIN.world.GetCPSpace()->staticBody, new_body_a->body, cpv( static_anchor.x, static_anchor.y ), cpvzero, length, strength, damping ) );
+		body_a = new_body_a;
+		body_a->constraints.push_back( this );
+	}
+	else
+		fprintf( stderr, "ConstraintEntity::InitConstraintSpring -> failed due to null pointer!\n" );
 }
 
 void ConstraintEntity::RemoveBody( BodyEntity* body_removed )

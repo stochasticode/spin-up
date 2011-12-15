@@ -1,6 +1,7 @@
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include <SpinGame.h>
+#include <GrappleConstraint.h>
 #include <Kevin.h>
 #include <stdlib.h>
 #include <cstdio>
@@ -16,6 +17,9 @@ Kevin::Kevin(): BodyEntity(), grapple_gun( 3 )
 	InitBodyCircle( 10, 6, 5 );
 
 	texture_key = "beagle";
+
+	grapple_gun.SetGrappleType( 1, GrappleConstraint::GRAPPLE_SPRINGY );
+	grapple_gun.SetGrappleType( 2, GrappleConstraint::GRAPPLE_SPRINGY );
 }
 
 Kevin::~Kevin()

@@ -65,18 +65,21 @@ namespace spin
 	class ConstraintEntity: public Entity
 	{
 		public:
-		ConstraintEntity();
 		virtual ~ConstraintEntity();
 
 		void Render();
 
 		void ChipmunkCleanup();
+
 		void InitConstraintSlideJoint( BodyEntity* new_body_a, BodyEntity* new_body_b, float min_length, float max_length );
 		void InitConstraintSlideJoint( BodyEntity* new_body_a, Vector static_anchor, float min_length, float max_length );
+		void InitConstraintSpring( BodyEntity* new_body_a, BodyEntity* new_body_b, float length, float strength, float damping );
+		void InitConstraintSpring( BodyEntity* new_body_a, Vector static_anchor, float length, float strength, float damping );
 
 		void RemoveBody( BodyEntity* body_removed );
 
 		protected:
+		ConstraintEntity();
 		BodyEntity* body_a;
 		BodyEntity* body_b;
 

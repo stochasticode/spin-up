@@ -3,6 +3,7 @@
 
 #include <Entity.h>
 #include <Vector.h>
+#include <GrappleConstraint.h>
 #include <vector>
 
 struct cpArbiter;
@@ -17,6 +18,8 @@ namespace spin
 		public:
 		GrappleHook( int new_life_left, GrappleGun* new_parent_gun );
 
+		GrappleConstraint::Type grapple_type;
+		int hook_index;
 		int life_left;
 		GrappleGun* parent_gun;
 
@@ -29,6 +32,8 @@ namespace spin
 		public:
 		GrappleGun( int new_max_hooks );
 
+		void SetGrappleType( int hook_index, GrappleConstraint::Type type );
+		void SwitchHook( int hook_index );
 		void ActivateHook( Vector position, Vector direction );
 		void DeactivateHook();
 		static void PostSolveGrapple( cpArbiter *arb, cpSpace *space, void *unused );
@@ -41,6 +46,7 @@ namespace spin
 		int current_hook;
 		int max_hooks;
 		std::vector<unsigned long> hooks;
+		std::vector<GrappleConstraint::Type> grapple_types;
 		std::vector<unsigned long> constraints;
 	};
 };

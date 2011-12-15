@@ -22,8 +22,8 @@ namespace spin
 		void FirePrimary( Vector direction );
 		void FireSecondary( Vector direction );
 
-		private:
 		GrappleGun grapple_gun;
+		private:
 	};
 }
 #endif

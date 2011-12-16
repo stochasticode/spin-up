@@ -5,6 +5,7 @@
 #include <Kevin.h>
 #include <Resources.h>
 #include <Entity.h>
+#include <Prop.h>
 #include <cstdio>
 #include <cstring>
 #include <math.h>
@@ -30,6 +31,10 @@ bool SpinGame::Init( int argc, char** argv )
 
 	kevin = new Kevin();
 	world.AddEntity( kevin );
+
+	RectProp* prop = new RectProp( 1, 10, 10, 1.0 );
+	prop->texture_key = "creature";
+	world.AddEntity( prop );
 
 	if( !world.LoadLevel( "assets/levels/test.xml" ) )
 		return false;

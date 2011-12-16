@@ -2,6 +2,7 @@
 #include <SpinGame.h>
 #include <World.h>
 #include <Entity.h>
+#include <Prop.h>
 #include <chipmunk.h>
 #include <cstdio>
 
@@ -116,7 +117,7 @@ void GrappleGun::DeactivateAllHooks()
 //cpSpaceAddCollisionHandler( space, World::COL_TYPE_GRAPPLE, World::COL_TYPE_SURFACE, 0, 0, GrappleGun::PostSolveGrapple, 0, 0);
 void GrappleGun::PostSolveGrapple( cpArbiter *arb, cpSpace *space, void *unused )
 {
-	cpShape *a; // COL_TYPE_GRAPPLE
+	cpShape *a; // COL_TYPE_GRAPPLE || COL_TYPE_PROP
 	cpShape *b; // COL_TYPE_SURFACE
 	cpArbiterGetShapes( arb, &a, &b );
 
@@ -124,36 +125,66 @@ void GrappleGun::PostSolveGrapple( cpArbiter *arb, cpSpace *space, void *unused 
 	{
 		GrappleHook* grapple = (GrappleHook*)a->data;
 		grapple->dead = true;
-		cpSpaceAddPostStepCallback( space, (cpPostStepFunc)GrappleGun::PostStepGrapple, a, 0 );
+
+		// prop
+		Prop* prop= dynamic_cast<Prop*>((BodyEntity*)b->data);
+		if( prop != 0 )
+		{
+			printf( "PROP\n" );
+			fflush( stdout );
+
+			cpSpaceAddPostStepCallback( space, (cpPostStepFunc)GrappleGun::PostStepGrapple, a, b );
+		}
+		// surface
+		else
+		{
+			cpSpaceAddPostStepCallback( space, (cpPostStepFunc)GrappleGun::PostStepGrapple, a, 0 );
+		}
 	}
 }
 
-void GrappleGun::PostStepGrapple( cpSpace* space, cpShape* shape, void* unused )
+void GrappleGun::PostStepGrapple( cpSpace* space, cpShape* shape, void* prop_shape )
 {
 	if( shape->data != 0 )
 	{
 		GrappleHook* grapple = (GrappleHook*)shape->data;
 		GrappleGun* gun = grapple->info.parent_gun;
 		gun->DeactivateHook( grapple->info.hook_index );
-
-		//printf( "color: %f, %f, %f\n", grapple->info.color.r, grapple->info.color.g, grapple->info.color.b );
-		//fflush( stdout );
-
 		ConstraintEntity* constraint = 0;
-		switch( grapple->info.type )
-		{
-			case GRAPPLE_WINCH:
-				constraint = new GrappleConstraintWinch( SPIN.kevin, Vector( grapple->position.x, grapple->position.y ), grapple->info );
-				break;
-			default:
-				constraint = new GrappleConstraintSpringy( SPIN.kevin, Vector( grapple->position.x, grapple->position.y ), grapple->info );
-		}
 
-		unsigned long new_constraint_id = SPIN.world.AddEntity( constraint );
-		gun->grapple_info[grapple->info.hook_index].constraint_id = new_constraint_id;
+		if( prop_shape != 0 )
+		{
+			// left here
+			Prop* prop = (Prop*)shape->data;
+			switch( grapple->info.type )
+			{
+				case GRAPPLE_WINCH:
+					constraint = new GrappleConstraintWinch( SPIN.kevin, prop, grapple->info );
+					break;
+				default:
+					constraint = new GrappleConstraintSpringy( SPIN.kevin, prop, grapple->info );
+			}
+	
+			unsigned long new_constraint_id = SPIN.world.AddEntity( constraint );
+			gun->grapple_info[grapple->info.hook_index].constraint_id = new_constraint_id;
+		}
+		else
+		{
+			switch( grapple->info.type )
+			{
+				case GRAPPLE_WINCH:
+					constraint = new GrappleConstraintWinch( SPIN.kevin, Vector( grapple->position.x, grapple->position.y ), grapple->info );
+					break;
+				default:
+					constraint = new GrappleConstraintSpringy( SPIN.kevin, Vector( grapple->position.x, grapple->position.y ), grapple->info );
+			}
+	
+			unsigned long new_constraint_id = SPIN.world.AddEntity( constraint );
+			gun->grapple_info[grapple->info.hook_index].constraint_id = new_constraint_id;
+		}
 	}
 }
-
+	
 GrappleConstraintWinch::GrappleConstraintWinch( BodyEntity* new_body_a, Vector static_anchor, GrappleInfo new_info ): GrappleConstraint( new_info )
 {
 	float dist_x = new_body_a->position.x-static_anchor.x;
@@ -162,12 +193,23 @@ GrappleConstraintWinch::GrappleConstraintWinch( BodyEntity* new_body_a, Vector s
 	InitConstraintSlideJoint( new_body_a, static_anchor, 0, dist );
 }
 
+GrappleConstraintWinch::GrappleConstraintWinch( BodyEntity* new_body_a, BodyEntity* new_body_b, GrappleInfo new_info ): GrappleConstraint( new_info )
+{
+	float dist_x = new_body_a->position.x-new_body_b->position.x;
+	float dist_y = new_body_a->position.y-new_body_b->position.y;
+	float dist = sqrt( dist_x*dist_x + dist_y*dist_y );
+	//InitConstraintSlideJoint( new_body_a, new_body_b, 0, dist );
+	InitConstraintSlideJoint( new_body_b, Vector( 0, 0 ), 0, dist );
+}
+
 GrappleConstraintSpringy::GrappleConstraintSpringy( BodyEntity* new_body_a, Vector static_anchor, GrappleInfo new_info ): GrappleConstraint( new_info )
 {
-	float dist_x = new_body_a->position.x-static_anchor.x;
-	float dist_y = new_body_a->position.y-static_anchor.y;
-	float dist = sqrt( dist_x*dist_x + dist_y*dist_y );
 	InitConstraintSpring( new_body_a, static_anchor, 0, 50, 1.0 );
+}
+
+GrappleConstraintSpringy::GrappleConstraintSpringy( BodyEntity* new_body_a, BodyEntity* new_body_b, GrappleInfo new_info ): GrappleConstraint( new_info )
+{
+	InitConstraintSpring( new_body_a, new_body_b, 0, 50, 1.0 );
 }
 
 void GrappleConstraint::Render()

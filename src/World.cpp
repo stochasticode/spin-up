@@ -21,6 +21,7 @@ World::World(): space( cpSpaceNew() ), delta_tick( 1000 / 80 ), delta_tick_secon
 	background.texture_key = "space";
 
 	cpSpaceAddCollisionHandler( space, World::COL_TYPE_GRAPPLE, World::COL_TYPE_SURFACE, 0, 0, GrappleGun::PostSolveGrapple, 0, 0);
+	cpSpaceAddCollisionHandler( space, World::COL_TYPE_GRAPPLE, World::COL_TYPE_PROP, 0, 0, GrappleGun::PostSolveGrapple, 0, 0);
 }
 
 World::~World()
@@ -93,6 +94,7 @@ unsigned long World::AddEntity( Entity* entity )
 {
 	last_entity_id++;
 	entities[last_entity_id] = entity;
+	entity->entity_id = last_entity_id;
 	return last_entity_id;
 }
 

@@ -57,12 +57,14 @@ namespace spin
 	{
 		public:
 		GrappleConstraintWinch( BodyEntity* new_body_a, Vector static_anchor, GrappleInfo new_info );
+		GrappleConstraintWinch( BodyEntity* new_body_a, BodyEntity* new_body_b, GrappleInfo new_info );
 	};
 
 	class GrappleConstraintSpringy: public GrappleConstraint
 	{
 		public:
 		GrappleConstraintSpringy( BodyEntity* new_body_a, Vector static_anchor, GrappleInfo new_info );
+		GrappleConstraintSpringy( BodyEntity* new_body_a, BodyEntity* new_body_b, GrappleInfo new_info );
 	};
 
 	class GrappleGun

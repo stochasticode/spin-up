@@ -1,7 +1,6 @@
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include <SpinGame.h>
-#include <GrappleConstraint.h>
 #include <Kevin.h>
 #include <stdlib.h>
 #include <cstdio>

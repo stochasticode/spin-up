@@ -3,6 +3,7 @@ OBJS := \
 	build/Resources.o \
 	build/World.o \
 	build/Entity.o \
+	build/Prop.o \
 	build/GrappleGun.o \
 	build/Kevin.o \
 	build/Camera.o \

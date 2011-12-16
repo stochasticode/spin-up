@@ -27,6 +27,7 @@ namespace spin
 		// this might not make much of a difference over just calling the methods...
 		bool do_tick;
 		bool do_render;
+		int entity_id;
 
 		protected:
 		Entity(): dead( false ), do_tick( false ), do_render( false ) {}
@@ -76,12 +77,8 @@ namespace spin
 		void InitConstraintSpring( BodyEntity* new_body_a, BodyEntity* new_body_b, float length, float strength, float damping );
 		void InitConstraintSpring( BodyEntity* new_body_a, Vector static_anchor, float length, float strength, float damping );
 
-		void RemoveBody( BodyEntity* body_removed );
-
 		protected:
 		ConstraintEntity();
-		BodyEntity* body_a;
-		BodyEntity* body_b;
 
 		cpConstraint* constraint;
 	};
@@ -96,7 +93,7 @@ namespace spin
 
 		friend class ConstraintEntity;
 
-		std::vector<ConstraintEntity*> constraints;
+		std::vector<unsigned long> constraint_ids;
 
 		protected:
 		BodyEntity();
@@ -105,8 +102,9 @@ namespace spin
 
 		void ChipmunkCleanup();
 		void InitBodyCircle( float mass, float radius, float friction );
+		void InitBodyRect( float mass, float width, float height, float friction );
 
-		void RemoveConstraint( ConstraintEntity* constraint_removed );
+		//void RemoveConstraint( ConstraintEntity* constraint_removed );
 
 		cpBody *body;
 		cpShape *shape;

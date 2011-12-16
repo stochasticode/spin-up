@@ -65,20 +65,16 @@ BodyEntity::BodyEntity(): QuadEntity(), body( 0 ), shape( 0 )
 BodyEntity::~BodyEntity()
 {
 	ChipmunkCleanup();
+	for( int i = 0; i < constraint_ids.size(); i++ )
+	{
+		ConstraintEntity* constraint = dynamic_cast<ConstraintEntity*>(SPIN.world.GetEntity( constraint_ids[i] ));
+		if( constraint != 0 )
+			constraint->dead = true;
+	}
 }
 
 void BodyEntity::ChipmunkCleanup()
 {
-	// deal with constraints
-	for( int i = 0; i < constraints.size(); i++ )
-	{
-		if( constraints[i] != 0 )
-		{
-			constraints[i]->RemoveBody( this );
-			constraints[i] = 0;
-		}
-	}
-
 	if( body != 0 )
 	{
 		cpSpaceRemoveBody( SPIN.world.GetCPSpace(), body );
@@ -111,14 +107,30 @@ void BodyEntity::InitBodyCircle( float mass, float radius, float friction )
 	shape->data = this;
 }
 
+void BodyEntity::InitBodyRect( float mass, float width, float height, float friction )
+{
+	ChipmunkCleanup();
+
+	// set up body
+	body = cpBodyNew( mass, cpMomentForBox( mass, width, height ) );
+	cpBodySetPos( body, cpv( 0, 0 ) );
+	cpSpaceAddBody( SPIN.world.GetCPSpace(), body );
+
+	// set up shape
+	shape = cpBoxShapeNew( body, width, height );
+	cpShapeSetFriction( shape, friction );
+	cpSpaceAddShape( SPIN.world.GetCPSpace(), shape );
+
+	// link body
+	shape->data = this;
+}
+
 void BodyEntity::Tick( int milliseconds )
 {
 	if( body != 0 )
 	{
 		position.x = cpBodyGetPos( body ).x;
 		position.y = cpBodyGetPos( body ).y;
-		//velocity.x = body->v.x;
-		//velocity.y = body->v.y;
 		rotation = body->a * 180 / M_PI;
 	}
 }
@@ -136,23 +148,7 @@ void BodyEntity::SetVelocity( Vector new_velocity )
 		body->v.y = new_velocity.y;
 }
 
-void BodyEntity::RemoveConstraint( ConstraintEntity* constraint_removed )
-{
-	bool found_constraint = false;
-	for( std::vector<ConstraintEntity*>::iterator it = constraints.begin(); it != constraints.end(); it++ )
-	{
-		if( (*it) == constraint_removed )
-		{
-			constraints.erase( it );
-			found_constraint = true;
-			break;
-		}
-	}
-	if( !found_constraint )
-		fprintf( stderr, "BodyEntity::RemoveConstraint -> no matching constraint found!\n" );
-}
-
-ConstraintEntity::ConstraintEntity(): Entity(), body_a( 0 ), body_b( 0 ), constraint( 0 )
+ConstraintEntity::ConstraintEntity(): Entity(), constraint( 0 )
 {
 }
 
@@ -165,16 +161,6 @@ void ConstraintEntity::ChipmunkCleanup()
 {
 	if( constraint != 0 )
 	{
-		if( body_a != 0 )
-		{
-			body_a->RemoveConstraint( this );
-			body_a = 0;
-		}
-		if( body_b != 0 )
-		{
-			body_b->RemoveConstraint( this );
-			body_b = 0;
-		}
 		cpSpaceRemoveConstraint( SPIN.world.GetCPSpace(), constraint );
 		cpConstraintFree( constraint );
 		constraint = 0;
@@ -183,38 +169,6 @@ void ConstraintEntity::ChipmunkCleanup()
 
 void ConstraintEntity::Render()
 {
-	/*
-	cpDampedSpring* spring = (cpDampedSpring*)constraint;
-	cpBody* a = spring->constraint.a;
-	cpBody* b = spring->constraint.b;
-
-	// rope
-	glDisable( GL_TEXTURE_2D );
-	glBegin( GL_LINES );
-		glColor3f( 1.0, 1.0, 1.0 );
-		glVertex3f( cpBodyGetPos( a ).x + spring->anchr1.x, cpBodyGetPos( a ).y + spring->anchr1.y, 0 );
-		glVertex3f( cpBodyGetPos( b ).x + spring->anchr2.x, cpBodyGetPos( b ).y + spring->anchr2.y, 0 );
-	glEnd();
-	glEnable( GL_TEXTURE_2D );
-
-	// hook
-	glPushMatrix();
-	glTranslatef( cpBodyGetPos( a ).x + spring->anchr1.x, cpBodyGetPos( a ).y + spring->anchr1.y, 0 );
-
-	SPIN.resources.BindTexture( "burst" );
-	glBegin(GL_TRIANGLES);
-		glColor4f( 1.0, 1.0, 1.0, 1.0 );
-		glTexCoord2d( 0.0, 1.0 ); glVertex3f( -2.5, -2.5, 0.0 );
-		glTexCoord2d( 1.0, 1.0 ); glVertex3f(  2.5, -2.5, 0.0 );
-		glTexCoord2d( 0.0, 0.0 ); glVertex3f( -2.5,  2.5, 0.0 );
-
-		glTexCoord2d( 1.0, 1.0 ); glVertex3f(  2.5, -2.5, 0 );
-		glTexCoord2d( 0.0, 0.0 ); glVertex3f( -2.5,  2.5, 0 );
-		glTexCoord2d( 1.0, 0.0 ); glVertex3f(  2.5,  2.5, 0 );
-	glEnd();
-
-	glPopMatrix();
-	*/
 }
 
 // slide joint between two bodies
@@ -222,13 +176,7 @@ void ConstraintEntity::InitConstraintSlideJoint( BodyEntity* new_body_a, BodyEnt
 {
 	ChipmunkCleanup();
 	if( new_body_a != 0 && new_body_a->body != 0 && new_body_b != 0 && new_body_b->body != 0 )
-	{
 		constraint = cpSpaceAddConstraint( SPIN.world.GetCPSpace(), cpSlideJointNew( new_body_a->body, new_body_b->body, cpvzero, cpvzero, min_length, max_length ) );
-		body_a = new_body_a;
-		body_a->constraints.push_back( this );
-		body_b = new_body_b;
-		body_b->constraints.push_back( this );
-	}
 	else
 		fprintf( stderr, "ConstraintEntity::InitConstraintSlideJoint -> failed due to null pointer!\n" );
 }
@@ -240,8 +188,7 @@ void ConstraintEntity::InitConstraintSlideJoint( BodyEntity* new_body_a, Vector 
 	if( new_body_a != 0 && new_body_a->body != 0 )
 	{
 		constraint = cpSpaceAddConstraint( SPIN.world.GetCPSpace(), cpSlideJointNew( SPIN.world.GetCPSpace()->staticBody, new_body_a->body, cpv( static_anchor.x, static_anchor.y ), cpvzero, min_length, max_length ) );
-		body_a = new_body_a;
-		body_a->constraints.push_back( this );
+		new_body_a->constraint_ids.push_back( entity_id );
 	}
 	else
 		fprintf( stderr, "ConstraintEntity::InitConstraintSlideJoint -> failed due to null pointer!\n" );
@@ -253,12 +200,9 @@ void ConstraintEntity::InitConstraintSpring( BodyEntity* new_body_a, BodyEntity*
 	ChipmunkCleanup();
 	if( new_body_a != 0 && new_body_a->body != 0 && new_body_b != 0 && new_body_b->body != 0 )
 	{
-		//constraint = cpSpaceAddConstraint( SPIN.world.GetCPSpace(), cpSpringNew( new_body_a->body, new_body_b->body, cpvzero, cpvzero, min_length, max_length ) );
 		constraint = cpSpaceAddConstraint( SPIN.world.GetCPSpace(), cpDampedSpringNew( new_body_a->body, new_body_a->body, cpvzero, cpvzero, length, strength, damping ) );
-		body_a = new_body_a;
-		body_a->constraints.push_back( this );
-		body_b = new_body_b;
-		body_b->constraints.push_back( this );
+		new_body_a->constraint_ids.push_back( entity_id );
+		new_body_b->constraint_ids.push_back( entity_id );
 	}
 	else
 		fprintf( stderr, "ConstraintEntity::InitConstraintSpring -> failed due to null pointer!\n" );
@@ -271,30 +215,8 @@ void ConstraintEntity::InitConstraintSpring( BodyEntity* new_body_a, Vector stat
 	if( new_body_a != 0 && new_body_a->body != 0 )
 	{
 		constraint = cpSpaceAddConstraint( SPIN.world.GetCPSpace(), cpDampedSpringNew( SPIN.world.GetCPSpace()->staticBody, new_body_a->body, cpv( static_anchor.x, static_anchor.y ), cpvzero, length, strength, damping ) );
-		body_a = new_body_a;
-		body_a->constraints.push_back( this );
+		new_body_a->constraint_ids.push_back( entity_id );
 	}
 	else
 		fprintf( stderr, "ConstraintEntity::InitConstraintSpring -> failed due to null pointer!\n" );
-}
-
-void ConstraintEntity::RemoveBody( BodyEntity* body_removed )
-{
-	if( body_removed == 0 )
-		return;
-
-	if( body_removed == body_a )
-	{
-		body_a = 0;
-		ChipmunkCleanup();
-		dead = true;
-	}
-	else if( body_removed == body_b )
-	{
-		body_b = 0;
-		ChipmunkCleanup();
-		dead = true;
-	}
-	else
-		fprintf( stderr, "ConstraintEntity::RemoveBody -> no matching body pointer!\n" );
 }

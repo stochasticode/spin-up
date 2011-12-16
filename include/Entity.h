@@ -106,9 +106,7 @@ namespace spin
 		void ChipmunkCleanup();
 		void InitBodyCircle( float mass, float radius, float friction );
 
-
 		void RemoveConstraint( ConstraintEntity* constraint_removed );
-
 
 		cpBody *body;
 		cpShape *shape;

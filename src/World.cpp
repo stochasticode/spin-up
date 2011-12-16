@@ -51,6 +51,9 @@ void World::Render()
 	for( std::map<unsigned long,Entity*>::iterator it = entities.begin(); it != entities.end(); it++ )
 		(*it).second->Render();
 
+	// hack to put Kevin in front, fix later
+	SPIN.kevin->Render();
+
 	glPopMatrix();
 }
 

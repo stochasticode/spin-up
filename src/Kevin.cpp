@@ -9,7 +9,7 @@
 
 using namespace spin;
 
-Kevin::Kevin(): BodyEntity(), grapple_gun( 3 )
+Kevin::Kevin(): BodyEntity()
 {
 	size.x = 8.0;
 	size.y = 8.0; 
@@ -18,8 +18,7 @@ Kevin::Kevin(): BodyEntity(), grapple_gun( 3 )
 
 	texture_key = "beagle";
 
-	grapple_gun.SetGrappleType( 1, GrappleConstraint::GRAPPLE_SPRINGY );
-	grapple_gun.SetGrappleType( 2, GrappleConstraint::GRAPPLE_SPRINGY );
+	grapple_gun.SetGrappleType( 0, GRAPPLE_WINCH );
 }
 
 Kevin::~Kevin()

@@ -21,7 +21,7 @@ namespace spin
 		World();
 		~World();
 
-		enum CollisionType { COL_TYPE_OTHER, COL_TYPE_SURFACE, COL_TYPE_PROJECTILE, COL_TYPE_GRAPPLE };
+		enum CollisionType { COL_TYPE_OTHER, COL_TYPE_SURFACE, COL_TYPE_PROP, COL_TYPE_PROJECTILE, COL_TYPE_GRAPPLE };
 
 		bool Tick( int milliseconds );
 		void Render();

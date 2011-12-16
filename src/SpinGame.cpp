@@ -34,7 +34,6 @@ bool SpinGame::Init( int argc, char** argv )
 	if( !world.LoadLevel( "assets/levels/test.xml" ) )
 		return false;
 
-
 	return true;
 }
 
@@ -79,12 +78,14 @@ void SpinGame::Idle()
 
 void SpinGame::Keyboard( unsigned char key, int x, int y )
 {
-	if( key == 'w' )
+	if( key == 's' )
 		kevin->grapple_gun.SwitchHook( 0 );
-	if( key == 'e' )
+	if( key == 'd' )
 		kevin->grapple_gun.SwitchHook( 1 );
-	if( key == 'r' )
+	if( key == 'f' )
 		kevin->grapple_gun.SwitchHook( 2 );
+	if( key == 'a' )
+		kevin->grapple_gun.DeactivateAllHooks();
 }
 
 void SpinGame::KeyboardUp( unsigned char key, int x, int y )

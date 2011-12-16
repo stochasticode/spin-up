@@ -183,6 +183,7 @@ void ConstraintEntity::ChipmunkCleanup()
 
 void ConstraintEntity::Render()
 {
+	/*
 	cpDampedSpring* spring = (cpDampedSpring*)constraint;
 	cpBody* a = spring->constraint.a;
 	cpBody* b = spring->constraint.b;
@@ -213,6 +214,7 @@ void ConstraintEntity::Render()
 	glEnd();
 
 	glPopMatrix();
+	*/
 }
 
 // slide joint between two bodies

@@ -3,8 +3,12 @@
 
 #include <Entity.h>
 #include <Vector.h>
-#include <GrappleConstraint.h>
+#include <Color.h>
 #include <vector>
+
+#ifndef MAX_GRAPPLE_HOOKS
+	#define MAX_GRAPPLE_HOOKS 5
+#endif
 
 struct cpArbiter;
 struct cpSpace;
@@ -13,42 +17,75 @@ namespace spin
 {
 	class GrappleGun;
 
+	enum GrappleConstraintType { GRAPPLE_WINCH, GRAPPLE_SPRINGY };
+
+	class GrappleInfo
+	{
+		public:
+		GrappleInfo(): hook_index( 0 ), hook_id( 0 ), constraint_id( 0 ), type( GRAPPLE_SPRINGY ), parent_gun( 0 ) {}
+		int hook_index;
+		unsigned long hook_id;
+		unsigned long constraint_id;
+		GrappleConstraintType type;
+		GrappleGun* parent_gun;
+		Color color;
+	};
+
 	class GrappleHook: public BodyEntity
 	{
 		public:
-		GrappleHook( int new_life_left, GrappleGun* new_parent_gun );
+		GrappleHook( int new_life_left, GrappleGun* new_parent_gun, GrappleInfo new_info );
 
-		GrappleConstraint::Type grapple_type;
-		int hook_index;
 		int life_left;
-		GrappleGun* parent_gun;
+		GrappleInfo info;
 
 		void Render();
 		void Tick( int milliseconds );
 	};
 
+	class GrappleConstraint: public ConstraintEntity
+	{
+		public:
+		void Render();
+
+		protected:
+		GrappleInfo info;
+		GrappleConstraint( GrappleInfo new_info ): info( new_info ) {}
+	};
+
+	class GrappleConstraintWinch: public GrappleConstraint
+	{
+		public:
+		GrappleConstraintWinch( BodyEntity* new_body_a, Vector static_anchor, GrappleInfo new_info );
+	};
+
+	class GrappleConstraintSpringy: public GrappleConstraint
+	{
+		public:
+		GrappleConstraintSpringy( BodyEntity* new_body_a, Vector static_anchor, GrappleInfo new_info );
+	};
+
 	class GrappleGun
 	{
 		public:
-		GrappleGun( int new_max_hooks );
+		GrappleGun();
 
-		void SetGrappleType( int hook_index, GrappleConstraint::Type type );
+		void SetGrappleType( int hook_index, GrappleConstraintType type );
 		void SwitchHook( int hook_index );
 		void ActivateHook( Vector position, Vector direction );
 		void DeactivateHook();
+		void DeactivateHook( int hook_index );
+		void DeactivateAllHooks();
 		static void PostSolveGrapple( cpArbiter *arb, cpSpace *space, void *unused );
 		static void PostStepGrapple( cpSpace* space, cpShape* shape, void* unused );
 
-		// hooks are Entities so they render themselves but we need to render the "ropes"
-		void Render();
+		int GetCurrentHook() { return current_hook; }
 
 		private:
 		int current_hook;
-		int max_hooks;
-		std::vector<unsigned long> hooks;
-		std::vector<GrappleConstraint::Type> grapple_types;
-		std::vector<unsigned long> constraints;
+		GrappleInfo grapple_info[MAX_GRAPPLE_HOOKS];
 	};
+
 };
 
 #endif

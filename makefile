@@ -4,7 +4,6 @@ OBJS := \
 	build/World.o \
 	build/Entity.o \
 	build/GrappleGun.o \
-	build/GrappleConstraint.o \
 	build/Kevin.o \
 	build/Camera.o \
 

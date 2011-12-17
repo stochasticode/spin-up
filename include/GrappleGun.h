@@ -79,7 +79,7 @@ namespace spin
 		void DeactivateHook( int hook_index );
 		void DeactivateAllHooks();
 		static void PostSolveGrapple( cpArbiter *arb, cpSpace *space, void *unused );
-		static void PostStepGrapple( cpSpace* space, cpShape* shape, void* unused );
+		static void PostStepGrapple( cpSpace* space, cpShape* shape, cpShape* prop_shape );
 
 		int GetCurrentHook() { return current_hook; }
 

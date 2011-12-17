@@ -143,7 +143,7 @@ void GrappleGun::PostSolveGrapple( cpArbiter *arb, cpSpace *space, void *unused 
 	}
 }
 
-void GrappleGun::PostStepGrapple( cpSpace* space, cpShape* shape, void* prop_shape )
+void GrappleGun::PostStepGrapple( cpSpace* space, cpShape* shape, cpShape* prop_shape )
 {
 	if( shape->data != 0 )
 	{
@@ -155,7 +155,7 @@ void GrappleGun::PostStepGrapple( cpSpace* space, cpShape* shape, void* prop_sha
 		if( prop_shape != 0 )
 		{
 			// left here
-			Prop* prop = (Prop*)shape->data;
+			Prop* prop = (Prop*)prop_shape->data;
 			switch( grapple->info.type )
 			{
 				case GRAPPLE_WINCH:
@@ -198,8 +198,8 @@ GrappleConstraintWinch::GrappleConstraintWinch( BodyEntity* new_body_a, BodyEnti
 	float dist_x = new_body_a->position.x-new_body_b->position.x;
 	float dist_y = new_body_a->position.y-new_body_b->position.y;
 	float dist = sqrt( dist_x*dist_x + dist_y*dist_y );
-	//InitConstraintSlideJoint( new_body_a, new_body_b, 0, dist );
-	InitConstraintSlideJoint( new_body_b, Vector( 0, 0 ), 0, dist );
+	InitConstraintSlideJoint( new_body_a, new_body_b, 0, dist );
+	//InitConstraintSlideJoint( new_body_b, Vector( 0, 0 ), 0, dist );
 }
 
 GrappleConstraintSpringy::GrappleConstraintSpringy( BodyEntity* new_body_a, Vector static_anchor, GrappleInfo new_info ): GrappleConstraint( new_info )

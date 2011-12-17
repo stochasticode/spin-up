@@ -176,7 +176,11 @@ void ConstraintEntity::InitConstraintSlideJoint( BodyEntity* new_body_a, BodyEnt
 {
 	ChipmunkCleanup();
 	if( new_body_a != 0 && new_body_a->body != 0 && new_body_b != 0 && new_body_b->body != 0 )
+	{
 		constraint = cpSpaceAddConstraint( SPIN.world.GetCPSpace(), cpSlideJointNew( new_body_a->body, new_body_b->body, cpvzero, cpvzero, min_length, max_length ) );
+		new_body_a->constraint_ids.push_back( entity_id );
+		new_body_b->constraint_ids.push_back( entity_id );
+	}
 	else
 		fprintf( stderr, "ConstraintEntity::InitConstraintSlideJoint -> failed due to null pointer!\n" );
 }
@@ -200,7 +204,7 @@ void ConstraintEntity::InitConstraintSpring( BodyEntity* new_body_a, BodyEntity*
 	ChipmunkCleanup();
 	if( new_body_a != 0 && new_body_a->body != 0 && new_body_b != 0 && new_body_b->body != 0 )
 	{
-		constraint = cpSpaceAddConstraint( SPIN.world.GetCPSpace(), cpDampedSpringNew( new_body_a->body, new_body_a->body, cpvzero, cpvzero, length, strength, damping ) );
+		constraint = cpSpaceAddConstraint( SPIN.world.GetCPSpace(), cpDampedSpringNew( new_body_a->body, new_body_b->body, cpvzero, cpvzero, length, strength, damping ) );
 		new_body_a->constraint_ids.push_back( entity_id );
 		new_body_b->constraint_ids.push_back( entity_id );
 	}

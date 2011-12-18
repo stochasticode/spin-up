@@ -1,0 +1,17 @@
+<spin_entity>
+	<param name="texture_key" value="rock1" />
+	<param name="mass" value="100.0" />
+	<param name="size_x" value = "50" />
+	<param name="size_y" value = "50" />
+	<param name="friction" value="1.0" />
+	<shape type="poly">
+		<vertex x="2.0" y="23.0" />
+		<vertex x="9.0" y="18.0" />
+		<vertex x="21.0" y="0.0" />
+		<vertex x="9.0" y="-24.0" />
+		<vertex x="-13.0" y="-24.0" />
+		<vertex x="-20.0" y="-15.0" />
+		<vertex x="-21.0" y="0.0" />
+		<vertex x="-5.0" y="25.0" />
+	</shape>
+</spin_entity>

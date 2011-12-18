@@ -10,10 +10,10 @@ using namespace spin;
 
 Kevin::Kevin(): BodyEntity()
 {
-	size.x = 8.0;
-	size.y = 8.0; 
+	size.x = 12.0;
+	size.y = 12.0; 
 
-	InitBodyCircle( 10, 6, 5 );
+	InitBodyCircle( 10.0, 6.0, 5.0 );
 
 	texture_key = "beagle";
 

@@ -127,7 +127,7 @@ void GrappleGun::PostSolveGrapple( cpArbiter *arb, cpSpace *space, void *unused 
 		grapple->dead = true;
 
 		// prop
-		Prop* prop= dynamic_cast<Prop*>((BodyEntity*)b->data);
+		BodyEntity* prop= dynamic_cast<BodyEntity*>((Entity*)b->data);
 		if( prop != 0 )
 		{
 			printf( "PROP\n" );
@@ -155,7 +155,7 @@ void GrappleGun::PostStepGrapple( cpSpace* space, cpShape* shape, cpShape* prop_
 		if( prop_shape != 0 )
 		{
 			// left here
-			Prop* prop = (Prop*)prop_shape->data;
+			BodyEntity* prop = (BodyEntity*)prop_shape->data;
 			switch( grapple->info.type )
 			{
 				case GRAPPLE_WINCH:

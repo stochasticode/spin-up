@@ -1,6 +1,7 @@
 #ifndef SPIN_ENTITY_H
 #define SPIN_ENTITY_H
 
+#include <GL/gl.h>
 #include <Vector.h>
 #include <Color.h>
 #include <string>
@@ -10,6 +11,7 @@ struct cpBody;
 struct cpShape;
 struct cpSegmentShape;
 struct cpConstraint;
+struct TiXmlElement;
 
 namespace spin
 {
@@ -24,13 +26,10 @@ namespace spin
 		virtual void Render() {}
 
 		bool dead;
-		// this might not make much of a difference over just calling the methods...
-		bool do_tick;
-		bool do_render;
 		int entity_id;
 
 		protected:
-		Entity(): dead( false ), do_tick( false ), do_render( false ) {}
+		Entity(): dead( false ) {}
 	};
 
 	class SurfaceEntity: public Entity
@@ -88,6 +87,10 @@ namespace spin
 		public:
 		virtual ~BodyEntity();
 
+		virtual void Render();
+
+		static BodyEntity* LoadEntity( const char* xml_path );
+
 		void SetPosition( Vector new_position );
 		void SetVelocity( Vector new_velocity );
 
@@ -98,16 +101,23 @@ namespace spin
 		protected:
 		BodyEntity();
 
+		bool LoadXML( const char* xml_path );
+
+		bool LoadPolyElement( TiXmlElement* element, float mass, float friction );
+
 		virtual void Tick( int milliseconds );
 
 		void ChipmunkCleanup();
 		void InitBodyCircle( float mass, float radius, float friction );
 		void InitBodyRect( float mass, float width, float height, float friction );
+		void InitBodyPoly( float mass, std::vector<Vector>& points, float friction );
 
-		//void RemoveConstraint( ConstraintEntity* constraint_removed );
+		void RenderShape();
 
 		cpBody *body;
 		cpShape *shape;
+
+		static GLfloat circle_points[];
 	};
 }
 

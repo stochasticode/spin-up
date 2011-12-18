@@ -2,26 +2,22 @@
 #define SPIN_PROP_H
 
 #include <Entity.h>
+#include <Vector.h>
 
 namespace spin
 {
-	class Prop: public BodyEntity
-	{
-		protected:
-		Prop(): BodyEntity() {}
-	};
-
-	class RectProp: public Prop
+	class CircleProp: public BodyEntity
 	{
 		public:
-		RectProp( float mass, float width, float height, float friction );
-	};
-
-	class CircleProp: public Prop
-	{
 		CircleProp( float mass, float radius, float friction );
 	};
 
+	class PolyProp: public BodyEntity
+	{
+		public:
+		PolyProp( float mass, float width, float height, std::vector<Vector> points, float friction );
+		PolyProp( float mass, float width, float height, float friction );
+	};
 }
 
 #endif

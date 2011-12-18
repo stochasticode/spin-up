@@ -27,14 +27,20 @@ bool SpinGame::Init( int argc, char** argv )
 	LoadResources();
 
 	// set up camera
-	camera.zoom = 3.0;
+	camera.zoom = 4.0;
 
 	kevin = new Kevin();
 	world.AddEntity( kevin );
 
-	RectProp* prop = new RectProp( 1, 10, 10, 1.0 );
-	prop->texture_key = "creature";
+	/*
+	CircleProp* prop = new CircleProp( 130.0, 45.0, 1.0 );
+	prop->texture_key = "rock1";
 	world.AddEntity( prop );
+	*/
+
+	BodyEntity* prop2 = BodyEntity::LoadEntity( "assets/entities/rock1.xml" );
+	if( prop2 != 0 )
+		world.AddEntity( prop2 );
 
 	if( !world.LoadLevel( "assets/levels/test.xml" ) )
 		return false;
@@ -47,6 +53,7 @@ bool SpinGame::InitGraphics()
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glEnable( GL_TEXTURE_2D );
+	glEnableClientState( GL_VERTEX_ARRAY );
 	glClearColor( 0.0, 0.0, 0.0, 1.0 );
 	return true;
 }
@@ -58,12 +65,15 @@ bool SpinGame::LoadResources()
 	resources.LoadPNG( "assets/textures/creature.png", "creature" );
 	resources.LoadPNG( "assets/textures/burst.png", "burst" );
 	resources.LoadPNG( "assets/textures/beagle.png", "beagle" );
+	resources.LoadPNG( "assets/textures/rock1.png", "rock1" );
 	return true;
 }
 
 void SpinGame::Render()
 {
-	glClear( GL_COLOR_BUFFER_BIT );
+	//glClear( GL_COLOR_BUFFER_BIT );
+	camera.position_x = kevin->position.x;
+	camera.position_y = kevin->position.y;
 	world.Render();
 	glutSwapBuffers();
 }

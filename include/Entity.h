@@ -6,6 +6,7 @@
 #include <Color.h>
 #include <string>
 #include <vector>
+#include <chipmunk.h>
 
 struct cpBody;
 struct cpShape;
@@ -71,9 +72,9 @@ namespace spin
 
 		void ChipmunkCleanup();
 
-		void InitConstraintSlideJoint( BodyEntity* new_body_a, BodyEntity* new_body_b, float min_length, float max_length );
+		void InitConstraintSlideJoint( BodyEntity* new_body_a, BodyEntity* new_body_b, Vector offset_a, Vector offset_b, float min_length, float max_length );
 		void InitConstraintSlideJoint( BodyEntity* new_body_a, Vector static_anchor, float min_length, float max_length );
-		void InitConstraintSpring( BodyEntity* new_body_a, BodyEntity* new_body_b, float length, float strength, float damping );
+		void InitConstraintSpring( BodyEntity* new_body_a, BodyEntity* new_body_b, Vector offset_a, Vector offset_b, float length, float strength, float damping );
 		void InitConstraintSpring( BodyEntity* new_body_a, Vector static_anchor, float length, float strength, float damping );
 
 		protected:
@@ -91,12 +92,17 @@ namespace spin
 
 		static BodyEntity* LoadEntity( const char* xml_path );
 
+		float GetRotation() { return ( body != 0 )? body->a: 0.0; }
 		void SetPosition( Vector new_position );
 		void SetVelocity( Vector new_velocity );
+
+		void Scale( float scale_factor );
 
 		friend class ConstraintEntity;
 
 		std::vector<unsigned long> constraint_ids;
+
+		static bool render_shapes;
 
 		protected:
 		BodyEntity();

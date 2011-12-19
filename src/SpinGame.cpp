@@ -27,20 +27,21 @@ bool SpinGame::Init( int argc, char** argv )
 	LoadResources();
 
 	// set up camera
-	camera.zoom = 4.0;
+	camera.zoom = 3.0;
 
 	kevin = new Kevin();
 	world.AddEntity( kevin );
 
-	/*
-	CircleProp* prop = new CircleProp( 130.0, 45.0, 1.0 );
-	prop->texture_key = "rock1";
-	world.AddEntity( prop );
-	*/
-
-	BodyEntity* prop2 = BodyEntity::LoadEntity( "assets/entities/rock1.xml" );
-	if( prop2 != 0 )
-		world.AddEntity( prop2 );
+	srand( time( 0 ) );
+	for( int i = 0; i < 35; i++ )
+	{
+		BodyEntity* new_entity = BodyEntity::LoadEntity( "assets/entities/rock1.xml" );
+		float scale_rand = (float)rand() / (float)RAND_MAX;
+		printf( "scale: %f\n", scale_rand );
+		fflush( stdout );
+		new_entity->Scale( 0.05 + scale_rand * 0.65 );
+		world.AddEntity( new_entity );
+	}
 
 	if( !world.LoadLevel( "assets/levels/test.xml" ) )
 		return false;
@@ -101,6 +102,9 @@ void SpinGame::Keyboard( unsigned char key, int x, int y )
 		kevin->grapple_gun.SwitchHook( 2 );
 	if( key == 'a' )
 		kevin->grapple_gun.DeactivateAllHooks();
+
+	if( key == 'r' )
+		BodyEntity::render_shapes = !BodyEntity::render_shapes;
 }
 
 void SpinGame::KeyboardUp( unsigned char key, int x, int y )

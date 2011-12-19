@@ -2,6 +2,7 @@
 #include <Entity.h>
 #include <SpinGame.h>
 #include <chipmunk.h>
+#include <chipmunk_unsafe.h>
 #include <tinyxml.h>
 #include <sstream>
 #include <cstdio>
@@ -37,6 +38,8 @@ GLfloat BodyEntity::circle_points[] = {
 	 0.0000f,  1.0000f,
 	 0.0f, 0.0f, // For an extra line to see the rotation.
 };
+
+bool BodyEntity::render_shapes = false;
 
 void QuadEntity::Render()
 {
@@ -184,10 +187,33 @@ void BodyEntity::InitBodyPoly( float mass, std::vector<Vector>& points, float fr
 	shape->data = this;
 }
 
+void BodyEntity::Scale( float scale_factor )
+{
+	scale *= scale_factor;
+	if( shape != 0 && body != 0 )
+	{
+		cpBodySetMass( body, body->m * scale );
+		if( shape->klass->type == CP_POLY_SHAPE )
+		{
+			cpPolyShape *poly = (cpPolyShape*)shape;
+			cpVect new_verts[poly->numVerts];
+			for( int i = 0; i < poly->numVerts; i++ )
+			{
+				new_verts[i].x = poly->verts[i].x * scale;
+				new_verts[i].y = poly->verts[i].y * scale;
+			}
+			cpPolyShapeSetVerts( shape, poly->numVerts, new_verts, cpvzero );
+			float new_moment = cpMomentForPoly( body->m, poly->numVerts, new_verts, cpv( 0, 0 ) );
+			cpBodySetMoment( body, new_moment );
+		}
+	}
+}
+
 void BodyEntity::Render()
 {
 	QuadEntity::Render();
-	//RenderShape();
+	if( render_shapes )
+		RenderShape();
 }
 
 void BodyEntity::RenderShape()
@@ -276,12 +302,12 @@ void ConstraintEntity::Render()
 }
 
 // slide joint between two bodies
-void ConstraintEntity::InitConstraintSlideJoint( BodyEntity* new_body_a, BodyEntity* new_body_b, float min_length, float max_length )
+void ConstraintEntity::InitConstraintSlideJoint( BodyEntity* new_body_a, BodyEntity* new_body_b, Vector offset_a, Vector offset_b, float min_length, float max_length )
 {
 	ChipmunkCleanup();
 	if( new_body_a != 0 && new_body_a->body != 0 && new_body_b != 0 && new_body_b->body != 0 )
 	{
-		constraint = cpSpaceAddConstraint( SPIN.world.GetCPSpace(), cpSlideJointNew( new_body_a->body, new_body_b->body, cpvzero, cpvzero, min_length, max_length ) );
+		constraint = cpSpaceAddConstraint( SPIN.world.GetCPSpace(), cpSlideJointNew( new_body_a->body, new_body_b->body, cpv( offset_a.x, offset_a.y ), cpv( offset_b.x, offset_b.y ), min_length, max_length ) );
 		new_body_a->constraint_ids.push_back( entity_id );
 		new_body_b->constraint_ids.push_back( entity_id );
 	}
@@ -303,12 +329,12 @@ void ConstraintEntity::InitConstraintSlideJoint( BodyEntity* new_body_a, Vector 
 }
 
 // spring between two bodies
-void ConstraintEntity::InitConstraintSpring( BodyEntity* new_body_a, BodyEntity* new_body_b, float length, float strength, float damping )
+void ConstraintEntity::InitConstraintSpring( BodyEntity* new_body_a, BodyEntity* new_body_b, Vector offset_a, Vector offset_b, float length, float strength, float damping )
 {
 	ChipmunkCleanup();
 	if( new_body_a != 0 && new_body_a->body != 0 && new_body_b != 0 && new_body_b->body != 0 )
 	{
-		constraint = cpSpaceAddConstraint( SPIN.world.GetCPSpace(), cpDampedSpringNew( new_body_a->body, new_body_b->body, cpvzero, cpvzero, length, strength, damping ) );
+		constraint = cpSpaceAddConstraint( SPIN.world.GetCPSpace(), cpDampedSpringNew( new_body_a->body, new_body_b->body, cpv( offset_a.x, offset_a.y ), cpv( offset_b.x, offset_b.y ), length, strength, damping ) );
 		new_body_a->constraint_ids.push_back( entity_id );
 		new_body_b->constraint_ids.push_back( entity_id );
 	}
@@ -375,11 +401,8 @@ bool BodyEntity::LoadXML( const char* xml_path )
 		// param
 		if( strcmp( "param", child->Value() ) == 0 )
 		{
-			fflush( stdout );
 			const char* name = child->Attribute( "name" );
 			const char* value = child->Attribute( "value" );
-
-			printf( "param: %s %s\n", name, value );
 
 			if( name != 0 && value != 0 )
 			{
@@ -420,8 +443,6 @@ bool BodyEntity::LoadXML( const char* xml_path )
 		// shape
 		if( strcmp( "shape", child->Value() ) == 0 )
 		{
-			printf( "shape\n" );
-			fflush( stdout );
 			if( shape_loaded )
 			{
 				fprintf( stderr, "Multiple shape tags in entity xml: %s\n", xml_path );
@@ -442,8 +463,6 @@ bool BodyEntity::LoadXML( const char* xml_path )
 					fprintf( stderr, "LoadPolyElement failed in entity xml: %s\n", xml_path );
 					return false;
 				}
-				printf( "poly loaded\n" );
-				fflush( stdout );
 			}
 			else
 			{

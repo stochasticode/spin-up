@@ -33,13 +33,11 @@ bool SpinGame::Init( int argc, char** argv )
 	world.AddEntity( kevin );
 
 	srand( time( 0 ) );
-	for( int i = 0; i < 35; i++ )
+	for( int i = 0; i < 50; i++ )
 	{
 		BodyEntity* new_entity = BodyEntity::LoadEntity( "assets/entities/rock1.xml" );
 		float scale_rand = (float)rand() / (float)RAND_MAX;
-		printf( "scale: %f\n", scale_rand );
-		fflush( stdout );
-		new_entity->Scale( 0.05 + scale_rand * 0.65 );
+		new_entity->Scale( 0.05 + scale_rand * 0.35 );
 		world.AddEntity( new_entity );
 	}
 
@@ -73,8 +71,8 @@ bool SpinGame::LoadResources()
 void SpinGame::Render()
 {
 	//glClear( GL_COLOR_BUFFER_BIT );
-	camera.position_x = kevin->position.x;
-	camera.position_y = kevin->position.y;
+	//camera.position_x = kevin->position.x;
+	//camera.position_y = kevin->position.y;
 	world.Render();
 	glutSwapBuffers();
 }

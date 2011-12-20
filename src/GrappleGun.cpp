@@ -10,10 +10,10 @@ using namespace spin;
 
 GrappleHook::GrappleHook( int new_life_left, GrappleGun* new_parent_gun, GrappleInfo new_info ): BodyEntity(), life_left( new_life_left ), info( new_info )
 {
-	InitBodyCircle( 1, 1, 0 );
+	InitBodyCircle( 0.1, 0.1, 0 );
 	shape->collision_type = World::COL_TYPE_GRAPPLE;
-	size.x = 5;
-	size.y = 5;
+	size.x = 10;
+	size.y = 10;
 	texture_key = "burst";
 	color = new_info.color;
 }
@@ -24,9 +24,9 @@ void GrappleHook::Render()
 	
 	glDisable( GL_TEXTURE_2D );
 	if( info.parent_gun->GetCurrentHook() == info.hook_index )
-		glLineWidth( 4.0 );
+		glLineWidth( 6.0 );
 	glBegin( GL_LINES );
-		glColor3f( info.color.r, info.color.g, info.color.b );
+		glColor4f( info.color.r, info.color.g, info.color.b, 0.5 );
 		glVertex3f( position.x, position.y, 0 );
 		glVertex3f( kevin->position.x, kevin->position.y, 0 );
 	glEnd();
@@ -230,41 +230,38 @@ void GrappleConstraint::Render()
 
 	// rope
 	if( info.parent_gun->GetCurrentHook() == info.hook_index )
-		glLineWidth( 4.0 );
+		glLineWidth( 6.0 );
 	glDisable( GL_TEXTURE_2D );
 	glBegin( GL_LINES );
-		glColor3f( info.color.r, info.color.g, info.color.b );
-
-
-		anchor_x = spring->anchr2.x * cos_b - spring->anchr2.y * sin_b;
-		anchor_y = spring->anchr2.x * sin_b + spring->anchr2.y * cos_b;
-		glVertex3f( cpBodyGetPos( b ).x + anchor_x, cpBodyGetPos( b ).y + anchor_y, 0 );
+		glColor4f( info.color.r, info.color.g, info.color.b, 0.5 );
 
 		anchor_x = spring->anchr1.x * cos_a - spring->anchr1.y * sin_a;
 		anchor_y = spring->anchr1.x * sin_a + spring->anchr1.y * cos_a;
 		glVertex3f( cpBodyGetPos( a ).x + anchor_x, cpBodyGetPos( a ).y + anchor_y, 0 );
 
+		anchor_x = spring->anchr2.x * cos_b - spring->anchr2.y * sin_b;
+		anchor_y = spring->anchr2.x * sin_b + spring->anchr2.y * cos_b;
+		glVertex3f( cpBodyGetPos( b ).x + anchor_x, cpBodyGetPos( b ).y + anchor_y, 0 );
+
+
 	glEnd();
 	glEnable( GL_TEXTURE_2D );
 	glLineWidth( 1.0 );
 
-	// currently broken
-	/*
 	// hook
 	glPushMatrix();
-	glTranslatef( cpBodyGetPos( a ).x + anchor_x, cpBodyGetPos( a ).y + anchor_y, 0 );
+	glTranslatef( cpBodyGetPos( b ).x + anchor_x, cpBodyGetPos( b ).y + anchor_y, 0 );
 
 	SPIN.resources.BindTexture( "burst" );
 	glBegin(GL_TRIANGLES);
-		glColor3f( info.color.r, info.color.g, info.color.b );
-		glTexCoord2d( 0.0, 1.0 ); glVertex3f( -2.5, -2.5, 0.0 );
-		glTexCoord2d( 1.0, 1.0 ); glVertex3f(  2.5, -2.5, 0.0 );
-		glTexCoord2d( 0.0, 0.0 ); glVertex3f( -2.5,  2.5, 0.0 );
+		glColor4f( info.color.r, info.color.g, info.color.b, 0.5 );
+		glTexCoord2d( 0.0, 1.0 ); glVertex3f( -5.0, -5.0, 0.0 );
+		glTexCoord2d( 1.0, 1.0 ); glVertex3f(  5.0, -5.0, 0.0 );
+		glTexCoord2d( 0.0, 0.0 ); glVertex3f( -5.0,  5.0, 0.0 );
 
-		glTexCoord2d( 1.0, 1.0 ); glVertex3f(  2.5, -2.5, 0 );
-		glTexCoord2d( 0.0, 0.0 ); glVertex3f( -2.5,  2.5, 0 );
-		glTexCoord2d( 1.0, 0.0 ); glVertex3f(  2.5,  2.5, 0 );
+		glTexCoord2d( 1.0, 1.0 ); glVertex3f(  5.0, -5.0, 0 );
+		glTexCoord2d( 0.0, 0.0 ); glVertex3f( -5.0,  5.0, 0 );
+		glTexCoord2d( 1.0, 0.0 ); glVertex3f(  5.0,  5.0, 0 );
 	glEnd();
 	glPopMatrix();
-	*/
 }

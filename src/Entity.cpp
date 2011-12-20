@@ -321,7 +321,7 @@ void ConstraintEntity::InitConstraintSlideJoint( BodyEntity* new_body_a, Vector 
 	ChipmunkCleanup();
 	if( new_body_a != 0 && new_body_a->body != 0 )
 	{
-		constraint = cpSpaceAddConstraint( SPIN.world.GetCPSpace(), cpSlideJointNew( SPIN.world.GetCPSpace()->staticBody, new_body_a->body, cpv( static_anchor.x, static_anchor.y ), cpvzero, min_length, max_length ) );
+		constraint = cpSpaceAddConstraint( SPIN.world.GetCPSpace(), cpSlideJointNew( new_body_a->body, SPIN.world.GetCPSpace()->staticBody, cpvzero, cpv( static_anchor.x, static_anchor.y ), min_length, max_length ) );
 		new_body_a->constraint_ids.push_back( entity_id );
 	}
 	else
@@ -348,7 +348,7 @@ void ConstraintEntity::InitConstraintSpring( BodyEntity* new_body_a, Vector stat
 	ChipmunkCleanup();
 	if( new_body_a != 0 && new_body_a->body != 0 )
 	{
-		constraint = cpSpaceAddConstraint( SPIN.world.GetCPSpace(), cpDampedSpringNew( SPIN.world.GetCPSpace()->staticBody, new_body_a->body, cpv( static_anchor.x, static_anchor.y ), cpvzero, length, strength, damping ) );
+		constraint = cpSpaceAddConstraint( SPIN.world.GetCPSpace(), cpDampedSpringNew( new_body_a->body, SPIN.world.GetCPSpace()->staticBody, cpvzero, cpv( static_anchor.x, static_anchor.y ), length, strength, damping ) );
 		new_body_a->constraint_ids.push_back( entity_id );
 	}
 	else

@@ -3,7 +3,7 @@
 	<param name="mass" value="100.0" />
 	<param name="size_x" value = "50" />
 	<param name="size_y" value = "50" />
-	<param name="friction" value="1.0" />
+	<param name="friction" value="0.7" />
 	<shape type="poly">
 		<vertex x="2.0" y="23.0" />
 		<vertex x="9.0" y="18.0" />

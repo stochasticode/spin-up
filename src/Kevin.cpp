@@ -13,7 +13,7 @@ Kevin::Kevin(): BodyEntity()
 	size.x = 12.0;
 	size.y = 12.0; 
 
-	InitBodyCircle( 10.0, 6.0, 5.0 );
+	InitBodyCircle( 20.0, 6.0, 5.0 );
 
 	texture_key = "beagle";
 

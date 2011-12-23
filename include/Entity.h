@@ -49,7 +49,7 @@ namespace spin
 	class QuadEntity: public Entity
 	{
 		public:
-		QuadEntity(): Entity(), scale( 1.0 ) {}
+		QuadEntity(): Entity(), size( 10.0, 10.0 ), scale( 1.0 ) {}
 		virtual ~QuadEntity() {}
 
 		virtual void Render();

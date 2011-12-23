@@ -32,14 +32,23 @@ bool SpinGame::Init( int argc, char** argv )
 	kevin = new Kevin();
 	world.AddEntity( kevin );
 
+	QuadEntity* rack = new QuadEntity();
+	rack->size.x = 60;
+	rack->size.y = 60;
+	rack->position.x = -30;
+	rack->position.y = -77;
+	rack->texture_key = "rack";
+	world.AddEntity( rack );
+
 	srand( time( 0 ) );
-	for( int i = 0; i < 50; i++ )
+	for( int i = 0; i < 3; i++ )
 	{
 		BodyEntity* new_entity = BodyEntity::LoadEntity( "assets/entities/rock1.xml" );
 		float scale_rand = (float)rand() / (float)RAND_MAX;
 		new_entity->Scale( 0.05 + scale_rand * 0.35 );
 		world.AddEntity( new_entity );
 	}
+
 
 	if( !world.LoadLevel( "assets/levels/test.xml" ) )
 		return false;
@@ -64,6 +73,7 @@ bool SpinGame::LoadResources()
 	resources.LoadPNG( "assets/textures/creature.png", "creature" );
 	resources.LoadPNG( "assets/textures/burst.png", "burst" );
 	resources.LoadPNG( "assets/textures/beagle.png", "beagle" );
+	resources.LoadPNG( "assets/textures/rack.png", "rack" );
 	resources.LoadPNG( "assets/textures/rock1.png", "rock1" );
 	return true;
 }

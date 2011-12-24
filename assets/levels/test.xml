@@ -5,15 +5,33 @@
 		<surface_param name="radius" value="3" />
 		<surface_param name="friction" value="1" />
 	</surface>
-	<surface x1="-100" y1="100" x2="100" y2="100" >
+
+	<!-- ceiling -->
+	<surface x1="-100" y1="30" x2="40" y2="30" >
 		<surface_param name="radius" value="3" />
 		<surface_param name="friction" value="1" />
 	</surface>
-	<surface x1="-100" y1="-100" x2="-100" y2="100" >
+	<surface x1="80" y1="30" x2="100" y2="30" >
 		<surface_param name="radius" value="3" />
 		<surface_param name="friction" value="1" />
 	</surface>
-	<surface x1="100" y1="-100" x2="100" y2="100" >
+
+	<!-- vent -->
+	<surface x1="80" y1="30" x2="80" y2="60" >
+		<surface_param name="radius" value="3" />
+		<surface_param name="friction" value="1" />
+	</surface>
+	<surface x1="80" y1="60" x2="-120" y2="60" >
+		<surface_param name="radius" value="3" />
+		<surface_param name="friction" value="1" />
+	</surface>
+
+
+	<surface x1="-100" y1="-100" x2="-100" y2="30" >
+		<surface_param name="radius" value="3" />
+		<surface_param name="friction" value="1" />
+	</surface>
+	<surface x1="100" y1="-100" x2="100" y2="30" >
 		<surface_param name="radius" value="3" />
 		<surface_param name="friction" value="1" />
 	</surface>

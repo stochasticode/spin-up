@@ -5,6 +5,7 @@ OBJS := \
 	build/Entity.o \
 	build/Prop.o \
 	build/GrappleGun.o \
+	build/SnapConstraint.o \
 	build/Kevin.o \
 	build/Camera.o \
 
@@ -23,4 +24,4 @@ run: bin/spin
 	./run-spin
 
 clean:
-	rm -f build/*
+	rm -f build/* bin/*

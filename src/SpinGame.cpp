@@ -5,6 +5,7 @@
 #include <Kevin.h>
 #include <Resources.h>
 #include <Entity.h>
+#include <SnapConstraint.h>
 #include <Prop.h>
 #include <cstdio>
 #include <cstring>
@@ -31,14 +32,18 @@ bool SpinGame::Init( int argc, char** argv )
 
 	kevin = new Kevin();
 	world.AddEntity( kevin );
+	kevin->SetPosition( Vector( -60, -68 ) );
 
 	QuadEntity* rack = new QuadEntity();
 	rack->size.x = 60;
 	rack->size.y = 60;
-	rack->position.x = -30;
-	rack->position.y = -77;
+	rack->position.x = -60;
+	rack->position.y = -68;
 	rack->texture_key = "rack";
 	world.AddEntity( rack );
+
+	SnapConstraint* cord = new SnapConstraint( kevin, Vector( -60, -70 ) );
+	world.AddEntity( cord );
 
 	srand( time( 0 ) );
 	for( int i = 0; i < 3; i++ )
@@ -81,8 +86,8 @@ bool SpinGame::LoadResources()
 void SpinGame::Render()
 {
 	//glClear( GL_COLOR_BUFFER_BIT );
-	//camera.position_x = kevin->position.x;
-	//camera.position_y = kevin->position.y;
+	camera.position_x = kevin->position.x;
+	camera.position_y = kevin->position.y;
 	world.Render();
 	glutSwapBuffers();
 }

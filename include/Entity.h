@@ -49,7 +49,7 @@ namespace spin
 	class QuadEntity: public Entity
 	{
 		public:
-		QuadEntity(): Entity(), size( 10.0, 10.0 ), scale( 1.0 ) {}
+		QuadEntity(): Entity(), size( 10.0, 10.0 ), rotation( 0.0 ), scale( 1.0 ) {}
 		virtual ~QuadEntity() {}
 
 		virtual void Render();
@@ -66,6 +66,7 @@ namespace spin
 	class ConstraintEntity: public Entity
 	{
 		public:
+		ConstraintEntity();
 		virtual ~ConstraintEntity();
 
 		void Render();
@@ -78,7 +79,6 @@ namespace spin
 		void InitConstraintSpring( BodyEntity* new_body_a, Vector static_anchor, float length, float strength, float damping );
 
 		protected:
-		ConstraintEntity();
 
 		cpConstraint* constraint;
 	};

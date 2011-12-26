@@ -75,7 +75,6 @@ bool World::Tick( int milliseconds )
 				// reap dead
 				if( (*it).second->dead )
 				{
-					delete (*it).second;
 					// remove from main map
 					entities.erase( it );
 					// remove from alias map
@@ -84,6 +83,7 @@ bool World::Tick( int milliseconds )
 						entities_by_alias.erase( alias_it );
 					// remove from layer
 					RemoveEntityFromLayer( (*it).second );
+					delete (*it).second;
 					it--;
 				}
 			}
@@ -198,7 +198,7 @@ bool World::LoadLevel( const char* xml_path )
 		{
 			ConstraintEntity* new_constraint;
 			if( SpinXML::ReadConstraint( child, &new_constraint ) )
-				AddEntity( new_constraint, 4 );
+				AddEntity( new_constraint, 5 );
 			else
 				return false;
 		}

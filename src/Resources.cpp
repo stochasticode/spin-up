@@ -33,6 +33,7 @@ bool Resources::BindTexture( std::string key )
 		// put in place hold texture if  key doesn't exist
 		if( textures.find( key ) == textures.end() )
 		{
+			return false;
 		}
 		else
 		{
@@ -40,4 +41,5 @@ bool Resources::BindTexture( std::string key )
 			current_texture_key = key;
 		}
 	}
+	return true;
 }

@@ -8,6 +8,8 @@ OBJS := \
 	build/SnapConstraint.o \
 	build/Kevin.o \
 	build/Camera.o \
+	build/SpinXML.o \
+	build/SpinUtil.o \
 
 # chipmunk doesn't trust us...
 CXX_ARGS := -DCP_ALLOW_PRIVATE_ACCESS

@@ -6,7 +6,7 @@ using namespace spin;
 SnapConstraint::SnapConstraint( BodyEntity* new_body_a, Vector static_anchor ): ConstraintEntity()
 {
 
-	InitConstraintSpring( new_body_a, static_anchor, 0, 300, 10 );
+	InitConstraintSpring( new_body_a, static_anchor, 0, 300, 20 );
 }
 
 void SnapConstraint::Render()

@@ -1,6 +1,7 @@
 #include <World.h>
 #include <SpinGame.h>
 #include <Entity.h>
+#include <SpinXML.h>
 #include <chipmunk.h>
 #include <tinyxml.h>
 #include <cstdio>
@@ -136,10 +137,22 @@ bool World::LoadLevel( const char* xml_path )
 				return false;
 		}
 		// background
-		if( strcmp( "background", child->Value() ) == 0 )
+		else if( strcmp( "background", child->Value() ) == 0 )
 		{
 			background.texture_key = child->Attribute( "texture_key" );
 		}
+		// entity
+		else if( strcmp( "entity", child->Value() ) == 0 )
+		{
+			Entity* new_entity;
+			if( SpinXML::ReadEntity( child, &new_entity ) )
+			{
+				AddEntity( new_entity );
+			}
+			else
+				return false;
+		}
+
 		child = child->NextSiblingElement();
 	}
 

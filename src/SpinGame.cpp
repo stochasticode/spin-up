@@ -34,19 +34,14 @@ bool SpinGame::Init( int argc, char** argv )
 	world.AddEntity( kevin );
 	kevin->SetPosition( Vector( -60, -68 ) );
 
-	QuadEntity* rack = new QuadEntity();
-	rack->size.x = 60;
-	rack->size.y = 60;
-	rack->position.x = -60;
-	rack->position.y = -68;
-	rack->texture_key = "rack";
-	world.AddEntity( rack );
-
 	SnapConstraint* cord = new SnapConstraint( kevin, Vector( -60, -70 ) );
 	world.AddEntity( cord );
 
+	if( !world.LoadLevel( "assets/levels/test.xml" ) )
+		return false;
+
 	srand( time( 0 ) );
-	for( int i = 0; i < 3; i++ )
+	for( int i = 0; i < 10; i++ )
 	{
 		BodyEntity* new_entity = BodyEntity::LoadEntity( "assets/entities/rock1.xml" );
 		float scale_rand = (float)rand() / (float)RAND_MAX;
@@ -54,9 +49,6 @@ bool SpinGame::Init( int argc, char** argv )
 		world.AddEntity( new_entity );
 	}
 
-
-	if( !world.LoadLevel( "assets/levels/test.xml" ) )
-		return false;
 
 	return true;
 }

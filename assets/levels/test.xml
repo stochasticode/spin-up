@@ -1,5 +1,12 @@
 <spin_level>
 	<background texture_key="space" />
+	<kevin x="-60" y="-68" />
+
+	<entity type="quad">
+		<vec2d name="size" x="60" y="60" />
+		<vec2d name="position" x="-60" y="-68" />
+		<param name="texture_key" value="rack" />
+	</entity>
 
 	<surface x1="-100" y1="-100" x2="100" y2="-100" >
 		<surface_param name="radius" value="3" />

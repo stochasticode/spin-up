@@ -79,7 +79,7 @@ void GrappleGun::ActivateHook( Vector position, Vector direction )
 	DeactivateHook();
 
 	GrappleHook* hook = new GrappleHook( 800, this, grapple_info[current_hook] );
-	grapple_info[current_hook].hook_id = SPIN.world.AddEntity( hook );
+	grapple_info[current_hook].hook_id = SPIN.world.AddEntity( hook, 5 );
 	hook->SetPosition( Vector( position.x, position.y ) );
 	hook->SetVelocity( Vector( 300*direction.x, 300*direction.y ) );
 }
@@ -168,7 +168,7 @@ void GrappleGun::PostStepGrapple( cpSpace* space, cpShape* shape, cpShape* prop_
 					constraint = new GrappleConstraintSpringy( SPIN.kevin, prop, Vector( 0.0, 0.0 ), offset, grapple->info );
 			}
 	
-			unsigned long new_constraint_id = SPIN.world.AddEntity( constraint );
+			unsigned long new_constraint_id = SPIN.world.AddEntity( constraint, 5 );
 			gun->grapple_info[grapple->info.hook_index].constraint_id = new_constraint_id;
 		}
 		// hit surface
@@ -183,7 +183,7 @@ void GrappleGun::PostStepGrapple( cpSpace* space, cpShape* shape, cpShape* prop_
 					constraint = new GrappleConstraintSpringy( SPIN.kevin, Vector( grapple->position.x, grapple->position.y ), grapple->info );
 			}
 	
-			unsigned long new_constraint_id = SPIN.world.AddEntity( constraint );
+			unsigned long new_constraint_id = SPIN.world.AddEntity( constraint, 5 );
 			gun->grapple_info[grapple->info.hook_index].constraint_id = new_constraint_id;
 		}
 	}

@@ -47,14 +47,14 @@ void World::Render()
 	background.Render();
 
 	glPushMatrix();
+
+	// apply camera
 	SPIN.camera.Apply();
 
 	// render entities
-	for( std::map<unsigned long,Entity*>::iterator it = entities.begin(); it != entities.end(); it++ )
-		(*it).second->Render();
-
-	// hack to put Kevin in front, fix later
-	SPIN.kevin->Render();
+	for( int i = 0; i < SPIN_ENTITY_LAYERS; i++ )
+		for( int j = 0; j < layers[i].size(); j++ )
+			layers[i][j]->Render();
 
 	glPopMatrix();
 }
@@ -76,7 +76,14 @@ bool World::Tick( int milliseconds )
 				if( (*it).second->dead )
 				{
 					delete (*it).second;
+					// remove from main map
 					entities.erase( it );
+					// remove from alias map
+					std::map<std::string,Entity*>::iterator alias_it = entities_by_alias.find( (*it).second->alias );
+					if( alias_it != entities_by_alias.end() )
+						entities_by_alias.erase( alias_it );
+					// remove from layer
+					RemoveEntityFromLayer( (*it).second );
 					it--;
 				}
 			}
@@ -91,11 +98,28 @@ bool World::Tick( int milliseconds )
 	return false;
 }
 
-unsigned long World::AddEntity( Entity* entity )
+unsigned long World::AddEntity( Entity* entity, int layer )
 {
+	// add to main map
 	last_entity_id++;
 	entities[last_entity_id] = entity;
-	entity->entity_id = last_entity_id;
+	entity->id = last_entity_id;
+
+	// add to alias map
+	if( entity->alias.compare( "UNNAMED" ) != 0 )
+	{
+		// may want to warn if this is replacing an existing entity
+		entities_by_alias[entity->alias] = entity;
+	}
+
+	// add to layer
+	if( layer < 0 || layer >= SPIN_ENTITY_LAYERS )
+	{
+		fprintf( stderr, "World::AddEntity() -> invalid specified layer: %d, using max layer: %d instead...\n", layer, SPIN_ENTITY_LAYERS-1 );
+		layer = SPIN_ENTITY_LAYERS-1;
+	}
+	layers[layer].push_back( entity );
+
 	return last_entity_id;
 }
 
@@ -103,6 +127,15 @@ Entity* World::GetEntity( unsigned long entity_id )
 {
 	std::map<unsigned long,Entity*>::iterator it = entities.find( entity_id );
 	if( it == entities.end() )
+		return 0;
+	else
+		return (*it).second;
+}
+
+Entity* World::GetEntityByAlias( std::string& alias )
+{
+	std::map<std::string,Entity*>::iterator it = entities_by_alias.find( alias );
+	if( it == entities_by_alias.end() )
 		return 0;
 	else
 		return (*it).second;
@@ -130,8 +163,16 @@ bool World::LoadLevel( const char* xml_path )
 	TiXmlElement* child = root->FirstChildElement();
 	while( child != 0 )
 	{
+		// kevin 
+		if( strcmp( "kevin", child->Value() ) == 0 )
+		{
+			// right now kevin is just like a vec2d, but could change in the future
+			Vector kevin_position;
+			if( SpinXML::ReadVec2D( child, kevin_position ) )
+				SPIN.kevin->SetPosition( kevin_position );
+		}
 		// surface
-		if( strcmp( "surface", child->Value() ) == 0 )
+		else if( strcmp( "surface", child->Value() ) == 0 )
 		{
 			if( !AddSurfaceElement( child, Vector( 0.0, 0.0 ), 1.0 ) )
 				return false;
@@ -147,8 +188,17 @@ bool World::LoadLevel( const char* xml_path )
 			Entity* new_entity;
 			if( SpinXML::ReadEntity( child, &new_entity ) )
 			{
-				AddEntity( new_entity );
+				AddEntity( new_entity, 4 );
 			}
+			else
+				return false;
+		}
+		// constraint
+		else if( strcmp( "constraint", child->Value() ) == 0 )
+		{
+			ConstraintEntity* new_constraint;
+			if( SpinXML::ReadConstraint( child, &new_constraint ) )
+				AddEntity( new_constraint, 4 );
 			else
 				return false;
 		}
@@ -214,6 +264,24 @@ bool World::AddSurfaceElement( TiXmlElement* element, Vector position, float sca
 		surface_element = surface_element->NextSiblingElement( "surface_param" );
 	}
 
-	AddEntity( new SurfaceEntity( position.x+scale*x1, position.y+scale*y1, position.x+scale*x2, position.y+scale*y2, scale*radius, friction ) );
+	AddEntity( new SurfaceEntity( position.x+scale*x1, position.y+scale*y1, position.x+scale*x2, position.y+scale*y2, scale*radius, friction ), 4 );
 	return true;
+}
+
+void World::RemoveEntityFromLayer( Entity* entity )
+{
+	// right now just search through each layer for the entity
+	bool found_entity = false;
+	for( int i = 0; i < SPIN_ENTITY_LAYERS && !found_entity; i++ )
+	{
+		for( std::vector<Entity*>::iterator it = layers[i].begin(); it != layers[i].end(); it++ )
+		{
+			if( (*it) == entity )
+			{
+				layers[i].erase( it );
+				found_entity = true;
+				break;
+			}
+		}
+	}
 }

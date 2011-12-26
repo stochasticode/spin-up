@@ -2,10 +2,21 @@
 	<background texture_key="space" />
 	<kevin x="-60" y="-68" />
 
+	<constraint type="snap">
+		<entity_ref entity_alias="kevin" />
+		<vec2d x="-60" y="-70" />
+	</constraint>
+
 	<entity type="quad">
 		<vec2d name="size" x="60" y="60" />
 		<vec2d name="position" x="-60" y="-68" />
 		<param name="texture_key" value="rack" />
+	</entity>
+
+	<entity type="quad">
+		<vec2d name="size" x="60" y="60" />
+		<vec2d name="position" x="60" y="-68" />
+		<param name="texture_key" value="creature" />
 	</entity>
 
 	<surface x1="-100" y1="-100" x2="100" y2="-100" >

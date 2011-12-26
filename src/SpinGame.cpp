@@ -30,13 +30,12 @@ bool SpinGame::Init( int argc, char** argv )
 	// set up camera
 	camera.zoom = 3.0;
 
+	// create kevin object
 	kevin = new Kevin();
-	world.AddEntity( kevin );
-	kevin->SetPosition( Vector( -60, -68 ) );
+	kevin->alias = "kevin";
+	world.AddEntity( kevin, 6 );
 
-	SnapConstraint* cord = new SnapConstraint( kevin, Vector( -60, -70 ) );
-	world.AddEntity( cord );
-
+	// load level
 	if( !world.LoadLevel( "assets/levels/test.xml" ) )
 		return false;
 
@@ -46,7 +45,7 @@ bool SpinGame::Init( int argc, char** argv )
 		BodyEntity* new_entity = BodyEntity::LoadEntity( "assets/entities/rock1.xml" );
 		float scale_rand = (float)rand() / (float)RAND_MAX;
 		new_entity->Scale( 0.05 + scale_rand * 0.35 );
-		world.AddEntity( new_entity );
+		world.AddEntity( new_entity, 4 );
 	}
 
 
@@ -58,6 +57,9 @@ bool SpinGame::InitGraphics()
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glEnable( GL_TEXTURE_2D );
+	//glEnable( GL_DEPTH_TEST );
+	glEnable( GL_ALPHA_TEST );
+	//glDepthFunc( GL_LESS );
 	glEnableClientState( GL_VERTEX_ARRAY );
 	glClearColor( 0.0, 0.0, 0.0, 1.0 );
 	return true;
@@ -77,7 +79,8 @@ bool SpinGame::LoadResources()
 
 void SpinGame::Render()
 {
-	//glClear( GL_COLOR_BUFFER_BIT );
+	glClear( GL_COLOR_BUFFER_BIT );
+	glClear( GL_DEPTH_BUFFER_BIT );
 	camera.position_x = kevin->position.x;
 	camera.position_y = kevin->position.y;
 	world.Render();

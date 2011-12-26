@@ -1,6 +1,8 @@
+#include <SpinGame.h>
 #include <SpinXML.h>
 #include <SpinUtil.h>
 #include <Entity.h>
+#include <SnapConstraint.h>
 #include <Vector.h>
 #include <tinyxml.h>
 #include <string>
@@ -79,6 +81,7 @@ bool SpinXML::ReadEntity( TiXmlElement* element, Entity** entity_out  )
 		return false;
 	}
 
+	// QuadEntity
 	if( strcmp( type, "quad" ) == 0 )
 	{
 		QuadEntity* new_quad_entity;
@@ -163,5 +166,92 @@ bool SpinXML::ReadQuadEntity( TiXmlElement* element, QuadEntity** entity_out )
 	printf( "texture_key: %s\n", texture_key.c_str() );
 	fflush( stdout );
 
+	return true;
+}
+
+bool SpinXML::ReadConstraint( TiXmlElement* element, ConstraintEntity** constraint_out  )
+{
+	// check for null pointers
+	if( element == 0 || constraint_out == 0 )
+	{
+		fprintf( stderr, "SpinXML::ReadConstraintEntity -> either element or constraint_out was NULL!\n" );
+		return false;
+	}
+
+	// get entity type
+	const char* type = element->Attribute( "type" );
+	if( type == 0 )
+	{
+		fprintf( stderr, "SpinXML::ReadConstraintEntity -> no type attribute!\n" );
+		return false;
+	}
+
+	// SnapConstraint
+	if( strcmp( type, "snap" ) == 0 )
+	{
+		SnapConstraint* new_quad_entity;
+		if( ReadSnapConstraint( element, &new_quad_entity ) )
+		{
+			*constraint_out = new_quad_entity;
+			return true;
+		}
+		else
+		{
+			fprintf( stderr, "SpinXML::ReadConstraint -> ReadSnapConstraint() failed!\n" );
+			return false;
+		}
+	}
+	else
+	{
+		fprintf( stderr, "SpinXML::ReadConstraint -> unsupported constraint type: '%s!'\n", type );
+		return false;
+	}
+}
+
+bool SpinXML::ReadSnapConstraint( TiXmlElement* element, SnapConstraint** constraint_out )
+{
+	// first child must be an entity_ref to a BodyEntity
+	Entity* entity_a = 0;
+	TiXmlElement* child1 = element->FirstChildElement();
+	if( child1 == 0 )
+	{
+		fprintf( stderr, "SpinXML::ReadSnapConstraint -> constraint has no child elements!'\n" );
+		return false;
+	}
+	if( strcmp( "entity_ref", child1->Value() ) != 0 )
+	{
+		fprintf( stderr, "SpinXML::ReadSnapConstraint -> first child was not an entity_ref!'\n" );
+		return false;
+	}
+	std::string alias1( child1->Attribute( "entity_alias" ) );
+	entity_a = SPIN.world.GetEntityByAlias( alias1 );
+	if( !entity_a )
+	{
+		fprintf( stderr, "SpinXML::ReadSnapConstraint -> could not find entity with alias: %s!'\n", alias1.c_str() );
+		return false;
+	}
+	// make sure it is a BodyEntity
+	BodyEntity* body_a = dynamic_cast<BodyEntity*>(entity_a);
+	if( body_a == 0 )
+	{
+		fprintf( stderr, "SpinXML::ReadSnapConstraint -> entity with alias: %s is not a BodyEntity!'\n", alias1.c_str() );
+		return false;
+	}
+
+	// for now second child needs to be a vec2d
+	Vector static_anchor;
+	TiXmlElement* child2 = child1->NextSiblingElement();
+	if( child2 == 0 )
+	{
+		fprintf( stderr, "SpinXML::ReadSnapConstraint -> constraint has only one child element!'\n" );
+		return false;
+	}
+	if( strcmp( "vec2d", child2->Value() ) != 0 || !ReadVec2D( child2, static_anchor) )
+	{
+		fprintf( stderr, "SpinXML::ReadSnapConstraint -> ReadVec2D failed for second child element!'\n" );
+		return false;
+	}
+
+	*constraint_out = new SnapConstraint( body_a, static_anchor );
 	return true;
 }

@@ -27,10 +27,11 @@ namespace spin
 		virtual void Render() {}
 
 		bool dead;
-		int entity_id;
+		int id;
+		std::string alias;
 
 		protected:
-		Entity(): dead( false ) {}
+		Entity(): dead( false ), id( -1 ), alias( "UNNAMED" ) {}
 	};
 
 	class SurfaceEntity: public Entity

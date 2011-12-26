@@ -55,9 +55,9 @@ void QuadEntity::Render()
 		glTexCoord2d( 1.0, 1.0 ); glVertex3f(  0.5, -0.5, 0.0 );
 		glTexCoord2d( 0.0, 0.0 ); glVertex3f( -0.5,  0.5, 0.0 );
 
-		glTexCoord2d( 1.0, 1.0 ); glVertex3f(  0.5, -0.5, 0 );
-		glTexCoord2d( 0.0, 0.0 ); glVertex3f( -0.5,  0.5, 0 );
-		glTexCoord2d( 1.0, 0.0 ); glVertex3f(  0.5,  0.5, 0 );
+		glTexCoord2d( 1.0, 1.0 ); glVertex3f(  0.5, -0.5, 0.0 );
+		glTexCoord2d( 0.0, 0.0 ); glVertex3f( -0.5,  0.5, 0.0 );
+		glTexCoord2d( 1.0, 0.0 ); glVertex3f(  0.5,  0.5, 0.0 );
 	glEnd();
 
 	glPopMatrix();
@@ -308,8 +308,8 @@ void ConstraintEntity::InitConstraintSlideJoint( BodyEntity* new_body_a, BodyEnt
 	if( new_body_a != 0 && new_body_a->body != 0 && new_body_b != 0 && new_body_b->body != 0 )
 	{
 		constraint = cpSpaceAddConstraint( SPIN.world.GetCPSpace(), cpSlideJointNew( new_body_a->body, new_body_b->body, cpv( offset_a.x, offset_a.y ), cpv( offset_b.x, offset_b.y ), min_length, max_length ) );
-		new_body_a->constraint_ids.push_back( entity_id );
-		new_body_b->constraint_ids.push_back( entity_id );
+		new_body_a->constraint_ids.push_back( id );
+		new_body_b->constraint_ids.push_back( id );
 	}
 	else
 		fprintf( stderr, "ConstraintEntity::InitConstraintSlideJoint -> failed due to null pointer!\n" );
@@ -322,7 +322,7 @@ void ConstraintEntity::InitConstraintSlideJoint( BodyEntity* new_body_a, Vector 
 	if( new_body_a != 0 && new_body_a->body != 0 )
 	{
 		constraint = cpSpaceAddConstraint( SPIN.world.GetCPSpace(), cpSlideJointNew( new_body_a->body, SPIN.world.GetCPSpace()->staticBody, cpvzero, cpv( static_anchor.x, static_anchor.y ), min_length, max_length ) );
-		new_body_a->constraint_ids.push_back( entity_id );
+		new_body_a->constraint_ids.push_back( id );
 	}
 	else
 		fprintf( stderr, "ConstraintEntity::InitConstraintSlideJoint -> failed due to null pointer!\n" );
@@ -335,8 +335,8 @@ void ConstraintEntity::InitConstraintSpring( BodyEntity* new_body_a, BodyEntity*
 	if( new_body_a != 0 && new_body_a->body != 0 && new_body_b != 0 && new_body_b->body != 0 )
 	{
 		constraint = cpSpaceAddConstraint( SPIN.world.GetCPSpace(), cpDampedSpringNew( new_body_a->body, new_body_b->body, cpv( offset_a.x, offset_a.y ), cpv( offset_b.x, offset_b.y ), length, strength, damping ) );
-		new_body_a->constraint_ids.push_back( entity_id );
-		new_body_b->constraint_ids.push_back( entity_id );
+		new_body_a->constraint_ids.push_back( id );
+		new_body_b->constraint_ids.push_back( id );
 	}
 	else
 		fprintf( stderr, "ConstraintEntity::InitConstraintSpring -> failed due to null pointer!\n" );
@@ -349,7 +349,7 @@ void ConstraintEntity::InitConstraintSpring( BodyEntity* new_body_a, Vector stat
 	if( new_body_a != 0 && new_body_a->body != 0 )
 	{
 		constraint = cpSpaceAddConstraint( SPIN.world.GetCPSpace(), cpDampedSpringNew( new_body_a->body, SPIN.world.GetCPSpace()->staticBody, cpvzero, cpv( static_anchor.x, static_anchor.y ), length, strength, damping ) );
-		new_body_a->constraint_ids.push_back( entity_id );
+		new_body_a->constraint_ids.push_back( id );
 	}
 	else
 		fprintf( stderr, "ConstraintEntity::InitConstraintSpring -> failed due to null pointer!\n" );

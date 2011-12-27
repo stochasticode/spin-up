@@ -110,17 +110,17 @@ BodyEntity::~BodyEntity()
 
 void BodyEntity::ChipmunkCleanup()
 {
-	if( body != 0 )
-	{
-		cpSpaceRemoveBody( SPIN.world.GetCPSpace(), body );
-		cpBodyFree( body );
-		body = 0;
-	}
 	if( shape != 0 )
 	{
 		cpSpaceRemoveShape( SPIN.world.GetCPSpace(), shape );
 		cpShapeFree( shape );
 		shape = 0;
+	}
+	if( body != 0 )
+	{
+		cpSpaceRemoveBody( SPIN.world.GetCPSpace(), body );
+		cpBodyFree( body );
+		body = 0;
 	}
 }
 

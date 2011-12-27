@@ -46,6 +46,7 @@ namespace spin
 	class GrappleConstraint: public ConstraintEntity
 	{
 		public:
+		GrappleConstraint(): ConstraintEntity() {}
 		void Render();
 
 		protected:

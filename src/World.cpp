@@ -75,16 +75,21 @@ bool World::Tick( int milliseconds )
 				// reap dead
 				if( (*it).second->dead )
 				{
-					// remove from main map
-					entities.erase( it );
 					// remove from alias map
 					std::map<std::string,Entity*>::iterator alias_it = entities_by_alias.find( (*it).second->alias );
 					if( alias_it != entities_by_alias.end() )
 						entities_by_alias.erase( alias_it );
+
 					// remove from layer
 					RemoveEntityFromLayer( (*it).second );
+
+
 					delete (*it).second;
+
+					// remove from main map
+					std::map<unsigned long,Entity*>::iterator temp_it = it;
 					it--;
+					entities.erase( temp_it );
 				}
 			}
 

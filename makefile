@@ -12,7 +12,7 @@ OBJS := \
 	build/SpinUtil.o \
 
 # chipmunk doesn't trust us...
-CXX_ARGS := -DCP_ALLOW_PRIVATE_ACCESS
+CXX_ARGS := -g -DCP_ALLOW_PRIVATE_ACCESS
 
 INCLUDES := -Iinclude/ -Iinclude/soil -Iinclude/chipmunk -Iinclude/tinyxml
 

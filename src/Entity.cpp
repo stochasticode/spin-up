@@ -1,66 +1,67 @@
 #include <GL/gl.h>
 #include <Entity.h>
 #include <SpinGame.h>
+#include <SpinXML.h>
 #include <chipmunk.h>
-#include <chipmunk_unsafe.h>
 #include <tinyxml.h>
 #include <sstream>
 #include <cstdio>
 
 using namespace spin;
 
-// yanked from ChipmunkDebugDraw.c
-GLfloat BodyEntity::circle_points[] = {
-	 0.0000f,  1.0000f,
-	 0.2588f,  0.9659f,
-	 0.5000f,  0.8660f,
-	 0.7071f,  0.7071f,
-	 0.8660f,  0.5000f,
-	 0.9659f,  0.2588f,
-	 1.0000f,  0.0000f,
-	 0.9659f, -0.2588f,
-	 0.8660f, -0.5000f,
-	 0.7071f, -0.7071f,
-	 0.5000f, -0.8660f,
-	 0.2588f, -0.9659f,
-	 0.0000f, -1.0000f,
-	-0.2588f, -0.9659f,
-	-0.5000f, -0.8660f,
-	-0.7071f, -0.7071f,
-	-0.8660f, -0.5000f,
-	-0.9659f, -0.2588f,
-	-1.0000f, -0.0000f,
-	-0.9659f,  0.2588f,
-	-0.8660f,  0.5000f,
-	-0.7071f,  0.7071f,
-	-0.5000f,  0.8660f,
-	-0.2588f,  0.9659f,
-	 0.0000f,  1.0000f,
-	 0.0f, 0.0f, // For an extra line to see the rotation.
-};
-
-bool BodyEntity::render_shapes = false;
-
 void QuadEntity::Render()
 {
 	glPushMatrix();
 	glTranslatef( position.x, position.y, 0 );
 	glRotatef( rotation, 0, 0, 1 );
-	glScalef( size.x*scale, size.y*scale, 1 );
+	glScalef( scale, scale, 1 );
 
-	SPIN.resources.BindTexture( texture_key );
-	glBegin(GL_TRIANGLES);
-		glColor4f( color.r, color.g, color.b, color.a );
-		glTexCoord2d( 0.0, 1.0 ); glVertex3f( -0.5, -0.5, 0.0 );
-		glTexCoord2d( 1.0, 1.0 ); glVertex3f(  0.5, -0.5, 0.0 );
-		glTexCoord2d( 0.0, 0.0 ); glVertex3f( -0.5,  0.5, 0.0 );
-
-		glTexCoord2d( 1.0, 1.0 ); glVertex3f(  0.5, -0.5, 0.0 );
-		glTexCoord2d( 0.0, 0.0 ); glVertex3f( -0.5,  0.5, 0.0 );
-		glTexCoord2d( 1.0, 0.0 ); glVertex3f(  0.5,  0.5, 0.0 );
-	glEnd();
+	for( int i = 0; i < quads.size(); i++ )
+		quads[i].Render();
 
 	glPopMatrix();
+}
+
+bool QuadEntity::LoadXML( TiXmlElement* element )
+{
+	// iterate through children
+	TiXmlElement* child = element->FirstChildElement();
+	while( child != 0 )
+	{
+		// vec2d
+		if( strcmp( "vec2d", child->Value() ) == 0 )
+		{
+			std::string name = "";
+			Vector vec2d;
+			if( !SpinXML::ReadVec2D( child, name, vec2d ) )
+			{
+				fprintf( stderr, "Quad::LoadXML -> ReadVec2D failed!\n" );
+				return false;
+			}
+
+			// position
+			if( name.compare( "position" ) == 0 )
+				position = vec2d;
+			// unsupported
+			else
+				fprintf( stderr, "QuadEntity::LoadXML -> unsuppored vec2d: %s!\n", name.c_str() );
+		}
+
+
+		// quad 
+		else if( strcmp( "quad", child->Value() ) == 0 )
+		{
+			Quad new_quad;
+			if( !new_quad.LoadXML( child ) )
+			{
+				fprintf( stderr, "BodyEntity::LoadXML -> Quad::LoadXML failed!\n" );
+				return false;
+			}
+			quads.push_back( new_quad );
+		}
+		child = child->NextSiblingElement();
+	}
+	return true;
 }
 
 SurfaceEntity::SurfaceEntity( float x1, float y1, float x2, float y2, float new_radius, float friction ): Entity(), radius( new_radius )
@@ -91,191 +92,6 @@ void SurfaceEntity::Render()
 		glVertex3f( shape->b.x, shape->b.y, 0 );
 	glEnd();
 	glEnable( GL_TEXTURE_2D );
-}
-
-BodyEntity::BodyEntity(): QuadEntity(), body( 0 ), shape( 0 )
-{
-}
-
-BodyEntity::~BodyEntity()
-{
-	ChipmunkCleanup();
-	for( int i = 0; i < constraint_ids.size(); i++ )
-	{
-		ConstraintEntity* constraint = dynamic_cast<ConstraintEntity*>(SPIN.world.GetEntity( constraint_ids[i] ));
-		if( constraint != 0 )
-			constraint->dead = true;
-	}
-}
-
-void BodyEntity::ChipmunkCleanup()
-{
-	if( shape != 0 )
-	{
-		cpSpaceRemoveShape( SPIN.world.GetCPSpace(), shape );
-		cpShapeFree( shape );
-		shape = 0;
-	}
-	if( body != 0 )
-	{
-		cpSpaceRemoveBody( SPIN.world.GetCPSpace(), body );
-		cpBodyFree( body );
-		body = 0;
-	}
-}
-
-void BodyEntity::InitBodyCircle( float mass, float radius, float friction )
-{
-	ChipmunkCleanup();
-
-	// set up body
-	body = cpBodyNew( mass, cpMomentForCircle( mass, 0, radius, cpvzero ) );
-	cpBodySetPos( body, cpv( 0, 0 ) );
-	cpSpaceAddBody( SPIN.world.GetCPSpace(), body );
-
-	// set up shape
-	shape = cpCircleShapeNew( body, radius, cpvzero );
-	cpShapeSetFriction( shape, friction );
-	cpSpaceAddShape( SPIN.world.GetCPSpace(), shape );
-
-	// link body
-	shape->data = this;
-}
-
-void BodyEntity::InitBodyRect( float mass, float width, float height, float friction )
-{
-	ChipmunkCleanup();
-
-	// set up body
-	body = cpBodyNew( mass, cpMomentForBox( mass, width, height ) );
-	cpBodySetPos( body, cpv( 0, 0 ) );
-	cpSpaceAddBody( SPIN.world.GetCPSpace(), body );
-
-	// set up shape
-	shape = cpBoxShapeNew( body, width, height );
-	cpShapeSetFriction( shape, friction );
-	cpSpaceAddShape( SPIN.world.GetCPSpace(), shape );
-
-	// link body
-	shape->data = this;
-}
-
-void BodyEntity::InitBodyPoly( float mass, std::vector<Vector>& points, float friction )
-{
-	ChipmunkCleanup();
-
-	// need data in cpVect*
-	cpVect verts[points.size()];
-	for( int i = 0; i < points.size(); i++ )
-	{
-		verts[i].x = points[i].x;
-		verts[i].y = points[i].y;
-	}
-
-	// set up body
-	float moment = cpMomentForPoly( mass, points.size(), verts, cpv( 0, 0 ) );
-	body = cpBodyNew( mass, moment );
-	cpBodySetPos( body, cpv( 0, 0 ) );
-	cpSpaceAddBody( SPIN.world.GetCPSpace(), body );
-
-	// set up shape
-	shape = cpPolyShapeNew( body, points.size(), verts, cpv( 0, 0 ) );
-	cpShapeSetFriction( shape, friction );
-	cpSpaceAddShape( SPIN.world.GetCPSpace(), shape );
-
-	// link body
-	shape->data = this;
-}
-
-void BodyEntity::Scale( float scale_factor )
-{
-	scale *= scale_factor;
-	if( shape != 0 && body != 0 )
-	{
-		cpBodySetMass( body, body->m * scale );
-		if( shape->klass->type == CP_POLY_SHAPE )
-		{
-			cpPolyShape *poly = (cpPolyShape*)shape;
-			cpVect new_verts[poly->numVerts];
-			for( int i = 0; i < poly->numVerts; i++ )
-			{
-				new_verts[i].x = poly->verts[i].x * scale;
-				new_verts[i].y = poly->verts[i].y * scale;
-			}
-			cpPolyShapeSetVerts( shape, poly->numVerts, new_verts, cpvzero );
-			float new_moment = cpMomentForPoly( body->m, poly->numVerts, new_verts, cpv( 0, 0 ) );
-			cpBodySetMoment( body, new_moment );
-		}
-	}
-}
-
-void BodyEntity::Render()
-{
-	QuadEntity::Render();
-	if( render_shapes )
-		RenderShape();
-}
-
-void BodyEntity::RenderShape()
-{
-	// some code yanked from ChipmunkDebugDraw.c
-
-	if( shape != 0 && body != 0 )
-	{
-		glDisable( GL_TEXTURE_2D );
-		glColor3f( 1.0, 1.0, 1.0 );
-		glPushMatrix();
-		glTranslatef( position.x, position.y, 0 );
-		glRotatef( rotation, 0, 0, 1 );
-
-		// draw circle shape
-		if( shape->klass->type == CP_CIRCLE_SHAPE )
-		{
-			cpCircleShape *circle = (cpCircleShape*)shape;
-			int circle_points_count = sizeof(circle_points)/sizeof(GLfloat)/2;
-			glVertexPointer( 2, GL_FLOAT, 0, circle_points );
-			glScalef( circle->r, circle->r, 1 );
-			glDrawArrays( GL_LINE_STRIP, 0, circle_points_count );
-		}
-		// draw polygon
-		else if( shape->klass->type == CP_POLY_SHAPE )
-		{
-			cpPolyShape *poly = (cpPolyShape*)shape;
-			// couldn't get the vertex array to work ... ?
-			//glVertexPointer( 2, GL_FLOAT, 0, poly->verts );
-			//glDrawArrays( GL_LINE_LOOP, 0, poly->numVerts );
-			glBegin( GL_LINE_LOOP );
-				for( int i = 0; i < poly->numVerts; i++ )
-					glVertex3f( poly->verts[i].x, poly->verts[i].y, 0.0 );
-			glEnd();
-		}
-
-		glPopMatrix();
-		glEnable( GL_TEXTURE_2D );
-	}
-}
-
-void BodyEntity::Tick( int milliseconds )
-{
-	if( body != 0 )
-	{
-		position.x = cpBodyGetPos( body ).x;
-		position.y = cpBodyGetPos( body ).y;
-		rotation = body->a * 180 / M_PI;
-	}
-}
-
-void BodyEntity::SetPosition( Vector new_position )
-{
-	position.x = new_position.x;
-	position.y = new_position.y;
-	cpBodySetPos( body, cpv( new_position.x, new_position.y ) );
-}
-
-void BodyEntity::SetVelocity( Vector new_velocity )
-{
-	body->v.x = new_velocity.x;
-	body->v.y = new_velocity.y;
 }
 
 ConstraintEntity::ConstraintEntity(): Entity(), constraint( 0 )
@@ -355,156 +171,70 @@ void ConstraintEntity::InitConstraintSpring( BodyEntity* new_body_a, Vector stat
 		fprintf( stderr, "ConstraintEntity::InitConstraintSpring -> failed due to null pointer!\n" );
 }
 
-BodyEntity* BodyEntity::LoadEntity( const char* xml_path )
+	/*
+bool QuadEntity::ReadQuadEntity( TiXmlElement* element, QuadEntity** entity_out )
 {
-	BodyEntity* new_entity = new BodyEntity();
-	if( new_entity->LoadXML( xml_path ) )
-		return new_entity;
-	else
-	{
-		fprintf( stderr, "BodyEntity::Loadentity -> failed for xml: %s!\n", xml_path );
-		delete new_entity;
-		return 0;
-	}
-}
+	Vector size;
+	Vector position;
+	std::string texture_key = "default";
 
-bool BodyEntity::LoadXML( const char* xml_path )
-{
-	std::stringstream stream;
-
-	// load document
-	TiXmlDocument doc( xml_path );
-	if( !doc.LoadFile() )
-	{
-		fprintf( stderr, "Unable to load entity xml: %s\n", xml_path );
-		return false;
-	}
-
-	// find root
-	TiXmlElement* root = doc.FirstChildElement( "spin_entity" );
-	if( !root )
-	{
-		fprintf( stderr, "Unable to find tag 'spin_entity' in entity xml: %s\n", xml_path );
-		return false;
-	}
-
-	float mass = 1.0;
-	float friction = 1.0;
-	bool shape_loaded = false;
-	float size_x = 1.0;
-	float size_y = 1.0;
-
-	// iterate through children
-	TiXmlElement* child = root->FirstChildElement();
-	while( child != 0 )
-	{
-		// param
-		if( strcmp( "param", child->Value() ) == 0 )
-		{
-			const char* name = child->Attribute( "name" );
-			const char* value = child->Attribute( "value" );
-
-			if( name != 0 && value != 0 )
-			{
-				if( strcmp( name, "texture_key" ) == 0 )
-					texture_key = value;
-				else if( strcmp( name, "mass" ) == 0 )
-				{
-					stream << value << std::endl;
-					stream >> mass;
-					if( shape_loaded && body != 0 )
-						cpBodySetMass( body, mass );
-				}
-				else if( strcmp( name, "size_x" ) == 0 )
-				{
-					stream << value << std::endl;
-					stream >> size.x;
-				}
-				else if( strcmp( name, "size_y" ) == 0 )
-				{
-					stream << value << std::endl;
-					stream >> size.y;
-				}
-				else if( strcmp( name, "friction" ) == 0 )
-				{
-					stream << value << std::endl;
-					stream >> friction;
-					if( shape_loaded && shape != 0 )
-						shape->e = friction;
-				}
-			}
-			else
-			{
-				fprintf( stderr, "Invalid param tag in entity xml: %s\n", xml_path );
-				return false;
-			}
-		}
-			
-		// shape
-		if( strcmp( "shape", child->Value() ) == 0 )
-		{
-			if( shape_loaded )
-			{
-				fprintf( stderr, "Multiple shape tags in entity xml: %s\n", xml_path );
-				return false;
-			}
-
-			const char* type = child->Attribute( "type" );
-			if( type == 0 )
-			{
-				fprintf( stderr, "No 'type' attribute in shape tag in entity xml: %s\n", xml_path );
-				return false;
-			}
-
-			if( strcmp( type, "poly" ) == 0 )
-			{
-				if( !LoadPolyElement( child, mass, friction ) )
-				{
-					fprintf( stderr, "LoadPolyElement failed in entity xml: %s\n", xml_path );
-					return false;
-				}
-			}
-			else
-			{
-				fprintf( stderr, "Unsupported 'type' attribute ('%s') in shape tag in entity xml: %s\n", type, xml_path );
-				return false;
-			}
-			shape_loaded = true;
-		}
-		child = child->NextSiblingElement();
-	}
-
-	return true;
-}
-
-bool BodyEntity::LoadPolyElement( TiXmlElement* element, float mass, float friction )
-{
-	std::stringstream stream;
-	std::vector<Vector> points;
-
-	// iterate verticies
 	TiXmlElement* child = element->FirstChildElement();
 	while( child != 0 )
 	{
-		if( strcmp( "vertex", child->Value() ) == 0 )
+		// Vector
+		if( strcmp( "vec2d", child->Value() ) == 0 )
 		{
-			const char* x = child->Attribute( "x" );
-			const char* y = child->Attribute( "y" );
-			if( x == 0 || y == 0 )
+			// size
+			if( strcmp( "size", child->Attribute( "name" ) ) == 0 )
 			{
-				fprintf( stderr, "Invalid vertex tag!\n" );
-				return false;
+				if( !ReadVec2D( child, size ) )
+				{
+					fprintf( stderr, "SpinXML::ReadQuadEntity -> ReadVec2D failed for size vec2d!\n" );
+					return false;
+				}
 			}
-			float x_val = 0.0;
-			float y_val = 0.0;
-			stream << x << std::endl << y << std::endl;
-			stream >> x_val >> y_val;
-			points.push_back( Vector( x_val, y_val ) );
+			// position 
+			else if( strcmp( "position", child->Attribute( "name" ) ) == 0 )
+			{
+				if( !ReadVec2D( child, position ) )
+				{
+					fprintf( stderr, "SpinXML::ReadQuadEntity -> ReadVec2D failed for position vec2d!\n" );
+					return false;
+				}
+			}
+			// unsupported vec2d
+			else
+				fprintf( stderr, "SpinXML::ReadQuadEntity -> unsupported vec2d, name='%s'...\n", child->Attribute( "name" ) );
+		}
+		// param
+		else if( strcmp( "param", child->Value() ) == 0 )
+		{
+			// texture_key
+			if( strcmp( "texture_key", child->Attribute( "name" ) ) == 0 )
+			{
+				if( !ReadParam( child, texture_key ) )
+				{
+					fprintf( stderr, "SpinXML::ReadQuadEntity -> ReadParam failed for texture_key param!\n" );
+					return false;
+				}
+			}
+			// unsupported param
+			else
+				fprintf( stderr, "SpinXML::ReadQuadEntity -> unsupported param, name='%s'...\n", child->Attribute( "name" ) );
 		}
 		child = child->NextSiblingElement();
 	}
 
-	InitBodyPoly( mass, points, friction );
-	shape->collision_type = World::COL_TYPE_PROP;
+	*entity_out = new QuadEntity();
+	(*entity_out)->size = size;
+	(*entity_out)->position = position;
+	(*entity_out)->texture_key = texture_key;
+
+	printf( "size: %f %f\n", size.x, size.y );
+	printf( "position: %f %f\n", position.x, position.y );
+	printf( "texture_key: %s\n", texture_key.c_str() );
+	fflush( stdout );
+
 	return true;
 }
+	*/

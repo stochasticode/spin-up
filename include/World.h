@@ -41,7 +41,7 @@ namespace spin
 
 		private:
 		cpSpace* space;
-		QuadEntity background;
+		//QuadEntity background;
 		int delta_tick;
 		float delta_tick_seconds;
 		int last_tick;

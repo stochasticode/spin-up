@@ -2,7 +2,6 @@
 #include <SpinGame.h>
 #include <World.h>
 #include <Entity.h>
-#include <Prop.h>
 #include <chipmunk.h>
 #include <cstdio>
 
@@ -10,12 +9,20 @@ using namespace spin;
 
 GrappleHook::GrappleHook( int new_life_left, GrappleGun* new_parent_gun, GrappleInfo new_info ): BodyEntity(), life_left( new_life_left ), info( new_info )
 {
-	InitBodyCircle( 0.1, 0.1, 0 );
-	shape->collision_type = World::COL_TYPE_GRAPPLE;
-	size.x = 10;
-	size.y = 10;
-	texture_key = "burst";
-	color = new_info.color;
+	if( !LoadXML( "assets/entities/grapple_hook.xml" ) )
+		fprintf( stderr, "GrappleHook::GrappleHook -> failed to load 'assets/entities/grapple_hook.xml!\n" );
+
+	// set collision type
+	if( shapes.size() > 0 )
+		shapes[0]->collision_type = World::COL_TYPE_GRAPPLE;
+	else
+		fprintf( stderr, "GrappleHook::GrappleHook -> couldn't set collision_type because there were no shapes!\n" );
+
+	// set quad color
+	if( quads.size() > 0 )
+		quads[0].color = new_info.color;
+	else
+		fprintf( stderr, "GrappleHook::GrappleHook -> couldn't set color because there were no quads!\n" );
 }
 
 void GrappleHook::Render()
@@ -158,7 +165,7 @@ void GrappleGun::PostStepGrapple( cpSpace* space, cpShape* shape, cpShape* prop_
 
 			offset.x = offset_x * cos_a - offset_y * sin_a;
 			offset.y = offset_x * sin_a + offset_y * cos_a;
-			
+
 			switch( grapple->info.type )
 			{
 				case GRAPPLE_WINCH:
@@ -242,8 +249,6 @@ void GrappleConstraint::Render()
 		anchor_x = spring->anchr2.x * cos_b - spring->anchr2.y * sin_b;
 		anchor_y = spring->anchr2.x * sin_b + spring->anchr2.y * cos_b;
 		glVertex3f( cpBodyGetPos( b ).x + anchor_x, cpBodyGetPos( b ).y + anchor_y, 0 );
-
-
 	glEnd();
 	glEnable( GL_TEXTURE_2D );
 	glLineWidth( 1.0 );

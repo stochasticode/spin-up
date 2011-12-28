@@ -6,7 +6,6 @@
 #include <Resources.h>
 #include <Entity.h>
 #include <SnapConstraint.h>
-#include <Prop.h>
 #include <cstdio>
 #include <cstring>
 #include <math.h>
@@ -37,17 +36,20 @@ bool SpinGame::Init( int argc, char** argv )
 
 	// load level
 	if( !world.LoadLevel( "assets/levels/test.xml" ) )
+	{
+		fprintf( stderr, "Failed to load level!\n" );
 		return false;
+	}
 
 	srand( time( 0 ) );
 	for( int i = 0; i < 10; i++ )
 	{
-		BodyEntity* new_entity = BodyEntity::LoadEntity( "assets/entities/rock1.xml" );
+		BodyEntity* new_entity = new BodyEntity();
+		new_entity->LoadXML( "assets/entities/rock1.xml" );
 		float scale_rand = (float)rand() / (float)RAND_MAX;
 		new_entity->Scale( 0.05 + scale_rand * 0.35 );
 		world.AddEntity( new_entity, 4 );
 	}
-
 
 	return true;
 }
@@ -74,13 +76,13 @@ bool SpinGame::LoadResources()
 	resources.LoadPNG( "assets/textures/beagle.png", "beagle" );
 	resources.LoadPNG( "assets/textures/rack.png", "rack" );
 	resources.LoadPNG( "assets/textures/rock1.png", "rock1" );
+	resources.LoadPNG( "assets/textures/DEFAULT.png", "DEFAULT" );
 	return true;
 }
 
 void SpinGame::Render()
 {
 	glClear( GL_COLOR_BUFFER_BIT );
-	glClear( GL_DEPTH_BUFFER_BIT );
 	camera.position_x = kevin->position.x;
 	camera.position_y = kevin->position.y;
 	world.Render();

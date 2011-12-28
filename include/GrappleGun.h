@@ -1,7 +1,7 @@
 #ifndef SPIN_GRAPPLE_GUN_H
 #define SPIN_GRAPPLE_GUN_H
 
-#include <Entity.h>
+#include <BodyEntity.h>
 #include <Vector.h>
 #include <Color.h>
 #include <vector>
@@ -46,12 +46,16 @@ namespace spin
 	class GrappleConstraint: public ConstraintEntity
 	{
 		public:
-		GrappleConstraint(): ConstraintEntity() {}
+		GrappleConstraint(): ConstraintEntity() {
+			constraint = 0;
+		}
 		void Render();
 
 		protected:
 		GrappleInfo info;
-		GrappleConstraint( GrappleInfo new_info ): info( new_info ) {}
+		GrappleConstraint( GrappleInfo new_info ): ConstraintEntity(), info( new_info ) {
+			constraint = 0;
+		}
 	};
 
 	class GrappleConstraintWinch: public GrappleConstraint

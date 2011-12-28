@@ -10,12 +10,8 @@ using namespace spin;
 
 Kevin::Kevin(): BodyEntity()
 {
-	size.x = 12.0;
-	size.y = 12.0; 
-
-	InitBodyCircle( 10.0, 6.0, 5.0 );
-
-	texture_key = "beagle";
+	if( !LoadXML( "assets/entities/kevin.xml" ) )
+		fprintf( stderr, "Kevin::Kevin -> failed to load 'assets/entities/kevin.xml!\n" );
 
 	grapple_gun.SetGrappleType( 0, GRAPPLE_WINCH );
 }
@@ -23,16 +19,6 @@ Kevin::Kevin(): BodyEntity()
 Kevin::~Kevin()
 {
 }	
-
-void Kevin::Render()
-{
-	BodyEntity::Render();
-}
-
-void Kevin::Tick( int milliseconds )
-{
-	BodyEntity::Tick( milliseconds );
-}
 
 void Kevin::FirePrimary( Vector direction )
 {

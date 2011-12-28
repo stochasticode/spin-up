@@ -1,17 +1,21 @@
-<spin_entity>
-	<param name="texture_key" value="rock1" />
+<entity type="body">
 	<param name="mass" value="100.0" />
-	<param name="size_x" value = "50" />
-	<param name="size_y" value = "50" />
-	<param name="friction" value="0.7" />
-	<shape type="poly">
-		<vertex x="2.0" y="23.0" />
-		<vertex x="9.0" y="18.0" />
-		<vertex x="21.0" y="0.0" />
-		<vertex x="9.0" y="-24.0" />
-		<vertex x="-13.0" y="-24.0" />
-		<vertex x="-20.0" y="-15.0" />
-		<vertex x="-21.0" y="0.0" />
-		<vertex x="-5.0" y="25.0" />
+	<param name="moment" value="31000" />
+
+	<quad>
+		<param name="texture_key" value="rock1" />
+		<vec2d name="position" x="0.0" y="0.0" />
+		<vec2d name="size" x="50.0" y="50.0" />
+	</quad>
+
+	<shape type="poly" friction="0.7">
+		<vec2d x="2.0" y="23.0" />
+		<vec2d x="9.0" y="18.0" />
+		<vec2d x="21.0" y="0.0" />
+		<vec2d x="9.0" y="-24.0" />
+		<vec2d x="-13.0" y="-24.0" />
+		<vec2d x="-20.0" y="-15.0" />
+		<vec2d x="-21.0" y="0.0" />
+		<vec2d x="-5.0" y="25.0" />
 	</shape>
-</spin_entity>
+</entity>

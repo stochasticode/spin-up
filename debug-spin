@@ -1,4 +1,5 @@
 #! /bin/bash
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./lib
 #gdb bin/spin
-valgrind --leak-check=full --show-reachable=yes bin/spin
+valgrind bin/spin 2> valgrind.out
+#valgrind --leak-check=full --show-reachable=yes bin/spin 2> valgrind.out

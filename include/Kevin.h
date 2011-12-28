@@ -3,7 +3,6 @@
 
 #include <Entity.h>
 #include <GrappleGun.h>
-//#include <Vector.h>
 
 namespace spin
 {
@@ -13,17 +12,10 @@ namespace spin
 		Kevin();
 		~Kevin();
 
-		void Render();
-		void Tick( int milliseconds );
-
-		//void EnableGrapple( float x, float y );
-		//void DisableGrapple();
-
 		void FirePrimary( Vector direction );
 		void FireSecondary( Vector direction );
 
 		GrappleGun grapple_gun;
-		private:
 	};
 }
 #endif

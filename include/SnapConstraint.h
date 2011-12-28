@@ -9,9 +9,14 @@ namespace spin
 	class SnapConstraint: public ConstraintEntity
 	{
 		public:
-		SnapConstraint( BodyEntity* new_body_a, Vector static_anchor );
+		SnapConstraint();
+		void Init( BodyEntity* new_body_a, Vector static_anchor );
+
 		void Render();
 		void Tick( int milliseconds );
+
+		//static bool ReadSnapConstraint( TiXmlElement* element, SnapConstraint** constraint_out );
+		bool LoadXML( TiXmlElement* element );
 	};
 }
 

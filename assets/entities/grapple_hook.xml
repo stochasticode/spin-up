@@ -1,0 +1,12 @@
+<entity type="body">
+	<param name="mass" value="0.5" />
+	<param name="moment" value="10" />
+	<quad>
+		<param name="texture_key" value="burst" />
+		<vec2d name="position" x="0.0" y="0.0" />
+		<vec2d name="size" x="10.0" y="10.0" />
+	</quad>
+	<shape type="circle" friction="0.0" radius="0.5" >
+		<vec2d name="offset" x="0.0" y="0.0" />
+	</shape>
+</entity>

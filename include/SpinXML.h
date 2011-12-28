@@ -16,9 +16,9 @@ namespace spin
 	class SpinXML
 	{
 		public:
-		static bool ReadVec2D( TiXmlElement* element, Vector& vector_out );
-		static bool ReadParam( TiXmlElement* element, std::string& value );
-		static bool ReadEntity( TiXmlElement* elment, Entity** entity_out  );
+		static bool ReadVec2D( TiXmlElement* element, std::string& name, Vector& vector_out );
+		static bool ReadParam( TiXmlElement* element, std::string& name, std::string& value );
+		static bool ReadEntity( TiXmlElement* element, Entity** entity_out  );
 		static bool ReadConstraint( TiXmlElement* elment, ConstraintEntity** constraint_out  );
 
 		private:

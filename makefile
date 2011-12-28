@@ -2,8 +2,9 @@ OBJS := \
 	build/SpinGame.o \
 	build/Resources.o \
 	build/World.o \
+	build/Quad.o \
 	build/Entity.o \
-	build/Prop.o \
+	build/BodyEntity.o \
 	build/GrappleGun.o \
 	build/SnapConstraint.o \
 	build/Kevin.o \
@@ -24,6 +25,9 @@ build/%.o: src/%.cpp
 
 run: bin/spin
 	./run-spin
+
+debug: bin/spin
+	./debug-spin
 
 clean:
 	rm -f build/* bin/*

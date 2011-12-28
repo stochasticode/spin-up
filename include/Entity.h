@@ -4,6 +4,7 @@
 #include <GL/gl.h>
 #include <Vector.h>
 #include <Color.h>
+#include <Quad.h>
 #include <string>
 #include <vector>
 #include <chipmunk.h>
@@ -50,18 +51,21 @@ namespace spin
 	class QuadEntity: public Entity
 	{
 		public:
-		QuadEntity(): Entity(), size( 10.0, 10.0 ), rotation( 0.0 ), scale( 1.0 ) {}
+		QuadEntity(): Entity(), rotation( 0.0 ), scale( 1.0 ) {}
 		virtual ~QuadEntity() {}
 
 		virtual void Render();
 
-
-		std::string texture_key;
 		Vector position;
-		Vector size;
 		float rotation;
-		Color color;
 		float scale;
+
+		void AddQuad( Quad new_quad ) { quads.push_back( new_quad ); }
+
+		bool LoadXML( TiXmlElement* element );
+
+		protected:
+		std::vector<Quad> quads;
 	};
 
 	class ConstraintEntity: public Entity
@@ -82,49 +86,6 @@ namespace spin
 		protected:
 
 		cpConstraint* constraint;
-	};
-
-	class BodyEntity: public QuadEntity
-	{
-		public:
-		virtual ~BodyEntity();
-
-		virtual void Render();
-
-		static BodyEntity* LoadEntity( const char* xml_path );
-
-		float GetRotation() { return ( body != 0 )? body->a: 0.0; }
-		void SetPosition( Vector new_position );
-		void SetVelocity( Vector new_velocity );
-
-		void Scale( float scale_factor );
-
-		friend class ConstraintEntity;
-
-		std::vector<unsigned long> constraint_ids;
-
-		static bool render_shapes;
-
-		protected:
-		BodyEntity();
-
-		bool LoadXML( const char* xml_path );
-
-		bool LoadPolyElement( TiXmlElement* element, float mass, float friction );
-
-		virtual void Tick( int milliseconds );
-
-		void ChipmunkCleanup();
-		void InitBodyCircle( float mass, float radius, float friction );
-		void InitBodyRect( float mass, float width, float height, float friction );
-		void InitBodyPoly( float mass, std::vector<Vector>& points, float friction );
-
-		void RenderShape();
-
-		cpBody *body;
-		cpShape *shape;
-
-		static GLfloat circle_points[];
 	};
 }
 

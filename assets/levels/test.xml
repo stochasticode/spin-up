@@ -1,22 +1,9 @@
 <spin_level>
-	<background texture_key="space" />
 	<kevin x="-60" y="-68" />
 
-	<constraint type="snap">
+	<entity type="snap_constraint">
 		<entity_ref entity_alias="kevin" />
 		<vec2d x="-60" y="-70" />
-	</constraint>
-
-	<entity type="quad">
-		<vec2d name="size" x="60" y="60" />
-		<vec2d name="position" x="-60" y="-68" />
-		<param name="texture_key" value="rack" />
-	</entity>
-
-	<entity type="quad">
-		<vec2d name="size" x="60" y="60" />
-		<vec2d name="position" x="60" y="-68" />
-		<param name="texture_key" value="creature" />
 	</entity>
 
 	<surface x1="-100" y1="-100" x2="100" y2="-100" >
@@ -24,7 +11,15 @@
 		<surface_param name="friction" value="1" />
 	</surface>
 
-	<!-- ceiling -->
+	<entity type="quad">
+		<vec2d name="position" x="-60" y="-68" />
+		<quad>
+			<vec2d name="size" x="60" y="60" />
+			<vec2d name="position" x="0.0" y="0.0" />
+			<param name="texture_key" value="rack" />
+		</quad>
+	</entity>
+
 	<surface x1="-100" y1="30" x2="40" y2="30" >
 		<surface_param name="radius" value="3" />
 		<surface_param name="friction" value="1" />
@@ -34,7 +29,6 @@
 		<surface_param name="friction" value="1" />
 	</surface>
 
-	<!-- vent -->
 	<surface x1="80" y1="30" x2="80" y2="60" >
 		<surface_param name="radius" value="3" />
 		<surface_param name="friction" value="1" />
@@ -43,7 +37,6 @@
 		<surface_param name="radius" value="3" />
 		<surface_param name="friction" value="1" />
 	</surface>
-
 
 	<surface x1="-100" y1="-100" x2="-100" y2="30" >
 		<surface_param name="radius" value="3" />

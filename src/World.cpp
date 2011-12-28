@@ -16,22 +16,28 @@ World::World(): space( cpSpaceNew() ), delta_tick( 1000 / 80 ), delta_tick_secon
 	cpSpaceSetIterations( space, 8 );
 	cpSpaceSetDamping( space, 0.9 );
 
-	// set up background quad
-	background.size.x = 1300;
-	background.size.y = 1024;
-	background.texture_key = "space";
-
 	cpSpaceAddCollisionHandler( space, World::COL_TYPE_GRAPPLE, World::COL_TYPE_SURFACE, 0, 0, GrappleGun::PostSolveGrapple, 0, 0);
 	cpSpaceAddCollisionHandler( space, World::COL_TYPE_GRAPPLE, World::COL_TYPE_PROP, 0, 0, GrappleGun::PostSolveGrapple, 0, 0);
 }
 
 World::~World()
 {
+	// delete constraints first...
+	for( int i = 0; i < entities.size(); i++ )
+	{
+		if( entities[i] != 0 && dynamic_cast<ConstraintEntity*>(entities[i]) != 0 )
+		{
+			printf( "deleting constraint\n" );
+			delete entities[i];
+			entities[i] = 0;
+		}
+	}
 	// delete entities
 	for( int i = 0; i < entities.size(); i++ )
 	{
 		if( entities[i] != 0 )
 		{
+			printf( "deleting regular entity\n" );
 			delete entities[i];
 			entities[i] = 0;
 		}
@@ -43,9 +49,6 @@ World::~World()
 
 void World::Render()
 {
-	// render background
-	background.Render();
-
 	glPushMatrix();
 
 	// apply camera
@@ -173,7 +176,8 @@ bool World::LoadLevel( const char* xml_path )
 		{
 			// right now kevin is just like a vec2d, but could change in the future
 			Vector kevin_position;
-			if( SpinXML::ReadVec2D( child, kevin_position ) )
+			std::string name;
+			if( SpinXML::ReadVec2D( child, name, kevin_position ) )
 				SPIN.kevin->SetPosition( kevin_position );
 		}
 		// surface
@@ -182,35 +186,16 @@ bool World::LoadLevel( const char* xml_path )
 			if( !AddSurfaceElement( child, Vector( 0.0, 0.0 ), 1.0 ) )
 				return false;
 		}
-		// background
-		else if( strcmp( "background", child->Value() ) == 0 )
-		{
-			background.texture_key = child->Attribute( "texture_key" );
-		}
 		// entity
 		else if( strcmp( "entity", child->Value() ) == 0 )
 		{
 			Entity* new_entity;
 			if( SpinXML::ReadEntity( child, &new_entity ) )
-			{
 				AddEntity( new_entity, 4 );
-			}
-			else
-				return false;
-		}
-		// constraint
-		else if( strcmp( "constraint", child->Value() ) == 0 )
-		{
-			ConstraintEntity* new_constraint;
-			if( SpinXML::ReadConstraint( child, &new_constraint ) )
-				AddEntity( new_constraint, 5 );
-			else
-				return false;
 		}
 
 		child = child->NextSiblingElement();
 	}
-
 	return true;
 }
 

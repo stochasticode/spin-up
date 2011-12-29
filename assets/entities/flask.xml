@@ -1,0 +1,24 @@
+<entity type="body">
+	<param name="mass" value="1.0" />
+	<param name="moment" value="20" />
+
+	<quad>
+		<param name="texture_key" value="flask" />
+		<vec2d name="position" x="0.0" y="1.0" />
+		<vec2d name="size" x="10.0" y="10.0" />
+	</quad>
+
+	<shape type="poly" friction="0.7">
+		<vec2d x="-2.0" y="1.0" />
+		<vec2d x="-2.0" y="6.0" />
+		<vec2d x="2.0" y="6.0" />
+		<vec2d x="2.0" y="1.0" />
+	</shape>
+
+	<shape type="poly" friction="0.7">
+		<vec2d x="-3.5" y="-3.5" />
+		<vec2d x="-2.0" y="1.0" />
+		<vec2d x="2.0" y="1.0" />
+		<vec2d x="3.5" y="-3.5" />
+	</shape>
+</entity>

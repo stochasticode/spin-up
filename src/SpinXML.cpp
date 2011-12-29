@@ -96,18 +96,20 @@ bool SpinXML::ReadEntity( TiXmlElement* element, Entity** entity_out  )
 		}
 	}
 	// BodyEntity
-	/*
 	else if( strcmp( type, "body" ) == 0 )
 	{
-		if( ReadBodyEntity( element, (BodyEntity**)entity_out ) )
+		*entity_out = new BodyEntity();
+		BodyEntity* body_entity = (BodyEntity*)*entity_out;
+		if( body_entity->LoadXML( element ) )
 			return true;
 		else
 		{
-			fprintf( stderr, "SpinXML::ReadEntity -> ReadBodyEntity() failed!\n" );
+			delete *entity_out;
+			*entity_out = 0;
+			fprintf( stderr, "SpinXML::ReadEntity -> BodyEntity::LoadXML() failed!\n" );
 			return false;
 		}
 	}
-	*/
 	// SnapConstraint
 	if( strcmp( type, "snap_constraint" ) == 0 )
 	{
@@ -117,7 +119,7 @@ bool SpinXML::ReadEntity( TiXmlElement* element, Entity** entity_out  )
 			return true;
 		else
 		{
-			delete snap_constraint;
+			delete *entity_out;
 			*entity_out = 0;
 			fprintf( stderr, "SpinXML::ReadEntity -> SnapConstraint::LoadXML() failed!\n" );
 			return false;

@@ -1,5 +1,5 @@
 <entity type="body">
-	<param name="mass" value="0.5" />
+	<param name="mass" value="5" />
 	<param name="moment" value="10" />
 	<quad>
 		<param name="texture_key" value="burst" />

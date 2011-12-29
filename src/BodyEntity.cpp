@@ -147,6 +147,7 @@ void BodyEntity::RenderShapes()
 		if( shape->klass->type == CP_CIRCLE_SHAPE )
 		{
 			cpCircleShape *circle = (cpCircleShape*)shape;
+			glTranslatef( circle->c.x, circle->c.y, 0 );
 			int circle_points_count = sizeof(circle_points)/sizeof(GLfloat)/2;
 			glVertexPointer( 2, GL_FLOAT, 0, circle_points );
 			glScalef( circle->r, circle->r, 1 );
@@ -269,8 +270,34 @@ bool BodyEntity::LoadXML( TiXmlElement* element )
 			std::string value = "";
 			SpinXML::ReadParam( child, name, value );
 
+			// external
+			if( name.compare( "external" ) == 0 )
+			{
+				if( !LoadXML( value.c_str() ) )
+				{
+					fprintf( stderr, "BodyEntity::LoadXML -> unable to load external: %s\n", value.c_str() );
+					return false;
+				}
+			}
+			// alias
+			else if( name.compare( "alias" ) == 0 )
+			{
+				alias = value;
+			}
+			// scale
+			else if( name.compare( "scale" ) == 0 )
+			{
+				float new_scale;
+				if( SpinUtil::ToFloat( value.c_str(), new_scale ) )
+					Scale( new_scale );
+				else
+				{
+					fprintf( stderr, "BodyEntity::LoadXML -> invalid scale value: %s\n", value.c_str() );
+					return false;
+				}
+			}
 			// mass
-			if( name.compare( "mass" ) == 0 )
+			else if( name.compare( "mass" ) == 0 )
 			{
 				float new_mass;
 				if( SpinUtil::ToFloat( value.c_str(), new_mass ) )
@@ -298,6 +325,25 @@ bool BodyEntity::LoadXML( TiXmlElement* element )
 			{
 				fprintf( stderr, "BodyEntity::LoadXML -> unsupported param: %s\n", name.c_str() );
 			}
+		}
+
+		// vec2d
+		else if( strcmp( "vec2d", child->Value() ) == 0 )
+		{
+			std::string name = "";
+			Vector vec2d;
+			if( !SpinXML::ReadVec2D( child, name, vec2d ) )
+			{
+				fprintf( stderr, "BodyEntity::LoadXML -> ReadVec2D failed!\n" );
+				return false;
+			}
+
+			// position
+			if( name.compare( "position" ) == 0 )
+				SetPosition( vec2d );
+			// unsupported
+			else
+				fprintf( stderr, "BodyEntity::LoadXML -> unsuppored vec2d: %s!\n", name.c_str() );
 		}
 			
 		// shape
@@ -394,6 +440,6 @@ bool BodyEntity::LoadPolyElement( TiXmlElement* element )
 	AddShapePoly( points, friction );
 
 	// collision_type will need to be delt with differently eventually...
-	shapes[0]->collision_type = World::COL_TYPE_PROP;
+	shapes[shapes.size()-1]->collision_type = World::COL_TYPE_PROP;
 	return true;
 }

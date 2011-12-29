@@ -7,6 +7,18 @@
 
 using namespace spin;
 
+Quad::Quad(): 
+	texture_key( "DEFAULT" ), 
+	position( 0.0, 0.0 ),
+	size( 10.0, 10.0 ), 
+	rotation( 0.0 ),
+	texture_top_left( 0.0, 1.0 ),
+	texture_top_right( 1.0, 1.0 ),
+	texture_bottom_left( 0.0, 0.0 ),
+	texture_bottom_right( 1.0, 0.0 )
+{
+}
+
 void Quad::Render()
 {
 	glPushMatrix();
@@ -18,13 +30,13 @@ void Quad::Render()
 
 	glBegin(GL_TRIANGLES);
 		glColor4f( color.r, color.g, color.b, color.a );
-		glTexCoord2d( 0.0, 1.0 ); glVertex3f( -0.5, -0.5, 0.0 );
-		glTexCoord2d( 1.0, 1.0 ); glVertex3f(  0.5, -0.5, 0.0 );
-		glTexCoord2d( 0.0, 0.0 ); glVertex3f( -0.5,  0.5, 0.0 );
+		glTexCoord2d( texture_top_left.x,    texture_top_left.y );    glVertex3f( -0.5, -0.5, 0.0 );
+		glTexCoord2d( texture_top_right.x,   texture_top_right.y );   glVertex3f(  0.5, -0.5, 0.0 );
+		glTexCoord2d( texture_bottom_left.x, texture_bottom_left.x ); glVertex3f( -0.5,  0.5, 0.0 );
 
-		glTexCoord2d( 1.0, 1.0 ); glVertex3f(  0.5, -0.5, 0 );
-		glTexCoord2d( 0.0, 0.0 ); glVertex3f( -0.5,  0.5, 0 );
-		glTexCoord2d( 1.0, 0.0 ); glVertex3f(  0.5,  0.5, 0 );
+		glTexCoord2d( texture_top_right.x,    texture_top_right.y );    glVertex3f(  0.5, -0.5, 0 );
+		glTexCoord2d( texture_bottom_left.x,  texture_bottom_left.y );  glVertex3f( -0.5,  0.5, 0 );
+		glTexCoord2d( texture_bottom_right.x, texture_bottom_right.y ); glVertex3f(  0.5,  0.5, 0 );
 	glEnd();
 
 	glPopMatrix();

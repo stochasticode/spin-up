@@ -12,7 +12,7 @@ namespace spin
 	class Quad
 	{
 		public:
-		Quad(): texture_key( "DEFAULT" ), position( 0.0, 0.0 ), size( 10.0, 10.0 ), rotation( 0.0 ) {}
+		Quad();
 
 		virtual void Render();
 
@@ -23,6 +23,11 @@ namespace spin
 		Vector size;
 		float rotation;
 		Color color;
+
+		Vector texture_top_left;
+		Vector texture_top_right;
+		Vector texture_bottom_left;
+		Vector texture_bottom_right;
 	};
 }
 

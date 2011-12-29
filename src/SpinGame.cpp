@@ -41,16 +41,6 @@ bool SpinGame::Init( int argc, char** argv )
 		return false;
 	}
 
-	srand( time( 0 ) );
-	for( int i = 0; i < 10; i++ )
-	{
-		BodyEntity* new_entity = new BodyEntity();
-		new_entity->LoadXML( "assets/entities/rock1.xml" );
-		float scale_rand = (float)rand() / (float)RAND_MAX;
-		new_entity->Scale( 0.05 + scale_rand * 0.35 );
-		world.AddEntity( new_entity, 4 );
-	}
-
 	return true;
 }
 
@@ -63,7 +53,7 @@ bool SpinGame::InitGraphics()
 	glEnable( GL_ALPHA_TEST );
 	//glDepthFunc( GL_LESS );
 	glEnableClientState( GL_VERTEX_ARRAY );
-	glClearColor( 0.0, 0.0, 0.0, 1.0 );
+	glClearColor( 0.3, 0.3, 0.3, 1.0 );
 	return true;
 }
 
@@ -74,6 +64,7 @@ bool SpinGame::LoadResources()
 	resources.LoadPNG( "assets/textures/creature.png", "creature" );
 	resources.LoadPNG( "assets/textures/burst.png", "burst" );
 	resources.LoadPNG( "assets/textures/beagle.png", "beagle" );
+	resources.LoadPNG( "assets/textures/flask.png", "flask" );
 	resources.LoadPNG( "assets/textures/rack.png", "rack" );
 	resources.LoadPNG( "assets/textures/rock1.png", "rock1" );
 	resources.LoadPNG( "assets/textures/DEFAULT.png", "DEFAULT" );

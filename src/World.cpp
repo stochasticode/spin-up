@@ -13,7 +13,7 @@ World::World(): space( cpSpaceNew() ), delta_tick( 1000 / 80 ), delta_tick_secon
 {
 	// set up space
 	cpSpaceSetGravity( space, cpv( 0, -70 ) ); 
-	cpSpaceSetIterations( space, 8 );
+	cpSpaceSetIterations( space, 16 );
 	cpSpaceSetDamping( space, 0.9 );
 
 	cpSpaceAddCollisionHandler( space, World::COL_TYPE_GRAPPLE, World::COL_TYPE_SURFACE, 0, 0, GrappleGun::PostSolveGrapple, 0, 0);
@@ -27,7 +27,6 @@ World::~World()
 	{
 		if( entities[i] != 0 && dynamic_cast<ConstraintEntity*>(entities[i]) != 0 )
 		{
-			printf( "deleting constraint\n" );
 			delete entities[i];
 			entities[i] = 0;
 		}
@@ -37,7 +36,6 @@ World::~World()
 	{
 		if( entities[i] != 0 )
 		{
-			printf( "deleting regular entity\n" );
 			delete entities[i];
 			entities[i] = 0;
 		}

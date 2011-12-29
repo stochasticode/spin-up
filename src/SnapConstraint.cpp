@@ -1,6 +1,7 @@
 #include <SnapConstraint.h>
 #include <SpinGame.h>
 #include <SpinXML.h>
+#include <SpinUtil.h>
 #include <tinyxml.h>
 #include <stdio.h>
 
@@ -9,11 +10,14 @@ using namespace spin;
 SnapConstraint::SnapConstraint(): ConstraintEntity()
 {
 	constraint = 0;
+	max_length = 45;
 }
 
-void SnapConstraint::Init( BodyEntity* new_body_a, Vector static_anchor )
+void SnapConstraint::Init( BodyEntity* new_body_a, Vector static_anchor, float strength, float new_max_length )
 {
-	InitConstraintSpring( new_body_a, static_anchor, 0, 300, 20 );
+	//strength = 300;
+	max_length = new_max_length;
+	InitConstraintSpring( new_body_a, static_anchor, 0, strength, 20 );
 }
 
 void SnapConstraint::Render()
@@ -76,13 +80,16 @@ void SnapConstraint::Tick( int milliseconds )
 		float body_b_y = cpBodyGetPos( b ).y + anchor_y;
 
 		float length = sqrt( (body_a_x-body_b_x)*(body_a_x-body_b_x) + (body_a_y-body_b_y)*(body_a_y-body_b_y) );
-		if( length > 45 )
+		if( length > max_length )
 			dead = true;
 	}
 }
 
 bool SnapConstraint::LoadXML( TiXmlElement* element )
 {
+	float strength = 300;
+	float max_length = 45;
+
 	// first child must be an entity_ref to a BodyEntity
 	Entity* entity_a = 0;
 	TiXmlElement* child1 = element->FirstChildElement();
@@ -126,6 +133,45 @@ bool SnapConstraint::LoadXML( TiXmlElement* element )
 		return false;
 	}
 
-	Init( body_a, static_anchor );
+	// iterate through rest of children
+	TiXmlElement* next_child = child2->NextSiblingElement();
+	while( next_child != 0 )
+	{
+		// param
+		if( strcmp( "param", next_child->Value() ) == 0 )
+		{
+			std::string name = "";
+			std::string value = "";
+			SpinXML::ReadParam( next_child, name, value );
+
+			// strength
+			if( name.compare( "strength" ) == 0 )
+			{
+				if( !SpinUtil::ToFloat( value.c_str(), strength) )
+				{
+					fprintf( stderr, "SnapConstraint::LoadXML -> invalid strength value: %s\n", value.c_str() );
+					return false;
+				}
+			}
+			// max_length
+			if( name.compare( "max_length" ) == 0 )
+			{
+				if( !SpinUtil::ToFloat( value.c_str(), max_length) )
+				{
+					fprintf( stderr, "SnapConstraint::LoadXML -> invalid max_length value: %s\n", value.c_str() );
+					return false;
+				}
+			}
+			// unsupported
+			else
+			{
+				fprintf( stderr, "SnapConstraint::LoadXML -> unsupported param: %s\n", name.c_str() );
+			}
+		}
+
+		next_child = next_child->NextSiblingElement();
+	}
+
+	Init( body_a, static_anchor, strength, max_length );
 	return true;
 }

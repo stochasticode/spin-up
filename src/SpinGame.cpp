@@ -27,7 +27,7 @@ bool SpinGame::Init( int argc, char** argv )
 	LoadResources();
 
 	// set up camera
-	camera.zoom = 3.0;
+	camera.zoom = 4.0;
 
 	// create kevin object
 	kevin = new Kevin();
@@ -64,6 +64,7 @@ bool SpinGame::LoadResources()
 	resources.LoadPNG( "assets/textures/creature.png", "creature" );
 	resources.LoadPNG( "assets/textures/burst.png", "burst" );
 	resources.LoadPNG( "assets/textures/beagle.png", "beagle" );
+	resources.LoadPNG( "assets/textures/kevin.png", "kevin" );
 	resources.LoadPNG( "assets/textures/flask.png", "flask" );
 	resources.LoadPNG( "assets/textures/rack.png", "rack" );
 	resources.LoadPNG( "assets/textures/rock1.png", "rock1" );

@@ -1,8 +1,8 @@
 <entity type="body">
 	<param name="mass" value="10" />
-	<param name="moment" value="100" />
+	<param name="moment" value="1000" />
 	<quad>
-		<param name="texture_key" value="beagle" />
+		<param name="texture_key" value="kevin" />
 		<vec2d name="position" x="0.0" y="0.0" />
 		<vec2d name="size" x="12.0" y="12.0" />
 	</quad>

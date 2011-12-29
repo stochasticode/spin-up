@@ -1,0 +1,43 @@
+<entity type="body">
+	<param name="mass" value="30.0" />
+	<param name="moment" value="5000" />
+
+	<quad>
+		<param name="texture_key" value="DEFAULT" />
+		<vec2d name="position" x="0.0" y="10.0" />
+		<vec2d name="size" x="60.0" y="2.0" />
+	</quad>
+
+	<quad>
+		<param name="texture_key" value="grate" />
+		<vec2d name="position" x="-25" y="-3.0" />
+		<vec2d name="size" x="2.0" y="25.0" />
+	</quad>
+
+	<quad>
+		<param name="texture_key" value="grate" />
+		<vec2d name="position" x="25" y="-3.0" />
+		<vec2d name="size" x="2.0" y="25.0" />
+	</quad>
+
+	<shape type="poly" friction="0.7">
+		<vec2d x="-30.0" y="8.5" />
+		<vec2d x="-30.0" y="11.5" />
+		<vec2d x="30.0" y="11.5" />
+		<vec2d x="30.0" y="8.5" />
+	</shape>
+
+	<shape type="poly" friction="0.7">
+		<vec2d x="-26.5" y="-15.5" />
+		<vec2d x="-26.5" y="9.5" />
+		<vec2d x="-23.5" y="9.5" />
+		<vec2d x="-23.5" y="-15.5" />
+	</shape>
+
+	<shape type="poly" friction="0.7">
+		<vec2d x="26.5" y="9.5" />
+		<vec2d x="26.5" y="-15.5" />
+		<vec2d x="23.5" y="-15.5" />
+		<vec2d x="23.5" y="9.5" />
+	</shape>
+</entity>

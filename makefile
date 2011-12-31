@@ -5,6 +5,7 @@ OBJS := \
 	build/Quad.o \
 	build/Entity.o \
 	build/BodyEntity.o \
+	build/ConstraintEntity.o \
 	build/GrappleGun.o \
 	build/SnapConstraint.o \
 	build/Kevin.o \

@@ -20,6 +20,9 @@ SpinGame& SpinGame::Instance()
 
 bool SpinGame::Init( int argc, char** argv )
 {
+	// init world
+	world.Init();
+
 	// initialize graphics
 	InitGraphics();
 
@@ -27,7 +30,7 @@ bool SpinGame::Init( int argc, char** argv )
 	LoadResources();
 
 	// set up camera
-	camera.zoom = 3.0;
+	camera.zoom = 4.0;
 
 	// create kevin object
 	kevin = new Kevin();
@@ -54,6 +57,9 @@ bool SpinGame::InitGraphics()
 	//glDepthFunc( GL_LESS );
 	glEnableClientState( GL_VERTEX_ARRAY );
 	glClearColor( 0.3, 0.3, 0.3, 1.0 );
+
+	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
 	return true;
 }
 
@@ -64,6 +70,8 @@ bool SpinGame::LoadResources()
 	resources.LoadPNG( "assets/textures/creature.png", "creature" );
 	resources.LoadPNG( "assets/textures/burst.png", "burst" );
 	resources.LoadPNG( "assets/textures/beagle.png", "beagle" );
+	resources.LoadPNG( "assets/textures/crowbar.png", "crowbar" );
+	resources.LoadPNG( "assets/textures/kevin.png", "kevin" );
 	resources.LoadPNG( "assets/textures/flask.png", "flask" );
 	resources.LoadPNG( "assets/textures/rack.png", "rack" );
 	resources.LoadPNG( "assets/textures/rock1.png", "rock1" );
@@ -76,6 +84,10 @@ void SpinGame::Render()
 	glClear( GL_COLOR_BUFFER_BIT );
 	camera.position_x = kevin->position.x;
 	camera.position_y = kevin->position.y;
+
+	//printf( "(%f,%f)\n", kevin->position.x, kevin->position.y );
+	//fflush( stdout );
+
 	world.Render();
 	glutSwapBuffers();
 }

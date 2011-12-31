@@ -1,0 +1,30 @@
+<entity type="body">
+	<param name="mass" value="30.0" />
+	<param name="moment" value="800" />
+
+	<quad>
+		<param name="texture_key" value="crowbar" />
+		<vec2d name="position" x="0.0" y="1.0" />
+		<vec2d name="size" x="45.0" y="14.0" />
+	</quad>
+
+	<shape type="poly" friction="0.7">
+		<vec2d x="-20.0" y="-2.6" />
+		<vec2d x="-22.0" y="4" />
+		<vec2d x="-17.0" y="6" />
+		<vec2d x="-17.0" y="-2.6" />
+	</shape>
+
+	<shape type="poly" friction="0.7">
+		<vec2d x="-20.0" y="-2.6" />
+		<vec2d x="-20.0" y="0.6" />
+		<vec2d x="17.0" y="0.6" />
+		<vec2d x="17.0" y="-2.6" />
+	</shape>
+
+	<shape type="poly" friction="0.7">
+		<vec2d x="17.0" y="0.6" />
+		<vec2d x="22.0" y="-4.0" />
+		<vec2d x="17.0" y="-2.6" />
+	</shape>
+</entity>

@@ -2,6 +2,7 @@
 #define SPIN_GRAPPLE_GUN_H
 
 #include <BodyEntity.h>
+#include <ConstraintEntity.h>
 #include <Vector.h>
 #include <Color.h>
 #include <vector>
@@ -43,33 +44,32 @@ namespace spin
 		void Tick( int milliseconds );
 	};
 
-	class GrappleConstraint: public ConstraintEntity
+	class GrappleConstraint
 	{
 		public:
-		GrappleConstraint(): ConstraintEntity() {
-			constraint = 0;
-		}
-		void Render();
+		void Attach( BodyEntity* body_a, BodyEntity* body_b, Vector offset_a, Vector offset_b );
 
 		protected:
+		GrappleConstraint( GrappleInfo new_info ): info( new_info ) {}
 		GrappleInfo info;
-		GrappleConstraint( GrappleInfo new_info ): ConstraintEntity(), info( new_info ) {
-			constraint = 0;
-		}
+
+		void Render( cpConstraint* own_constraint );
 	};
 
-	class GrappleConstraintWinch: public GrappleConstraint
+	class GrappleConstraintWinch: public GrappleConstraint, public ConstraintSlideJoint
 	{
 		public:
-		GrappleConstraintWinch( BodyEntity* new_body_a, Vector static_anchor, GrappleInfo new_info );
-		GrappleConstraintWinch( BodyEntity* new_body_a, BodyEntity* new_body_b, Vector offset_a, Vector offset_b, GrappleInfo new_info );
+		GrappleConstraintWinch( GrappleInfo new_info ): GrappleConstraint( new_info ) {}
+
+		void Render();
 	};
 
-	class GrappleConstraintSpringy: public GrappleConstraint
+	class GrappleConstraintSpringy: public GrappleConstraint, public ConstraintSpring
 	{
 		public:
-		GrappleConstraintSpringy( BodyEntity* new_body_a, Vector static_anchor, GrappleInfo new_info );
-		GrappleConstraintSpringy( BodyEntity* new_body_a, BodyEntity* new_body_b, Vector offset_a, Vector offset_b, GrappleInfo new_info );
+		GrappleConstraintSpringy( GrappleInfo new_info ): GrappleConstraint( new_info ) {};
+
+		void Render();
 	};
 
 	class GrappleGun
@@ -92,7 +92,6 @@ namespace spin
 		int current_hook;
 		GrappleInfo grapple_info[MAX_GRAPPLE_HOOKS];
 	};
-
 };
 
 #endif

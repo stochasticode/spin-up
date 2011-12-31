@@ -92,10 +92,16 @@ void BodyEntity::AddShapeCircle( float radius, Vector offset, float friction )
 	shape->data = this;
 }
 
-void BodyEntity::AddShapeRect( float width, float height, float friction )
+void BodyEntity::AddShapeRect( float width, float height, Vector offset, float friction )
 {
 	// set up shape
-	cpShape* shape = cpBoxShapeNew( body, width, height );
+	cpBB box;
+	box.l = offset.x - width/2.0;
+	box.b = offset.y - height/2.0;
+	box.r = offset.x + width/2.0;
+	box.t = offset.y + height/2.0;
+
+	cpShape* shape = cpBoxShapeNew2( body, box );
 	shapes.push_back( shape );
 	cpShapeSetFriction( shape, friction );
 	cpSpaceAddShape( SPIN.world.GetCPSpace(), shape );
@@ -443,3 +449,15 @@ bool BodyEntity::LoadPolyElement( TiXmlElement* element )
 	shapes[shapes.size()-1]->collision_type = World::COL_TYPE_PROP;
 	return true;
 }
+
+StaticBody::StaticBody()
+{
+	body = SPIN.world.GetCPSpace()->staticBody;
+}
+
+StaticBody::~StaticBody()
+{
+	// don't delete body in ~BodyEntity()
+	body = 0;
+}
+

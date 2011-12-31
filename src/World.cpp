@@ -1,6 +1,7 @@
 #include <World.h>
 #include <SpinGame.h>
 #include <Entity.h>
+#include <ConstraintEntity.h>
 #include <SpinXML.h>
 #include <chipmunk.h>
 #include <tinyxml.h>
@@ -9,11 +10,11 @@
 
 using namespace spin;
 
-World::World(): space( cpSpaceNew() ), delta_tick( 1000 / 80 ), delta_tick_seconds( delta_tick / 1000.0 )
+World::World(): space( cpSpaceNew() ), static_body( 0 ), delta_tick( 1000 / 80 ), delta_tick_seconds( delta_tick / 1000.0 )
 {
 	// set up space
-	cpSpaceSetGravity( space, cpv( 0, -70 ) ); 
-	cpSpaceSetIterations( space, 16 );
+	cpSpaceSetGravity( space, cpv( 0, -90 ) ); 
+	cpSpaceSetIterations( space, 26 );
 	cpSpaceSetDamping( space, 0.9 );
 
 	cpSpaceAddCollisionHandler( space, World::COL_TYPE_GRAPPLE, World::COL_TYPE_SURFACE, 0, 0, GrappleGun::PostSolveGrapple, 0, 0);
@@ -40,9 +41,17 @@ World::~World()
 			entities[i] = 0;
 		}
 	}
+
 	// delete space
 	if( space != 0 )
 		cpSpaceFree( space );
+}
+
+void World::Init()
+{
+	// set up static body
+	static_body = new StaticBody();
+	AddEntity( static_body, 1 );
 }
 
 void World::Render()
@@ -178,18 +187,24 @@ bool World::LoadLevel( const char* xml_path )
 			if( SpinXML::ReadVec2D( child, name, kevin_position ) )
 				SPIN.kevin->SetPosition( kevin_position );
 		}
+		/*
 		// surface
 		else if( strcmp( "surface", child->Value() ) == 0 )
 		{
 			if( !AddSurfaceElement( child, Vector( 0.0, 0.0 ), 1.0 ) )
 				return false;
 		}
+		*/
 		// entity
 		else if( strcmp( "entity", child->Value() ) == 0 )
 		{
 			Entity* new_entity;
 			if( SpinXML::ReadEntity( child, &new_entity ) )
-				AddEntity( new_entity, 4 );
+			{
+				// static body doesn't need to be added to the entity list
+				if( !dynamic_cast<StaticBody*>( new_entity ) )
+					AddEntity( new_entity, 4 );
+			}
 		}
 
 		child = child->NextSiblingElement();
@@ -197,6 +212,7 @@ bool World::LoadLevel( const char* xml_path )
 	return true;
 }
 
+/*
 bool World::AddSurfaceElement( TiXmlElement* element, Vector position, float scale )
 {
 	// stringstream used to convert char* from XML to other types
@@ -255,6 +271,7 @@ bool World::AddSurfaceElement( TiXmlElement* element, Vector position, float sca
 	AddEntity( new SurfaceEntity( position.x+scale*x1, position.y+scale*y1, position.x+scale*x2, position.y+scale*y2, scale*radius, friction ), 4 );
 	return true;
 }
+*/
 
 void World::RemoveEntityFromLayer( Entity* entity )
 {

@@ -1,6 +1,6 @@
 <entity type="body">
-	<param name="mass" value="10.0" />
-	<param name="moment" value="300" />
+	<param name="mass" value="20.0" />
+	<param name="moment" value="900" />
 
 	<quad>
 		<param name="texture_key" value="DEFAULT" />
@@ -11,7 +11,7 @@
 	<quad>
 		<param name="texture_key" value="grate" />
 		<vec2d name="position" x="0.0" y="-1.0" />
-		<vec2d name="size" x="58.0" y="2.0" />
+		<vec2d name="size" x="50.0" y="2.0" />
 	</quad>
 
 	<shape type="poly" friction="0.7">
@@ -22,9 +22,9 @@
 	</shape>
 
 	<shape type="poly" friction="0.7">
-		<vec2d x="-29.0" y="-2.0" />
-		<vec2d x="-29.0" y="0.0" />
-		<vec2d x="29.0" y="0.0" />
-		<vec2d x="29.0" y="-2.0" />
+		<vec2d x="-25.0" y="-2.0" />
+		<vec2d x="-25.0" y="0.0" />
+		<vec2d x="25.0" y="0.0" />
+		<vec2d x="25.0" y="-2.0" />
 	</shape>
 </entity>

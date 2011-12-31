@@ -110,6 +110,18 @@ bool SpinXML::ReadEntity( TiXmlElement* element, Entity** entity_out  )
 			return false;
 		}
 	}
+	// static_body
+	else if( strcmp( type, "static_body" ) == 0 )
+	{
+		*entity_out = SPIN.world.GetStaticBody();
+		if( SPIN.world.GetStaticBody() != 0 && SPIN.world.GetStaticBody()->LoadXML( element ) )
+			return true;
+		else
+		{
+			fprintf( stderr, "SpinXML::ReadEntity -> StaticBody::LoadXML() failed!\n" );
+			return false;
+		}
+	}
 	// SnapConstraint
 	if( strcmp( type, "snap_constraint" ) == 0 )
 	{

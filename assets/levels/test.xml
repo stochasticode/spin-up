@@ -1,18 +1,165 @@
 <spin_level>
 	<kevin x="-60" y="-68" />
 
-	<entity type="snap_constraint">
-		<entity_ref entity_alias="kevin" />
-		<vec2d x="-60" y="-70" />
+	<entity type="static_body">
+
+		<!-- floor1 -->
+		<shape type="poly" friction="0.7">
+			<vec2d x="-100.0" y="-105.0" />
+			<vec2d x="-100.0" y="-95.0" />
+			<vec2d x="100.0" y="-95.0" />
+			<vec2d x="100.0" y="-105.0" />
+		</shape>
+		<quad>
+			<vec2d name="size" x="200" y="10" />
+			<vec2d name="position" x="0.0" y="-100.0" />
+			<param name="texture_key" value="DEFAULT" />
+		</quad>
+
+		<!-- floor2 -->
+		<shape type="poly" friction="0.7">
+			<vec2d x="-400.0" y="-105.0" />
+			<vec2d x="-400.0" y="-95.0" />
+			<vec2d x="-150.0" y="-95.0" />
+			<vec2d x="-150.0" y="-105.0" />
+		</shape>
+		<quad>
+			<vec2d name="size" x="250" y="10" />
+			<vec2d name="position" x="-275.0" y="-100.0" />
+			<param name="texture_key" value="DEFAULT" />
+		</quad>
+
+		<!-- vent floor -->
+		<shape type="poly" friction="0.7">
+			<vec2d x="-200.0" y="25.0" />
+			<vec2d x="-200.0" y="35.0" />
+			<vec2d x="40.0" y="35.0" />
+			<vec2d x="40.0" y="25.0" />
+		</shape>
+		<quad>
+			<vec2d name="size" x="240" y="10" />
+			<vec2d name="position" x="-80.0" y="30.0" />
+			<param name="texture_key" value="DEFAULT" />
+		</quad>
+		
+		<!-- vent floor 2-->
+		<shape type="poly" friction="0.7">
+			<vec2d x="-390.0" y="25.0" />
+			<vec2d x="-390.0" y="35.0" />
+			<vec2d x="-240.0" y="35.0" />
+			<vec2d x="-240.0" y="25.0" />
+		</shape>
+		<quad>
+			<vec2d name="size" x="150" y="10" />
+			<vec2d name="position" x="-315.0" y="30.0" />
+			<param name="texture_key" value="DEFAULT" />
+		</quad>
+
+		<shape type="poly" friction="0.7">
+			<vec2d x="80.0" y="25.0" />
+			<vec2d x="80.0" y="35.0" />
+			<vec2d x="100.0" y="35.0" />
+			<vec2d x="100.0" y="25.0" />
+		</shape>
+		<quad>
+			<vec2d name="size" x="20" y="10" />
+			<vec2d name="position" x="90.0" y="30.0" />
+			<param name="texture_key" value="DEFAULT" />
+		</quad>
+
+		<shape type="poly" friction="0.7">
+			<vec2d x="80.0" y="35.0" />
+			<vec2d x="80.0" y="500.0" />
+			<vec2d x="90.0" y="500.0" />
+			<vec2d x="90.0" y="35.0" />
+		</shape>
+		<quad>
+			<vec2d name="size" x="10" y="465" />
+			<vec2d name="position" x="85.0" y="267.25" />
+			<param name="texture_key" value="DEFAULT" />
+		</quad>
+
+		<shape type="poly" friction="0.7">
+			<vec2d x="30.0" y="70.0" />
+			<vec2d x="30.0" y="500.0" />
+			<vec2d x="40.0" y="500.0" />
+			<vec2d x="40.0" y="70.0" />
+		</shape>
+		<quad>
+			<vec2d name="size" x="10" y="430" />
+			<vec2d name="position" x="35.0" y="285" />
+			<param name="texture_key" value="DEFAULT" />
+		</quad>
+
+		<!-- vent ceiling -->
+		<shape type="poly" friction="0.7">
+			<vec2d x="-400.0" y="60.0" />
+			<vec2d x="-400.0" y="70.0" />
+			<vec2d x="40.0" y="70.0" />
+			<vec2d x="40.0" y="60.0" />
+		</shape>
+		<quad>
+			<vec2d name="size" x="440" y="10" />
+			<vec2d name="position" x="-180.0" y="65" />
+			<param name="texture_key" value="DEFAULT" />
+		</quad>
+
+		<!-- left wall 1 -->
+		<shape type="poly" friction="0.7">
+			<vec2d x="-100.0" y="-95.0" />
+			<vec2d x="-100.0" y="25.0" />
+			<vec2d x="-90.0" y="25.0" />
+			<vec2d x="-90.0" y="-95.0" />
+		</shape>
+		<quad>
+			<vec2d name="size" x="10" y="120" />
+			<vec2d name="position" x="-95.0" y="-35" />
+			<param name="texture_key" value="DEFAULT" />
+		</quad>
+
+		<!-- right wall 2 -->
+		<shape type="poly" friction="0.7">
+			<vec2d x="-160.0" y="-95.0" />
+			<vec2d x="-160.0" y="25.0" />
+			<vec2d x="-150.0" y="25.0" />
+			<vec2d x="-150.0" y="-95.0" />
+		</shape>
+		<quad>
+			<vec2d name="size" x="10" y="120" />
+			<vec2d name="position" x="-155.0" y="-35" />
+			<param name="texture_key" value="DEFAULT" />
+		</quad>
+
+		<!-- left wall 2 -->
+		<shape type="poly" friction="0.7">
+			<vec2d x="-400.0" y="-95.0" />
+			<vec2d x="-400.0" y="60.0" />
+			<vec2d x="-390.0" y="60.0" />
+			<vec2d x="-390.0" y="-95.0" />
+		</shape>
+		<quad>
+			<vec2d name="size" x="10" y="155" />
+			<vec2d name="position" x="-395.0" y="-17.5" />
+			<param name="texture_key" value="DEFAULT" />
+		</quad>
+
+		<shape type="poly" friction="0.7">
+			<vec2d x="100.0" y="25.0" />
+			<vec2d x="100.0" y="-95.0" />
+			<vec2d x="90.0" y="-95.0" />
+			<vec2d x="90.0" y="25.0" />
+		</shape>
+		<quad>
+			<vec2d name="size" x="10" y="120" />
+			<vec2d name="position" x="95.0" y="-35" />
+			<param name="texture_key" value="DEFAULT" />
+		</quad>
+
 	</entity>
 
-	<surface x1="-100" y1="-100" x2="100" y2="-100" >
-		<surface_param name="radius" value="3" />
-		<surface_param name="friction" value="1" />
-	</surface>
 
 	<entity type="quad">
-		<vec2d name="position" x="-60" y="-68" />
+		<vec2d name="position" x="-60" y="-65" />
 		<quad>
 			<vec2d name="size" x="60" y="60" />
 			<vec2d name="position" x="0.0" y="0.0" />
@@ -20,43 +167,35 @@
 		</quad>
 	</entity>
 
-	<surface x1="-100" y1="30" x2="40" y2="30" >
-		<surface_param name="radius" value="3" />
-		<surface_param name="friction" value="1" />
-	</surface>
-	<surface x1="80" y1="30" x2="100" y2="30" >
-		<surface_param name="radius" value="3" />
-		<surface_param name="friction" value="1" />
-	</surface>
-
-	<surface x1="80" y1="30" x2="80" y2="60" >
-		<surface_param name="radius" value="3" />
-		<surface_param name="friction" value="1" />
-	</surface>
-	<surface x1="80" y1="60" x2="-120" y2="60" >
-		<surface_param name="radius" value="3" />
-		<surface_param name="friction" value="1" />
-	</surface>
-
-	<surface x1="-100" y1="-100" x2="-100" y2="30" >
-		<surface_param name="radius" value="3" />
-		<surface_param name="friction" value="1" />
-	</surface>
-	<surface x1="100" y1="-100" x2="100" y2="30" >
-		<surface_param name="radius" value="3" />
-		<surface_param name="friction" value="1" />
-	</surface>
+	<entity type="snap_constraint">
+		<entity_ref entity_alias="kevin" />
+		<vec2d x="-60" y="-70" />
+	</entity>
 
 	<entity type="body">
 		<param name="alias" value="grate1" />
 		<param name="external" value="assets/entities/grate.xml" />
-		<vec2d name="position" x="60.0" y="20.0" />
+		<vec2d name="position" x="60.0" y="25.0" />
+	</entity>
+
+	<entity type="body">
+		<param name="alias" value="grate2" />
+		<param name="external" value="assets/entities/grate.xml" />
+		<vec2d name="position" x="-220.0" y="20.0" />
 	</entity>
 
 	<entity type="snap_constraint">
 		<entity_ref entity_alias="grate1" />
 		<vec2d x="60" y="40" />
-		<param name="strength" value="500" />
+		<param name="strength" value="1400" />
+		<param name="damping" value="1000" />
+		<param name="max_length" value="15" />
+	</entity>
+
+	<entity type="snap_constraint">
+		<entity_ref entity_alias="grate2" />
+		<vec2d x="-220" y="40" />
+		<param name="strength" value="700" />
 		<param name="max_length" value="20" />
 	</entity>
 
@@ -68,12 +207,12 @@
 	<entity type="body">
 		<param name="external" value="assets/entities/flask.xml" />
 		<param name="scale" value="2.0" />
+		<param name="mass" value="50" />
 		<vec2d name="position" x="0.0" y="-20.0" />
 	</entity>
 
 	<entity type="body">
 		<param name="external" value="assets/entities/flask.xml" />
-		<!--<param name="scale" value="1.3" />-->
 		<vec2d name="position" x="13.0" y="-25.0" />
 	</entity>
 
@@ -82,6 +221,5 @@
 		<param name="scale" value="1.3" />
 		<vec2d name="position" x="22.0" y="-25.0" />
 	</entity>
-
 
 </spin_level>

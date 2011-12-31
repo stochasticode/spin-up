@@ -136,9 +136,6 @@ void GrappleGun::PostSolveGrapple( cpArbiter *arb, cpSpace *space, void *unused 
 		BodyEntity* prop= dynamic_cast<BodyEntity*>((Entity*)b->data);
 		if( prop != 0 )
 			cpSpaceAddPostStepCallback( space, (cpPostStepFunc)GrappleGun::PostStepGrapple, a, b );
-		// surface
-		else
-			cpSpaceAddPostStepCallback( space, (cpPostStepFunc)GrappleGun::PostStepGrapple, a, 0 );
 	}
 }
 
@@ -169,25 +166,21 @@ void GrappleGun::PostStepGrapple( cpSpace* space, cpShape* shape, cpShape* prop_
 			switch( grapple->info.type )
 			{
 				case GRAPPLE_WINCH:
-					constraint = new GrappleConstraintWinch( SPIN.kevin, prop, Vector( 0.0, 0.0 ), offset, grapple->info );
+				{
+					GrappleConstraintWinch* winch = new GrappleConstraintWinch( grapple->info );
+					float dist_x = SPIN.kevin->position.x-grapple->position.x;
+					float dist_y = SPIN.kevin->position.y-grapple->position.y;
+					winch->max_length = sqrt( dist_x*dist_x + dist_y*dist_y );
+					constraint = winch;
+					constraint->Attach( SPIN.kevin, prop, Vector( 0.0, 0.0 ), offset );
 					break;
+				}
 				default:
-					constraint = new GrappleConstraintSpringy( SPIN.kevin, prop, Vector( 0.0, 0.0 ), offset, grapple->info );
-			}
-	
-			unsigned long new_constraint_id = SPIN.world.AddEntity( constraint, 5 );
-			gun->grapple_info[grapple->info.hook_index].constraint_id = new_constraint_id;
-		}
-		// hit surface
-		else
-		{
-			switch( grapple->info.type )
-			{
-				case GRAPPLE_WINCH:
-					constraint = new GrappleConstraintWinch( SPIN.kevin, Vector( grapple->position.x, grapple->position.y ), grapple->info );
-					break;
-				default:
-					constraint = new GrappleConstraintSpringy( SPIN.kevin, Vector( grapple->position.x, grapple->position.y ), grapple->info );
+					GrappleConstraintSpringy* springy = new GrappleConstraintSpringy( grapple->info );
+					springy->strength= 60;
+					springy->damping = 10.0;
+					constraint = springy;
+					constraint->Attach( SPIN.kevin, prop, Vector( 0.0, 0.0 ), offset );
 			}
 	
 			unsigned long new_constraint_id = SPIN.world.AddEntity( constraint, 5 );
@@ -195,36 +188,21 @@ void GrappleGun::PostStepGrapple( cpSpace* space, cpShape* shape, cpShape* prop_
 		}
 	}
 }
+
+void GrappleConstraintSpringy::Render()
+{
+	GrappleConstraint::Render( constraint );
+}
+
+void GrappleConstraintWinch::Render()
+{
+	GrappleConstraint::Render( constraint );
+}
 	
-GrappleConstraintWinch::GrappleConstraintWinch( BodyEntity* new_body_a, Vector static_anchor, GrappleInfo new_info ): GrappleConstraint( new_info )
+void GrappleConstraint::Render( cpConstraint* own_constraint)
 {
-	float dist_x = new_body_a->position.x-static_anchor.x;
-	float dist_y = new_body_a->position.y-static_anchor.y;
-	float dist = sqrt( dist_x*dist_x + dist_y*dist_y );
-	InitConstraintSlideJoint( new_body_a, static_anchor, 0, dist );
-}
-
-GrappleConstraintWinch::GrappleConstraintWinch( BodyEntity* new_body_a, BodyEntity* new_body_b, Vector offset_a, Vector offset_b, GrappleInfo new_info ): GrappleConstraint( new_info )
-{
-	float dist_x = new_body_a->position.x-new_body_b->position.x;
-	float dist_y = new_body_a->position.y-new_body_b->position.y;
-	float dist = sqrt( dist_x*dist_x + dist_y*dist_y );
-	InitConstraintSlideJoint( new_body_a, new_body_b, offset_a, offset_b, 0, dist );
-}
-
-GrappleConstraintSpringy::GrappleConstraintSpringy( BodyEntity* new_body_a, Vector static_anchor, GrappleInfo new_info ): GrappleConstraint( new_info )
-{
-	InitConstraintSpring( new_body_a, static_anchor, 0, 50, 1.0 );
-}
-
-GrappleConstraintSpringy::GrappleConstraintSpringy( BodyEntity* new_body_a, BodyEntity* new_body_b, Vector offset_a, Vector offset_b, GrappleInfo new_info ): GrappleConstraint( new_info )
-{
-	InitConstraintSpring( new_body_a, new_body_b, offset_a, offset_b, 0, 50, 1.0 );
-}
-
-void GrappleConstraint::Render()
-{
-	cpDampedSpring* spring = (cpDampedSpring*)constraint;
+	// hmmm, this works for slide joints too but probably isn't the best way to get the two bodies...
+	cpDampedSpring* spring = (cpDampedSpring*)own_constraint;
 	cpBody* a = spring->constraint.a;
 	cpBody* b = spring->constraint.b;
 
@@ -256,7 +234,6 @@ void GrappleConstraint::Render()
 	// hook
 	glPushMatrix();
 	glTranslatef( cpBodyGetPos( b ).x + anchor_x, cpBodyGetPos( b ).y + anchor_y, 0 );
-
 	SPIN.resources.BindTexture( "burst" );
 	glBegin(GL_TRIANGLES);
 		glColor4f( info.color.r, info.color.g, info.color.b, 0.5 );

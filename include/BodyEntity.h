@@ -1,16 +1,16 @@
 #ifndef SPIN_BODY_ENTITY_H
 #define SPIN_BODY_ENTITY_H
 
-#include <Entity.h>
+#include <QuadEntity.h>
 
 struct TiXmlElement;
+struct cpSpace;
 
 namespace spin
 {
 	class BodyEntity: public QuadEntity
 	{
 		public:
-
 		BodyEntity();
 		virtual ~BodyEntity();
 
@@ -19,6 +19,8 @@ namespace spin
 
 		virtual void Render();
 		virtual void Tick( int milliseconds );
+
+		cpBody* GetBody() { return body; }
 
 		float GetRotation() { return body->a; }
 		void SetPosition( Vector new_position );
@@ -30,7 +32,7 @@ namespace spin
 		static bool render_shapes;
 		std::vector<unsigned long> constraint_ids;
 
-		friend class ConstraintEntity;
+		friend class World;
 
 		protected:
 
@@ -38,10 +40,9 @@ namespace spin
 
 		float MomentForCircle( float mass, float outer_radius, float inner_radius );
 		void AddShapeCircle( float radius, Vector offset, float friction );
-		void AddShapeRect( float width, float height, float friction );
+		void AddShapeRect( float width, float height, Vector offset, float friction );
 		void AddShapePoly( std::vector<Vector>& points, float friction );
 		void ChipmunkCleanup();
-
 
 		bool LoadPolyElement( TiXmlElement* element );
 
@@ -49,6 +50,13 @@ namespace spin
 		std::vector<cpShape*> shapes;
 
 		static GLfloat circle_points[];
+	};
+
+	class StaticBody: public BodyEntity
+	{
+		public:
+		StaticBody();
+		virtual ~StaticBody();
 	};
 }
 

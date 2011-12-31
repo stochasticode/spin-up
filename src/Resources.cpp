@@ -39,6 +39,10 @@ bool Resources::BindTexture( std::string key )
 		{
 			glBindTexture(GL_TEXTURE_2D, textures[key]);
 			current_texture_key = key;
+
+			// texture parameters
+			glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+			glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
 		}
 	}
 	return true;

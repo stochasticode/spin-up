@@ -7,17 +7,8 @@
 
 using namespace spin;
 
-SnapConstraint::SnapConstraint(): ConstraintEntity()
+SnapConstraint::SnapConstraint( float new_length, float new_strength, float new_damping, float new_max_length ): ConstraintSpring( new_length, new_strength, new_damping ), max_length( new_max_length )
 {
-	constraint = 0;
-	max_length = 45;
-}
-
-void SnapConstraint::Init( BodyEntity* new_body_a, Vector static_anchor, float strength, float new_max_length )
-{
-	//strength = 300;
-	max_length = new_max_length;
-	InitConstraintSpring( new_body_a, static_anchor, 0, strength, 20 );
 }
 
 void SnapConstraint::Render()
@@ -87,9 +78,6 @@ void SnapConstraint::Tick( int milliseconds )
 
 bool SnapConstraint::LoadXML( TiXmlElement* element )
 {
-	float strength = 300;
-	float max_length = 45;
-
 	// first child must be an entity_ref to a BodyEntity
 	Entity* entity_a = 0;
 	TiXmlElement* child1 = element->FirstChildElement();
@@ -153,6 +141,15 @@ bool SnapConstraint::LoadXML( TiXmlElement* element )
 					return false;
 				}
 			}
+			// damping
+			if( name.compare( "damping" ) == 0 )
+			{
+				if( !SpinUtil::ToFloat( value.c_str(), damping) )
+				{
+					fprintf( stderr, "SnapConstraint::LoadXML -> invalid damping value: %s\n", value.c_str() );
+					return false;
+				}
+			}
 			// max_length
 			else if( name.compare( "max_length" ) == 0 )
 			{
@@ -172,6 +169,6 @@ bool SnapConstraint::LoadXML( TiXmlElement* element )
 		next_child = next_child->NextSiblingElement();
 	}
 
-	Init( body_a, static_anchor, strength, max_length );
+	Attach( body_a, SPIN.world.GetStaticBody(), Vector( 0, 0 ), static_anchor );
 	return true;
 }

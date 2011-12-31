@@ -20,6 +20,9 @@ SpinGame& SpinGame::Instance()
 
 bool SpinGame::Init( int argc, char** argv )
 {
+	// init world
+	world.Init();
+
 	// initialize graphics
 	InitGraphics();
 
@@ -54,6 +57,9 @@ bool SpinGame::InitGraphics()
 	//glDepthFunc( GL_LESS );
 	glEnableClientState( GL_VERTEX_ARRAY );
 	glClearColor( 0.3, 0.3, 0.3, 1.0 );
+
+	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
 	return true;
 }
 

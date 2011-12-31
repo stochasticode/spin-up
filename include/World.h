@@ -5,6 +5,7 @@
 #include <vector>
 #include <map>
 #include <Entity.h>
+#include <BodyEntity.h>
 
 struct cpSpace;
 struct cpShape;
@@ -25,12 +26,15 @@ namespace spin
 		World();
 		~World();
 
+		void Init();
+
 		enum CollisionType { COL_TYPE_OTHER, COL_TYPE_SURFACE, COL_TYPE_PROP, COL_TYPE_PROJECTILE, COL_TYPE_GRAPPLE };
 
 		bool Tick( int milliseconds );
 		void Render();
 
 		cpSpace* GetCPSpace() { return space; }
+		StaticBody* GetStaticBody() { return static_body; }
 
 		unsigned long AddEntity( Entity* entity, int layer );
 		Entity* GetEntity( unsigned long entity_id );
@@ -41,7 +45,7 @@ namespace spin
 
 		private:
 		cpSpace* space;
-		//QuadEntity background;
+		StaticBody* static_body;
 		int delta_tick;
 		float delta_tick_seconds;
 		int last_tick;

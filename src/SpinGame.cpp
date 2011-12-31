@@ -70,6 +70,7 @@ bool SpinGame::LoadResources()
 	resources.LoadPNG( "assets/textures/creature.png", "creature" );
 	resources.LoadPNG( "assets/textures/burst.png", "burst" );
 	resources.LoadPNG( "assets/textures/beagle.png", "beagle" );
+	resources.LoadPNG( "assets/textures/crowbar.png", "crowbar" );
 	resources.LoadPNG( "assets/textures/kevin.png", "kevin" );
 	resources.LoadPNG( "assets/textures/flask.png", "flask" );
 	resources.LoadPNG( "assets/textures/rack.png", "rack" );
@@ -83,6 +84,10 @@ void SpinGame::Render()
 	glClear( GL_COLOR_BUFFER_BIT );
 	camera.position_x = kevin->position.x;
 	camera.position_y = kevin->position.y;
+
+	//printf( "(%f,%f)\n", kevin->position.x, kevin->position.y );
+	//fflush( stdout );
+
 	world.Render();
 	glutSwapBuffers();
 }

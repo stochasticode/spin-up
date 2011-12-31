@@ -212,6 +212,11 @@
 	</entity>
 
 	<entity type="body">
+		<param name="external" value="assets/entities/crowbar.xml" />
+		<vec2d name="position" x="-350" y="42" />
+	</entity>
+
+	<entity type="body">
 		<param name="external" value="assets/entities/flask.xml" />
 		<vec2d name="position" x="13.0" y="-25.0" />
 	</entity>

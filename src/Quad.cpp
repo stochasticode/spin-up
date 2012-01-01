@@ -9,14 +9,37 @@ using namespace spin;
 
 Quad::Quad(): 
 	texture_key( "DEFAULT" ), 
-	position( 0.0, 0.0 ),
-	size( 10.0, 10.0 ), 
-	rotation( 0.0 ),
 	texture_top_left( 0.0, 1.0 ),
 	texture_top_right( 1.0, 1.0 ),
 	texture_bottom_left( 0.0, 0.0 ),
-	texture_bottom_right( 1.0, 0.0 )
+	texture_bottom_right( 1.0, 0.0 ),
+	position( 0.0, 0.0 ),
+	size( 10.0, 10.0 ), 
+	rotation( 0.0 ),
+	texture_mode( Q_TEXTURE_ABSOLUTE ),
+	texture_scale( 1.0, 1.0 ),
+	texture_offset( 0.0, 0.0 )
 {
+}
+
+void Quad::SetTextureModeRelative( Vector new_texture_scale, Vector new_texture_offset )
+{
+	texture_mode = Q_TEXTURE_RELATIVE;
+	texture_scale = new_texture_scale;
+	texture_offset = new_texture_offset;
+
+	texture_top_left = Vector( texture_offset.x, texture_offset.y + (texture_scale.y*size.y) );
+	texture_top_right = Vector( texture_offset.x + (texture_scale.x*size.x), texture_offset.y + (texture_scale.y*size.y) );
+	texture_bottom_left = Vector( texture_offset.x, texture_offset.y );
+	texture_bottom_right = Vector( texture_offset.x + (texture_scale.x*size.x ), texture_offset.y );
+}
+
+void Quad::SetSize( Vector new_size )
+{
+	size = new_size;
+	// reset texture coords if needed
+	if( texture_mode == Q_TEXTURE_RELATIVE )
+		SetTextureModeRelative( texture_scale, texture_offset );
 }
 
 void Quad::Render()
@@ -58,6 +81,16 @@ bool Quad::LoadXML( TiXmlElement* element )
 			// texture_key
 			if( name.compare( "texture_key" ) == 0 )
 				texture_key = value;
+			// texture mode
+			else if( name.compare( "texture_mode" ) == 0 )
+			{
+				if( value.compare( "relative" ) == 0 )
+					texture_mode = Q_TEXTURE_RELATIVE;
+				else if( value.compare( "absolute" ) == 0 )
+					texture_mode = Q_TEXTURE_ABSOLUTE;
+				else
+					fprintf( stderr, "Quad::LoadXML -> unsuppored texture_mode: %s!\n", value.c_str() );
+			}
 			// unsupported
 			else
 				fprintf( stderr, "Quad::LoadXML -> unsuppored param: %s!\n", name.c_str() );
@@ -79,11 +112,19 @@ bool Quad::LoadXML( TiXmlElement* element )
 			// size
 			else if( name.compare( "size" ) == 0 )
 				size = vec2d;
+			// size
+			else if( name.compare( "texture_scale" ) == 0 )
+				texture_scale = vec2d;
 			// unsupported
 			else
 				fprintf( stderr, "Quad::LoadXML -> unsuppored vec2d: %s!\n", name.c_str() );
 		}
 		child = child->NextSiblingElement();
 	}
+
+	// set texture coords if needed
+	if( texture_mode == Q_TEXTURE_RELATIVE )
+		SetTextureModeRelative( texture_scale, texture_offset );
+
 	return true;
 }

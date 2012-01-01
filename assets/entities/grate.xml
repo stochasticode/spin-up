@@ -6,12 +6,16 @@
 		<param name="texture_key" value="DEFAULT" />
 		<vec2d name="position" x="0.0" y="1.0" />
 		<vec2d name="size" x="30.0" y="2.0" />
+		<param name="texture_mode" value="relative" />
+		<vec2d name="texture_scale" x="0.1" y="0.1" />
 	</quad>
 
 	<quad>
 		<param name="texture_key" value="grate" />
 		<vec2d name="position" x="0.0" y="-1.0" />
 		<vec2d name="size" x="50.0" y="2.0" />
+		<param name="texture_mode" value="relative" />
+		<vec2d name="texture_scale" x="0.1" y="0.1" />
 	</quad>
 
 	<shape type="poly" friction="0.7">

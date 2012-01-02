@@ -48,6 +48,7 @@ void Quad::Render()
 	glTranslatef( position.x, position.y, 0 );
 	glRotatef( rotation, 0, 0, 1 );
 	glScalef( size.x, size.y, 1 );
+	//glScalef( 10, 10, 1 );
 
 	SPIN.resources.BindTexture( texture_key );
 
@@ -120,7 +121,7 @@ bool Quad::TryLoadElement( TiXmlElement* element, bool& error )
 		// size
 		else if( name.compare( "size" ) == 0 )
 			size = vec2d;
-		// size
+		// texture_scale
 		else if( name.compare( "texture_scale" ) == 0 )
 			texture_scale = vec2d;
 		// unsupported

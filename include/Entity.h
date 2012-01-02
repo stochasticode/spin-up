@@ -26,6 +26,8 @@ namespace spin
 		virtual void Tick( int milliseconds ) {}
 		virtual void Render() {}
 
+		virtual std::string GetXMLDesc() { return "Entity"; }
+
 		protected:
 		Entity(): dead( false ), id( -1 ), alias( "UNNAMED" ) {}
 

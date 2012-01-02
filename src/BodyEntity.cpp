@@ -42,7 +42,7 @@ GLfloat BodyEntity::circle_points[] = {
 
 bool BodyEntity::render_shapes = false;
 
-BodyEntity::BodyEntity(): QuadEntity()
+BodyEntity::BodyEntity()
 {
 	body = cpBodyNew( 1.0, 1.0 );
 	cpBodySetPos( body, cpv( 0, 0 ) );

@@ -4,6 +4,10 @@
 
 using namespace spin;
 
+QuadEntity::QuadEntity(): rotation( 0.0 ), scale( 1.0 )
+{
+}
+
 bool QuadEntity::TryLoadElement( TiXmlElement* element, bool& error )
 {
 	error = false;

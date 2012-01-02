@@ -16,6 +16,7 @@ namespace spin
 
 		// XML stuff
 		virtual bool TryLoadElement( TiXmlElement* element, bool& error );
+		virtual std::string GetXMLDesc() { return "BodyEntity"; }
 
 		virtual void Render();
 		virtual void Tick( int milliseconds );
@@ -31,6 +32,7 @@ namespace spin
 
 		static bool render_shapes;
 		std::vector<unsigned long> constraint_ids;
+
 
 		friend class World;
 

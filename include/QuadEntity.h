@@ -12,11 +12,13 @@ namespace spin
 		float rotation;
 		float scale;
 
-		QuadEntity(): Entity(), rotation( 0.0 ), scale( 1.0 ) {}
+		QuadEntity();
 		virtual ~QuadEntity() {}
 
 		virtual void Render();
 		void AddQuad( Quad new_quad ) { quads.push_back( new_quad ); }
+
+		virtual std::string GetXMLDesc() { return "QuadEntity"; }
 
 		protected:
 		std::vector<Quad> quads;

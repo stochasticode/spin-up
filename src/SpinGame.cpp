@@ -47,7 +47,7 @@ bool SpinGame::Init( int argc, char** argv )
 	world.AddEntity( background, 0 );
 
 	// load level
-	if( !world.LoadLevel( "assets/levels/test.xml" ) )
+	if( !world.LoadXML( "assets/levels/test.xml" ) )
 	{
 		fprintf( stderr, "Failed to load level!\n" );
 		return false;

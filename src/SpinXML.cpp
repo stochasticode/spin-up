@@ -33,7 +33,6 @@ bool SpinXML::LoadXML( const char* xml_path )
 
 bool SpinXML::LoadElements( TiXmlElement* element )
 {
-
 	// check for NULL
 	if( element == 0 )
 	{
@@ -51,14 +50,14 @@ bool SpinXML::LoadElements( TiXmlElement* element )
 			if( error )
 				return false;
 			else
-				fprintf( stderr, "SpinXML::LoadElement -> unsupported element '%s'\n", child->Value() );
+				fprintf( stderr, "SpinXML::LoadElement -> (%s) unsupported element '%s'\n", GetXMLDesc().c_str(), child->Value() );
 		}
 		child = child->NextSiblingElement();
 	}
 	return true;
 }
 
-bool SpinXML::ReadVec2D( TiXmlElement* element, std::string& name, Vector vector )
+bool SpinXML::ReadVec2D( TiXmlElement* element, std::string& name, Vector& vector )
 {
 	if( element == 0 )
 	{

@@ -2,6 +2,7 @@
 #include <SpinGame.h>
 #include <Entity.h>
 #include <ConstraintEntity.h>
+#include <SnapConstraint.h>
 #include <SpinXML.h>
 #include <chipmunk.h>
 #include <tinyxml.h>
@@ -93,7 +94,7 @@ bool World::Tick( int milliseconds )
 					// remove from layer
 					RemoveEntityFromLayer( (*it).second );
 
-
+					// delete
 					delete (*it).second;
 
 					// remove from main map
@@ -174,53 +175,86 @@ void World::RemoveEntityFromLayer( Entity* entity )
 	}
 }
 
-bool World::LoadLevel( const char* xml_path )
+bool World::TryLoadElement( TiXmlElement* element, bool& error )
 {
-	return false;
-	/*	
-	// load document
-	TiXmlDocument doc( xml_path );
-	if( !doc.LoadFile() )
+	error = false;
+
+	// check for NULL
+	if( element == 0 )
 	{
-		fprintf( stdout, "Unable to load level xml: %s\n", xml_path );
+		fprintf( stderr, "World::TryLoadElement -> element was NULL!\n" );
+		error = true;
 		return false;
 	}
 
-	// find root
-	TiXmlElement* root = doc.FirstChildElement( "spin_level" );
-	if( !root )
+	// kevin 
+	if( strcmp( "kevin", element->Value() ) == 0 )
 	{
-		fprintf( stdout, "Unable to find tag 'spin_levl' in  level xml: %s\n", xml_path );
+		// right now kevin is just like a vec2d, but could change in the future
+		Vector kevin_position;
+		std::string name;
+		if( ReadVec2D( element, name, kevin_position ) )
+			SPIN.kevin->SetPosition( kevin_position );
+	}
+	// entity
+	else if( strcmp( "entity", element->Value() ) == 0 )
+	{
+		if( !LoadEntity( element ) )
+		{
+			fprintf( stderr, "World::TryLoadElement -> unable to load entity element!\n" );
+			error = true;
+			return false;
+		}
+	}
+	// unsupported
+	else
 		return false;
-	}
-
-	// iterate through children
-	TiXmlElement* child = root->FirstChildElement();
-	while( child != 0 )
-	{
-		// kevin 
-		if( strcmp( "kevin", child->Value() ) == 0 )
-		{
-			// right now kevin is just like a vec2d, but could change in the future
-			Vector kevin_position;
-			std::string name;
-			if( SpinXML::ReadVec2D( child, name, kevin_position ) )
-				SPIN.kevin->SetPosition( kevin_position );
-		}
-		// entity
-		else if( strcmp( "entity", child->Value() ) == 0 )
-		{
-			Entity* new_entity;
-			if( SpinXML::ReadEntity( child, &new_entity ) )
-			{
-				// static body doesn't need to be added to the entity list
-				if( !dynamic_cast<StaticBody*>( new_entity ) )
-					AddEntity( new_entity, 4 );
-			}
-		}
-
-		child = child->NextSiblingElement();
-	}
+	
 	return true;
-	*/
+}
+
+bool World::LoadEntity( TiXmlElement* element )
+{
+	// get entity type
+	const char* type = element->Attribute( "type" );
+	if( type == 0 )
+	{
+		fprintf( stderr, "World::LoadEntity -> no type attribute!\n" );
+		return false;
+	}
+
+	Entity* new_entity;
+
+	// QuadEntity
+	if( strcmp( type, "quad" ) == 0 )
+		new_entity = new QuadEntity();
+	// BodyEntity
+	else if( strcmp( type, "body" ) == 0 )
+		new_entity = new BodyEntity();
+	// static_body
+	else if( strcmp( type, "static_body" ) == 0 )
+		new_entity = new StaticBody();
+	// SnapConstraint
+	else if( strcmp( type, "snap_constraint" ) == 0 )
+		new_entity = new SnapConstraint();
+	else
+	{
+		fprintf( stderr, "World::LoadEntity -> unsupported entity type: '%s!'\n", type );
+		return false;
+	}
+
+	if( new_entity->LoadElements( element ) )
+	{
+		// static body is already in the entity list and doesn't need to be added again
+		if( dynamic_cast<StaticBody*>(new_entity) == 0 )
+			AddEntity( new_entity, 4 );
+	}
+	else
+	{
+		delete new_entity;
+		fprintf( stderr, "Entity::LoadElements() failed!\n" );
+		return false;
+	}
+
+	return true;
 }

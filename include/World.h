@@ -2,14 +2,12 @@
 #define GAL_WORLD_H
 
 #include <Vector.h>
+#include <Entity.h>
+#include <SpinXML.h>
 #include <vector>
 #include <map>
-#include <Entity.h>
-#include <BodyEntity.h>
 
 struct cpSpace;
-struct cpShape;
-struct cpBody;
 struct TiXmlElement;
 
 #ifndef SPIN_ENTITY_LAYERS
@@ -19,8 +17,9 @@ struct TiXmlElement;
 namespace spin
 {
 	class Entity;
+	class StaticBody;
 
-	class World
+	class World: public SpinXML
 	{
 		public:
 		World();
@@ -40,8 +39,9 @@ namespace spin
 		Entity* GetEntity( unsigned long entity_id );
 		Entity* GetEntityByAlias( std::string& alias );
 
-		bool LoadLevel( const char* xml_path );
-		bool AddSurfaceElement( TiXmlElement* element, Vector position, float scale );
+		virtual bool TryLoadElement( TiXmlElement* element, bool& error );
+
+		virtual const char* GetDescription() { return "World"; }
 
 		private:
 		cpSpace* space;
@@ -56,6 +56,8 @@ namespace spin
 		unsigned long last_entity_id;
 
 		void RemoveEntityFromLayer( Entity* entity );
+
+		bool LoadEntity( TiXmlElement* element );
 	};
 }
 #endif

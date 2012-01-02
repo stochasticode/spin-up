@@ -76,19 +76,22 @@ void SnapConstraint::Tick( int milliseconds )
 	}
 }
 
-bool SnapConstraint::LoadXML( TiXmlElement* element )
+bool SnapConstraint::TryLoadElement( TiXmlElement* element, bool& error )
 {
+	/*
 	// first child must be an entity_ref to a BodyEntity
 	Entity* entity_a = 0;
 	TiXmlElement* child1 = element->FirstChildElement();
 	if( child1 == 0 )
 	{
 		fprintf( stderr, "SpinXML::ReadSnapConstraint -> constraint has no child elements!'\n" );
+		error = true;
 		return false;
 	}
 	if( strcmp( "entity_ref", child1->Value() ) != 0 )
 	{
 		fprintf( stderr, "SpinXML::ReadSnapConstraint -> first child was not an entity_ref!'\n" );
+		error = true;
 		return false;
 	}
 	std::string alias1( child1->Attribute( "entity_alias" ) );
@@ -96,6 +99,7 @@ bool SnapConstraint::LoadXML( TiXmlElement* element )
 	if( !entity_a )
 	{
 		fprintf( stderr, "SpinXML::ReadSnapConstraint -> could not find entity with alias: %s!'\n", alias1.c_str() );
+		error = true;
 		return false;
 	}
 	// make sure it is a BodyEntity
@@ -103,6 +107,7 @@ bool SnapConstraint::LoadXML( TiXmlElement* element )
 	if( body_a == 0 )
 	{
 		fprintf( stderr, "SpinXML::ReadSnapConstraint -> entity with alias: %s is not a BodyEntity!'\n", alias1.c_str() );
+		error = true;
 		return false;
 	}
 
@@ -112,12 +117,14 @@ bool SnapConstraint::LoadXML( TiXmlElement* element )
 	if( child2 == 0 )
 	{
 		fprintf( stderr, "SpinXML::ReadSnapConstraint -> constraint has only one child element!'\n" );
+		error = true;
 		return false;
 	}
 	std::string name;
 	if( strcmp( "vec2d", child2->Value() ) != 0 || !SpinXML::ReadVec2D( child2, name, static_anchor) )
 	{
 		fprintf( stderr, "SpinXML::ReadSnapConstraint -> ReadVec2D failed for second child element!'\n" );
+		error = true;
 		return false;
 	}
 
@@ -170,5 +177,7 @@ bool SnapConstraint::LoadXML( TiXmlElement* element )
 	}
 
 	Attach( body_a, SPIN.world.GetStaticBody(), Vector( 0, 0 ), static_anchor );
+	return true;
+	*/
 	return true;
 }

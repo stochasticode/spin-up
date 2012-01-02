@@ -10,9 +10,56 @@
 
 using namespace spin;
 
-bool SpinXML::ReadVec2D( TiXmlElement* element, std::string& name, Vector& vector_out )
+bool SpinXML::LoadXML( const char* xml_path )
 {
-	// check for null pointers
+	// load document
+	TiXmlDocument doc( xml_path );
+	if( !doc.LoadFile() )
+	{
+		fprintf( stderr, "SpinXML::LoadXML -> unable to load entity xml: %s\n", xml_path );
+		return false;
+	}
+
+	// find root
+	TiXmlElement* root = doc.FirstChildElement();
+	if( !root )
+	{
+		fprintf( stderr, "SpinXML::LoadXML -> unable to find root tag in xml: %s\n", xml_path );
+		return false;
+	}
+
+	return LoadElements( root );
+}
+
+bool SpinXML::LoadElements( TiXmlElement* element )
+{
+
+	// check for NULL
+	if( element == 0 )
+	{
+		fprintf( stderr, "SpinXML::LoadElement -> element was NULL!\n" );
+		return false;
+	}
+
+	TiXmlElement* child = element->FirstChildElement();
+	while( child != 0 )
+	{
+		// try and load element
+		bool error = false;
+		if( !TryLoadElement( child, error ) )
+		{
+			if( error )
+				return false;
+			else
+				fprintf( stderr, "SpinXML::LoadElement -> unsupported element '%s'\n", child->Value() );
+		}
+		child = child->NextSiblingElement();
+	}
+	return true;
+}
+
+bool SpinXML::ReadVec2D( TiXmlElement* element, std::string& name, Vector vector )
+{
 	if( element == 0 )
 	{
 		fprintf( stderr, "SpinXML::ReadVec2D -> element was NULL!\n" );
@@ -25,7 +72,7 @@ bool SpinXML::ReadVec2D( TiXmlElement* element, std::string& name, Vector& vecto
 
 	if( !x || !y )
 	{
-		fprintf( stderr, "SpinXML::ReadVec2D-> param missing either x or y attribute\n" );
+		fprintf( stderr, "SpinXML::ReadVec2D-> vec2d missing either x or y attribute\n" );
 		return false;
 	}
 
@@ -35,8 +82,8 @@ bool SpinXML::ReadVec2D( TiXmlElement* element, std::string& name, Vector& vecto
 	if( SpinUtil::ToFloat( x, new_x ) && SpinUtil::ToFloat( y, new_y ) )
 	{
 		name = (name_attribute)? name_attribute: "";
-		vector_out.x = new_x;
-		vector_out.y = new_y;
+		vector.x = new_x;
+		vector.y = new_y;
 		return true;
 	}
 	else
@@ -58,17 +105,25 @@ bool SpinXML::ReadParam( TiXmlElement* element, std::string& name, std::string& 
 	const char* name_att = element->Attribute( "name" );
 	const char* value_att = element->Attribute( "value" );
 
-	name = ( name_att )? name_att: "";
-	value = ( value_att )? value_att: "";
+	if( !name_att || !value_att )
+	{
+		fprintf( stderr, "SpinXML::ReadParam -> param missing either name or value attribute\n" );
+		return false;
+	}
+
+	name = name_att;
+	value = value_att;
 	return true;
 }
 
-bool SpinXML::ReadEntity( TiXmlElement* element, Entity** entity_out  )
+/*
+bool SpinXML::ReadEntity( TiXmlElement* element, bool& error  )
 {
-	// check for null pointers
-	if( element == 0 || entity_out == 0 )
+	// check for null pointer
+	if( element == 0 )
 	{
-		fprintf( stderr, "SpinXML::ReadEntity -> either element or entity_out was NULL!\n" );
+		fprintf( stderr, "SpinXML::ReadEntity -> element was NULL!\n" );
+		error = true;
 		return false;
 	}
 
@@ -77,6 +132,7 @@ bool SpinXML::ReadEntity( TiXmlElement* element, Entity** entity_out  )
 	if( type == 0 )
 	{
 		fprintf( stderr, "SpinXML::ReadEntity -> no type attribute!\n" );
+
 		return false;
 	}
 
@@ -143,3 +199,4 @@ bool SpinXML::ReadEntity( TiXmlElement* element, Entity** entity_out  )
 		return false;
 	}
 }
+*/

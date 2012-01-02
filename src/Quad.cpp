@@ -65,61 +65,67 @@ void Quad::Render()
 	glPopMatrix();
 }
 
-bool Quad::LoadXML( TiXmlElement* element )
+bool Quad::TryLoadElement( TiXmlElement* element, bool& error )
 {
-	// iterate through children
-	TiXmlElement* child = element->FirstChildElement();
-	while( child != 0 )
-	{
-		// param
-		if( strcmp( "param", child->Value() ) == 0 )
-		{
-			std::string name = "";
-			std::string value = "";
-			SpinXML::ReadParam( child, name, value );
+	error = false;
 
-			// texture_key
-			if( name.compare( "texture_key" ) == 0 )
-				texture_key = value;
-			// texture mode
-			else if( name.compare( "texture_mode" ) == 0 )
-			{
-				if( value.compare( "relative" ) == 0 )
-					texture_mode = Q_TEXTURE_RELATIVE;
-				else if( value.compare( "absolute" ) == 0 )
-					texture_mode = Q_TEXTURE_ABSOLUTE;
-				else
-					fprintf( stderr, "Quad::LoadXML -> unsuppored texture_mode: %s!\n", value.c_str() );
-			}
-			// unsupported
-			else
-				fprintf( stderr, "Quad::LoadXML -> unsuppored param: %s!\n", name.c_str() );
-		}
-		// vec2d
-		else if( strcmp( "vec2d", child->Value() ) == 0 )
+	// param
+	if( strcmp( "param", element->Value() ) == 0 )
+	{
+		std::string name = "";
+		std::string value = "";
+		if( !ReadParam( element, name, value ) )
 		{
-			std::string name = "";
-			Vector vec2d;
-			if( !SpinXML::ReadVec2D( child, name, vec2d ) )
+			fprintf( stderr, "Quad::TryLoadElement -> ReadParam failed!\n" );
+			error = true;
+			return false;
+		}
+
+		// texture_key
+		if( name.compare( "texture_key" ) == 0 )
+			texture_key = value;
+		// texture mode
+		else if( name.compare( "texture_mode" ) == 0 )
+		{
+			if( value.compare( "relative" ) == 0 )
+				texture_mode = Q_TEXTURE_RELATIVE;
+			else if( value.compare( "absolute" ) == 0 )
+				texture_mode = Q_TEXTURE_ABSOLUTE;
+			else
 			{
-				fprintf( stderr, "Quad::LoadXML -> ReadVec2D failed!\n" );
+				fprintf( stderr, "Quad::LoadXML -> unsuppored texture_mode: %s!\n", value.c_str() );
+				error = true;
 				return false;
 			}
-
-			// position
-			if( name.compare( "position" ) == 0 )
-				position = vec2d;
-			// size
-			else if( name.compare( "size" ) == 0 )
-				size = vec2d;
-			// size
-			else if( name.compare( "texture_scale" ) == 0 )
-				texture_scale = vec2d;
-			// unsupported
-			else
-				fprintf( stderr, "Quad::LoadXML -> unsuppored vec2d: %s!\n", name.c_str() );
 		}
-		child = child->NextSiblingElement();
+		// unsupported
+		else
+			return false;
+	}
+	// vec2d
+	else if( strcmp( "vec2d", element->Value() ) == 0 )
+	{
+		std::string name = "";
+		Vector vec2d;
+		if( !SpinXML::ReadVec2D( element, name, vec2d ) )
+		{
+			fprintf( stderr, "Quad::LoadXML -> ReadVec2D failed!\n" );
+			error = true;
+			return false;
+		}
+
+		// position
+		if( name.compare( "position" ) == 0 )
+			position = vec2d;
+		// size
+		else if( name.compare( "size" ) == 0 )
+			size = vec2d;
+		// size
+		else if( name.compare( "texture_scale" ) == 0 )
+			texture_scale = vec2d;
+		// unsupported
+		else
+			return false;
 	}
 
 	// set texture coords if needed

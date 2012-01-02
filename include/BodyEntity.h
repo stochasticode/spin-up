@@ -14,8 +14,8 @@ namespace spin
 		BodyEntity();
 		virtual ~BodyEntity();
 
-		bool LoadXML( const char* xml_path );
-		bool LoadXML( TiXmlElement* element );
+		// XML stuff
+		virtual bool TryLoadElement( TiXmlElement* element, bool& error );
 
 		virtual void Render();
 		virtual void Tick( int milliseconds );

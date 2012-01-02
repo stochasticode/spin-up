@@ -37,6 +37,15 @@ bool SpinGame::Init( int argc, char** argv )
 	kevin->alias = "kevin";
 	world.AddEntity( kevin, 6 );
 
+	// background
+	QuadEntity* background = new QuadEntity();
+	Quad new_quad;
+	new_quad.texture_key = "dirt";
+	new_quad.SetTextureModeRelative( Vector( 0.008, 0.008 ), Vector( 0.0, 0.0 ) );
+	new_quad.SetSize( Vector( 1000, 1000 ) );
+	background->AddQuad( new_quad );
+	world.AddEntity( background, 0 );
+
 	// load level
 	if( !world.LoadLevel( "assets/levels/test.xml" ) )
 	{
@@ -70,6 +79,8 @@ bool SpinGame::LoadResources()
 	resources.LoadPNG( "assets/textures/creature.png", "creature" );
 	resources.LoadPNG( "assets/textures/burst.png", "burst" );
 	resources.LoadPNG( "assets/textures/beagle.png", "beagle" );
+	resources.LoadPNG( "assets/textures/stone.png", "stone" );
+	resources.LoadPNG( "assets/textures/dirt.png", "dirt" );
 	resources.LoadPNG( "assets/textures/crowbar.png", "crowbar" );
 	resources.LoadPNG( "assets/textures/kevin.png", "kevin" );
 	resources.LoadPNG( "assets/textures/flask.png", "flask" );

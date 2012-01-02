@@ -242,181 +242,137 @@ float BodyEntity::MomentForCircle( float mass, float outer_radius, float inner_r
 	return cpMomentForCircle( mass, outer_radius, inner_radius, cpvzero );
 }
 
-bool BodyEntity::LoadXML( const char* xml_path )
+bool BodyEntity::TryLoadElement( TiXmlElement* element, bool& error )
 {
-	// load document
-	TiXmlDocument doc( xml_path );
-	if( !doc.LoadFile() )
+	error = false;
+
+	// check for NULL
+	if( element == 0 )
 	{
-		fprintf( stderr, "BodyEntity::LoadXML -> unable to load entity xml: %s\n", xml_path );
+		fprintf( stderr, "BodyEntity::TryLoadElement -> element was NULL!\n" );
+		error = true;
 		return false;
 	}
 
-	// find root
-	TiXmlElement* root = doc.FirstChildElement( "entity" );
-	if( !root )
+	// param
+	if( strcmp( "param", element->Value() ) == 0 )
 	{
-		fprintf( stderr, "BodyEntity::LoadXML -> unable to find root tag 'entity' in xml: %s\n", xml_path );
-		return false;
+		std::string name = "";
+		std::string value = "";
+		SpinXML::ReadParam( element, name, value );
+
+		// external
+		if( name.compare( "external" ) == 0 )
+		{
+			if( !LoadXML( value.c_str() ) )
+			{
+				fprintf( stderr, "BodyEntity::LoadXML -> unable to load external: %s\n", value.c_str() );
+				error = true;
+				return false;
+			}
+		}
+		// scale
+		else if( name.compare( "scale" ) == 0 )
+		{
+			float new_scale;
+			if( SpinUtil::ToFloat( value.c_str(), new_scale ) )
+				Scale( new_scale );
+			else
+			{
+				fprintf( stderr, "BodyEntity::LoadXML -> invalid scale value: %s\n", value.c_str() );
+				error = true;
+				return false;
+			}
+		}
+		// mass
+		else if( name.compare( "mass" ) == 0 )
+		{
+			float new_mass;
+			if( SpinUtil::ToFloat( value.c_str(), new_mass ) )
+				SetMass( new_mass );
+			else
+			{
+				fprintf( stderr, "BodyEntity::LoadXML -> invalid mass value: %s\n", value.c_str() );
+				error = true;
+				return false;
+			}
+		}
+		// moment
+		else if( name.compare( "moment" ) == 0 )
+		{
+			float new_moment;
+			if( SpinUtil::ToFloat( value.c_str(), new_moment ) )
+				SetMoment( new_moment );
+			else
+			{
+				fprintf( stderr, "BodyEntity::LoadXML -> invalid moment value: %s\n", value.c_str() );
+				error = true;
+				return false;
+			}
+		}
+		// unsupported
+		else
+			return QuadEntity::TryLoadElement( element, error );
 	}
-
-	return LoadXML( root );
-}
-
-bool BodyEntity::LoadXML( TiXmlElement* element )
-{
-	// iterate through children
-	TiXmlElement* child = element->FirstChildElement();
-	while( child != 0 )
+	// shape
+	else if( strcmp( "shape", element->Value() ) == 0 )
 	{
-		// param
-		if( strcmp( "param", child->Value() ) == 0 )
+		const char* type = element->Attribute( "type" );
+		if( type == 0 )
 		{
-			std::string name = "";
-			std::string value = "";
-			SpinXML::ReadParam( child, name, value );
-
-			// external
-			if( name.compare( "external" ) == 0 )
-			{
-				if( !LoadXML( value.c_str() ) )
-				{
-					fprintf( stderr, "BodyEntity::LoadXML -> unable to load external: %s\n", value.c_str() );
-					return false;
-				}
-			}
-			// alias
-			else if( name.compare( "alias" ) == 0 )
-			{
-				alias = value;
-			}
-			// scale
-			else if( name.compare( "scale" ) == 0 )
-			{
-				float new_scale;
-				if( SpinUtil::ToFloat( value.c_str(), new_scale ) )
-					Scale( new_scale );
-				else
-				{
-					fprintf( stderr, "BodyEntity::LoadXML -> invalid scale value: %s\n", value.c_str() );
-					return false;
-				}
-			}
-			// mass
-			else if( name.compare( "mass" ) == 0 )
-			{
-				float new_mass;
-				if( SpinUtil::ToFloat( value.c_str(), new_mass ) )
-					SetMass( new_mass );
-				else
-				{
-					fprintf( stderr, "BodyEntity::LoadXML -> invalid mass value: %s\n", value.c_str() );
-					return false;
-				}
-			}
-			// moment
-			else if( name.compare( "moment" ) == 0 )
-			{
-				float new_moment;
-				if( SpinUtil::ToFloat( value.c_str(), new_moment ) )
-					SetMoment( new_moment );
-				else
-				{
-					fprintf( stderr, "BodyEntity::LoadXML -> invalid moment value: %s\n", value.c_str() );
-					return false;
-				}
-			}
-			// unsupported
-			else
-			{
-				fprintf( stderr, "BodyEntity::LoadXML -> unsupported param: %s\n", name.c_str() );
-			}
+			fprintf( stderr, "BodyEntity::LoadXML -> no 'type' attribute in shape tag!\n" );
+			error = true;
+			return false;
 		}
 
-		// vec2d
-		else if( strcmp( "vec2d", child->Value() ) == 0 )
+		// polygon
+		if( strcmp( type, "poly" ) == 0 )
 		{
-			std::string name = "";
-			Vector vec2d;
-			if( !SpinXML::ReadVec2D( child, name, vec2d ) )
+			if( !LoadPolyElement( element ) )
 			{
-				fprintf( stderr, "BodyEntity::LoadXML -> ReadVec2D failed!\n" );
-				return false;
-			}
-
-			// position
-			if( name.compare( "position" ) == 0 )
-				SetPosition( vec2d );
-			// unsupported
-			else
-				fprintf( stderr, "BodyEntity::LoadXML -> unsuppored vec2d: %s!\n", name.c_str() );
-		}
-			
-		// shape
-		else if( strcmp( "shape", child->Value() ) == 0 )
-		{
-			const char* type = child->Attribute( "type" );
-			if( type == 0 )
-			{
-				fprintf( stderr, "BodyEntity::LoadXML -> no 'type' attribute in shape tag!\n" );
-				return false;
-			}
-
-			// polygon
-			if( strcmp( type, "poly" ) == 0 )
-			{
-				if( !LoadPolyElement( child ) )
-				{
-					fprintf( stderr, "BodyEntity::LoadXML -> LoadPolyElement failed!\n" );
-					return false;
-				}
-			}
-			// circle
-			else if( strcmp( type, "circle" ) == 0 )
-			{
-				// friction and radius
-				float friction = 1.0;
-				float radius = 1.0;
-				if( !SpinUtil::ToFloat( child->Attribute( "friction" ), friction ) || !SpinUtil::ToFloat( child->Attribute( "radius" ), radius ) )
-				{
-					fprintf( stderr, "BodyEntity::LoadXML -> invalid or missing friction or radius attribute for shape type='circle'!\n" );
-					return false;
-				}
-
-				// offset vector
-				Vector offset( 0.0, 0.0 );
-				TiXmlElement* circle_child = child->FirstChildElement();
-				if( circle_child != 0 || strcmp( "vec2d", child->Value() ) )
-				{
-					std::string name;
-					if( !SpinXML::ReadVec2D( circle_child, name, offset ) || name.compare( "offset" ) != 0 )
-					{
-						fprintf( stderr, "BodyEntity::LoadXML -> invalid child in circle shape, expecting a single vec2d with name='offset'!\n" );
-						return false;
-					}
-				}
-				AddShapeCircle( radius, offset, friction );
-			}
-			else
-			{
-				fprintf( stderr, "BodyEntity::LoadXML -> unsupported 'type' attribute ('%s') in shape tag!\n", type );
+				fprintf( stderr, "BodyEntity::LoadXML -> LoadPolyElement failed!\n" );
+				error = true;
 				return false;
 			}
 		}
-
-		// quad 
-		else if( strcmp( "quad", child->Value() ) == 0 )
+		// circle
+		else if( strcmp( type, "circle" ) == 0 )
 		{
-			Quad new_quad;
-			if( !new_quad.LoadXML( child ) )
+			// friction and radius
+			float friction = 1.0;
+			float radius = 1.0;
+			if( !SpinUtil::ToFloat( element->Attribute( "friction" ), friction ) || !SpinUtil::ToFloat( element->Attribute( "radius" ), radius ) )
 			{
-				fprintf( stderr, "BodyEntity::LoadXML -> Quad::LoadXML failed!\n" );
+				fprintf( stderr, "BodyEntity::LoadXML -> invalid or missing friction or radius attribute for shape type='circle'!\n" );
 				return false;
 			}
-			quads.push_back( new_quad );
+
+			// offset vector
+			Vector offset( 0.0, 0.0 );
+			TiXmlElement* circle_child = element->FirstChildElement();
+			if( circle_child != 0  )
+			{
+				std::string name;
+				if( strcmp( "vec2d", circle_child->Value() ) != 0 || !SpinXML::ReadVec2D( circle_child, name, offset ) || name.compare( "offset" ) != 0 )
+				{
+					fprintf( stderr, "BodyEntity::LoadXML -> invalid child in circle shape, expecting a single vec2d with name='offset'!\n" );
+					error = true;
+					return false;
+				}
+			}
+			AddShapeCircle( radius, offset, friction );
 		}
-		child = child->NextSiblingElement();
+		else
+		{
+			fprintf( stderr, "BodyEntity::LoadXML -> unsupported 'type' attribute ('%s') in shape tag!\n", type );
+			error = true;
+			return false;
+		}
 	}
+	// unsupported
+	else
+		return QuadEntity::TryLoadElement( element, error );
+
 	return true;
 }
 

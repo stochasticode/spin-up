@@ -5,32 +5,31 @@
 #include <Vector.h>
 #include <Color.h>
 #include <Quad.h>
+#include <SpinXML.h>
 #include <string>
 #include <vector>
 #include <chipmunk.h>
 
-//struct cpBody;
-//struct cpShape;
-//struct cpSegmentShape;
-//struct cpConstraint;
 struct TiXmlElement;
 
 namespace spin
 {
-	class Entity
+	class Entity: public SpinXML
 	{
 		public:
+		bool dead;
+		int id;
+		std::string alias;
+
 		virtual ~Entity() {}
 
 		virtual void Tick( int milliseconds ) {}
 		virtual void Render() {}
 
-		bool dead;
-		int id;
-		std::string alias;
-
 		protected:
 		Entity(): dead( false ), id( -1 ), alias( "UNNAMED" ) {}
+
+		virtual bool TryLoadElement( TiXmlElement* element, bool& error );
 	};
 }
 

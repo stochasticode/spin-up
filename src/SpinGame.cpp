@@ -37,15 +37,6 @@ bool SpinGame::Init( int argc, char** argv )
 	kevin->alias = "kevin";
 	world.AddEntity( kevin, 6 );
 
-	// background
-	QuadEntity* background = new QuadEntity();
-	Quad new_quad;
-	new_quad.texture_key = "dirt";
-	new_quad.SetTextureModeRelative( Vector( 0.008, 0.008 ), Vector( 0.0, 0.0 ) );
-	new_quad.SetSize( Vector( 1000, 1000 ) );
-	background->AddQuad( new_quad );
-	world.AddEntity( background, 0 );
-
 	// load level
 	if( !world.LoadXML( "assets/levels/test.xml" ) )
 	{
@@ -61,9 +52,7 @@ bool SpinGame::InitGraphics()
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glEnable( GL_TEXTURE_2D );
-	//glEnable( GL_DEPTH_TEST );
 	glEnable( GL_ALPHA_TEST );
-	//glDepthFunc( GL_LESS );
 	glEnableClientState( GL_VERTEX_ARRAY );
 	glClearColor( 0.3, 0.3, 0.3, 1.0 );
 
@@ -95,9 +84,6 @@ void SpinGame::Render()
 	glClear( GL_COLOR_BUFFER_BIT );
 	camera.position_x = kevin->position.x;
 	camera.position_y = kevin->position.y;
-
-	//printf( "(%f,%f)\n", kevin->position.x, kevin->position.y );
-	//fflush( stdout );
 
 	world.Render();
 	glutSwapBuffers();

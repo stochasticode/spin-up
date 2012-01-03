@@ -16,6 +16,7 @@ namespace spin
 
 		// XML stuff
 		virtual bool TryLoadElement( TiXmlElement* element, bool& error );
+		virtual void FinalizeLoadElements();
 		virtual std::string GetXMLDesc() { return "BodyEntity"; }
 
 		virtual void Render();

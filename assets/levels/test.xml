@@ -1,6 +1,45 @@
 <spin_level>
 	<kevin x="-60" y="-68" />
 
+	<entity type="quad">
+		<vec2d name="position" x="0" y="0" />
+		<param name="layer" value="0" />
+		<quad>
+			<color name="color" r="1.0" g="1.0" b="1.0" a="1.0" />
+			<vec2d name="size" x="1000" y="1000" />
+			<vec2d name="position" x="0.0" y="0.0" />
+			<param name="texture_key" value="dirt" />
+			<param name="texture_mode" value="relative" />
+			<vec2d name="texture_scale" x="0.008" y="0.008" />
+		</quad>
+	</entity>
+
+	<entity type="quad">
+		<vec2d name="position" x="0" y="-30" />
+		<param name="layer" value="0" />
+		<quad>
+			<color name="color" r="0.5" g="0.5" b="0.5" a="1.0" />
+			<vec2d name="size" x="200" y="130" />
+			<vec2d name="position" x="0.0" y="0.0" />
+			<param name="texture_key" value="stone" />
+			<param name="texture_mode" value="relative" />
+			<vec2d name="texture_scale" x="0.008" y="0.008" />
+		</quad>
+	</entity>
+
+	<entity type="quad">
+		<vec2d name="position" x="-275" y="-30" />
+		<param name="layer" value="0" />
+		<quad>
+			<color name="color" r="0.5" g="0.5" b="0.5" a="1.0" />
+			<vec2d name="size" x="250" y="130" />
+			<vec2d name="position" x="0.0" y="0.0" />
+			<param name="texture_key" value="stone" />
+			<param name="texture_mode" value="relative" />
+			<vec2d name="texture_scale" x="0.008" y="0.008" />
+		</quad>
+	</entity>
+
 	<entity type="static_body">
 
 		<!-- floor1 -->
@@ -210,15 +249,15 @@
 	<entity type="snap_constraint">
 		<entity_ref entity_alias="grate1" />
 		<vec2d x="60" y="40" />
-		<param name="strength" value="1400" />
+		<param name="strength" value="800" />
 		<param name="damping" value="1000" />
-		<param name="max_length" value="15" />
+		<param name="max_length" value="17" />
 	</entity>
 
 	<entity type="snap_constraint">
 		<entity_ref entity_alias="grate2" />
 		<vec2d x="-220" y="40" />
-		<param name="strength" value="700" />
+		<param name="strength" value="1200" />
 		<param name="max_length" value="20" />
 	</entity>
 

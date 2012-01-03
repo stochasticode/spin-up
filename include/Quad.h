@@ -32,6 +32,7 @@ namespace spin
 		void SetSize( Vector new_size );
 
 		virtual bool TryLoadElement( TiXmlElement* element, bool& error );
+		virtual void FinalizeLoadElements();
 
 		protected:
 		QuadTextureMode texture_mode;

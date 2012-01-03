@@ -54,6 +54,7 @@ bool SpinXML::LoadElements( TiXmlElement* element )
 		}
 		child = child->NextSiblingElement();
 	}
+	FinalizeLoadElements();
 	return true;
 }
 
@@ -115,87 +116,44 @@ bool SpinXML::ReadParam( TiXmlElement* element, std::string& name, std::string& 
 	return true;
 }
 
-/*
-bool SpinXML::ReadEntity( TiXmlElement* element, bool& error  )
+bool SpinXML::ReadColor( TiXmlElement* element, std::string& name, Color& color )
 {
-	// check for null pointer
+	// check for null pointers
 	if( element == 0 )
 	{
-		fprintf( stderr, "SpinXML::ReadEntity -> element was NULL!\n" );
-		error = true;
+		fprintf( stderr, "SpinXML::ReadColor -> element was NULL!\n" );
 		return false;
 	}
 
-	// get entity type
-	const char* type = element->Attribute( "type" );
-	if( type == 0 )
-	{
-		fprintf( stderr, "SpinXML::ReadEntity -> no type attribute!\n" );
+	const char* name_att = element->Attribute( "name" );
+	const char* r_att = element->Attribute( "r" );
+	const char* g_att = element->Attribute( "g" );
+	const char* b_att = element->Attribute( "b" );
+	const char* a_att = element->Attribute( "a" );
 
+	if( !r_att || !g_att || !b_att || !a_att )
+	{
+		fprintf( stderr, "SpinXML::ReadColor-> color missing r, g, b, or a attribute\n" );
 		return false;
 	}
 
-	// QuadEntity
-	if( strcmp( type, "quad" ) == 0 )
+	float r = 1.0;
+	float g = 1.0;
+	float b = 1.0;
+	float a = 1.0;
+
+	if( SpinUtil::ToFloat( r_att, r ) && SpinUtil::ToFloat( g_att, g ) && SpinUtil::ToFloat( b_att, b ) && SpinUtil::ToFloat( a_att, a ) )
 	{
-		*entity_out = new QuadEntity();
-		QuadEntity* quad_entity = (QuadEntity*)*entity_out;
-		if( quad_entity->LoadXML( element ) )
-			return true;
-		else
-		{
-			delete quad_entity;
-			*entity_out = 0;
-			fprintf( stderr, "SpinXML::ReadEntity -> ReadQuadEntity() failed!\n" );
-			return false;
-		}
-	}
-	// BodyEntity
-	else if( strcmp( type, "body" ) == 0 )
-	{
-		*entity_out = new BodyEntity();
-		BodyEntity* body_entity = (BodyEntity*)*entity_out;
-		if( body_entity->LoadXML( element ) )
-			return true;
-		else
-		{
-			delete *entity_out;
-			*entity_out = 0;
-			fprintf( stderr, "SpinXML::ReadEntity -> BodyEntity::LoadXML() failed!\n" );
-			return false;
-		}
-	}
-	// static_body
-	else if( strcmp( type, "static_body" ) == 0 )
-	{
-		*entity_out = SPIN.world.GetStaticBody();
-		if( SPIN.world.GetStaticBody() != 0 && SPIN.world.GetStaticBody()->LoadXML( element ) )
-			return true;
-		else
-		{
-			fprintf( stderr, "SpinXML::ReadEntity -> StaticBody::LoadXML() failed!\n" );
-			return false;
-		}
-	}
-	// SnapConstraint
-	if( strcmp( type, "snap_constraint" ) == 0 )
-	{
-		*entity_out = new SnapConstraint();
-		SnapConstraint* snap_constraint = (SnapConstraint*)*entity_out;
-		if( snap_constraint->LoadXML( element ) )
-			return true;
-		else
-		{
-			delete *entity_out;
-			*entity_out = 0;
-			fprintf( stderr, "SpinXML::ReadEntity -> SnapConstraint::LoadXML() failed!\n" );
-			return false;
-		}
+		name = (name_att)? name_att: "";
+		color.r = r;	
+		color.g = g;	
+		color.b = b;	
+		color.a = a;	
+		return true;
 	}
 	else
 	{
-		fprintf( stderr, "SpinXML::ReadEntity -> unsupported entity type: '%s!'\n", type );
+		fprintf( stderr, "SpinXML::ReadColor -> invalid r, g, b, or a attribute\n" );
 		return false;
 	}
 }
-*/

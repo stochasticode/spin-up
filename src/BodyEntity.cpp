@@ -376,6 +376,12 @@ bool BodyEntity::TryLoadElement( TiXmlElement* element, bool& error )
 	return true;
 }
 
+void BodyEntity::FinalizeLoadElements()
+{
+	// make sure chipmunk body has the same position
+	SetPosition( position );
+}
+
 bool BodyEntity::LoadPolyElement( TiXmlElement* element )
 {
 	// friction

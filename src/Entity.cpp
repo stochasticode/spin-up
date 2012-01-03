@@ -2,6 +2,7 @@
 #include <Entity.h>
 #include <SpinGame.h>
 #include <SpinXML.h>
+#include <SpinUtil.h>
 #include <chipmunk.h>
 #include <tinyxml.h>
 #include <sstream>
@@ -36,6 +37,15 @@ bool Entity::TryLoadElement( TiXmlElement* element, bool& error )
 		// alias
 		if( name.compare( "alias" ) == 0 )
 			alias = value;
+		else if( name.compare( "layer" ) == 0 )
+		{
+			if( !SpinUtil::ToInt( value.c_str(), layer ) )
+			{
+				error = true;
+				fprintf( stderr, "Entity::TryLoadElement -> invalid value for layer param!\n" );
+				return false;
+			}
+		}
 		else
 			return false;
 	}

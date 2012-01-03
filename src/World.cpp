@@ -225,6 +225,8 @@ bool World::LoadEntity( TiXmlElement* element )
 
 	Entity* new_entity;
 
+	bool entity_created = true;
+
 	// QuadEntity
 	if( strcmp( type, "quad" ) == 0 )
 		new_entity = new QuadEntity();
@@ -233,7 +235,10 @@ bool World::LoadEntity( TiXmlElement* element )
 		new_entity = new BodyEntity();
 	// static_body
 	else if( strcmp( type, "static_body" ) == 0 )
-		new_entity = new StaticBody();
+	{
+		new_entity = GetStaticBody();
+		entity_created = false;
+	}
 	// SnapConstraint
 	else if( strcmp( type, "snap_constraint" ) == 0 )
 		new_entity = new SnapConstraint();
@@ -246,12 +251,13 @@ bool World::LoadEntity( TiXmlElement* element )
 	if( new_entity->LoadElements( element ) )
 	{
 		// static body is already in the entity list and doesn't need to be added again
-		if( dynamic_cast<StaticBody*>(new_entity) == 0 )
-			AddEntity( new_entity, 4 );
+		if( entity_created )
+			AddEntity( new_entity, new_entity->layer );
 	}
 	else
 	{
-		delete new_entity;
+		if( entity_created )
+			delete new_entity;
 		fprintf( stderr, "Entity::LoadElements() failed!\n" );
 		return false;
 	}

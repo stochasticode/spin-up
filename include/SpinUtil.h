@@ -7,6 +7,7 @@ namespace spin
 	{
 		public:
 		static bool ToFloat( const char* string_in, float& float_out );
+		static bool ToInt( const char* string_in, int& int_out );
 	};
 }
 

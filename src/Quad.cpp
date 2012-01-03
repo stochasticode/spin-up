@@ -128,10 +128,28 @@ bool Quad::TryLoadElement( TiXmlElement* element, bool& error )
 		else
 			return false;
 	}
+	// color
+	else if( strcmp( "color", element->Value() ) == 0 )
+	{
+		std::string name = "";
+		if( !SpinXML::ReadColor( element, name, color) )
+		{
+			fprintf( stderr, "Quad::LoadXML -> ReadColor failed!\n" );
+			error = true;
+			return false;
+		}
+	}
+	// unsupported
+	else
+		return false;
 
-	// set texture coords if needed
+	return true;
+}
+
+void Quad::FinalizeLoadElements()
+{
+	SetSize( size );
 	if( texture_mode == Q_TEXTURE_RELATIVE )
 		SetTextureModeRelative( texture_scale, texture_offset );
 
-	return true;
 }

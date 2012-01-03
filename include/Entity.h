@@ -20,6 +20,7 @@ namespace spin
 		bool dead;
 		int id;
 		std::string alias;
+		int layer;
 
 		virtual ~Entity() {}
 
@@ -29,7 +30,7 @@ namespace spin
 		virtual std::string GetXMLDesc() { return "Entity"; }
 
 		protected:
-		Entity(): dead( false ), id( -1 ), alias( "UNNAMED" ) {}
+		Entity(): dead( false ), id( -1 ), alias( "UNNAMED" ), layer( 4 ) {}
 
 		virtual bool TryLoadElement( TiXmlElement* element, bool& error );
 	};

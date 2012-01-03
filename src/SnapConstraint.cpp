@@ -76,22 +76,20 @@ void SnapConstraint::Tick( int milliseconds )
 	}
 }
 
-bool SnapConstraint::TryLoadElement( TiXmlElement* element, bool& error )
+//TODO this needs to be changed so use TryLoadElement instead...
+bool SnapConstraint::LoadElements( TiXmlElement* element )
 {
-	/*
 	// first child must be an entity_ref to a BodyEntity
 	Entity* entity_a = 0;
 	TiXmlElement* child1 = element->FirstChildElement();
 	if( child1 == 0 )
 	{
 		fprintf( stderr, "SpinXML::ReadSnapConstraint -> constraint has no child elements!'\n" );
-		error = true;
 		return false;
 	}
 	if( strcmp( "entity_ref", child1->Value() ) != 0 )
 	{
 		fprintf( stderr, "SpinXML::ReadSnapConstraint -> first child was not an entity_ref!'\n" );
-		error = true;
 		return false;
 	}
 	std::string alias1( child1->Attribute( "entity_alias" ) );
@@ -99,7 +97,6 @@ bool SnapConstraint::TryLoadElement( TiXmlElement* element, bool& error )
 	if( !entity_a )
 	{
 		fprintf( stderr, "SpinXML::ReadSnapConstraint -> could not find entity with alias: %s!'\n", alias1.c_str() );
-		error = true;
 		return false;
 	}
 	// make sure it is a BodyEntity
@@ -107,7 +104,6 @@ bool SnapConstraint::TryLoadElement( TiXmlElement* element, bool& error )
 	if( body_a == 0 )
 	{
 		fprintf( stderr, "SpinXML::ReadSnapConstraint -> entity with alias: %s is not a BodyEntity!'\n", alias1.c_str() );
-		error = true;
 		return false;
 	}
 
@@ -117,14 +113,12 @@ bool SnapConstraint::TryLoadElement( TiXmlElement* element, bool& error )
 	if( child2 == 0 )
 	{
 		fprintf( stderr, "SpinXML::ReadSnapConstraint -> constraint has only one child element!'\n" );
-		error = true;
 		return false;
 	}
 	std::string name;
 	if( strcmp( "vec2d", child2->Value() ) != 0 || !SpinXML::ReadVec2D( child2, name, static_anchor) )
 	{
 		fprintf( stderr, "SpinXML::ReadSnapConstraint -> ReadVec2D failed for second child element!'\n" );
-		error = true;
 		return false;
 	}
 
@@ -149,7 +143,7 @@ bool SnapConstraint::TryLoadElement( TiXmlElement* element, bool& error )
 				}
 			}
 			// damping
-			if( name.compare( "damping" ) == 0 )
+			else if( name.compare( "damping" ) == 0 )
 			{
 				if( !SpinUtil::ToFloat( value.c_str(), damping) )
 				{
@@ -177,7 +171,5 @@ bool SnapConstraint::TryLoadElement( TiXmlElement* element, bool& error )
 	}
 
 	Attach( body_a, SPIN.world.GetStaticBody(), Vector( 0, 0 ), static_anchor );
-	return true;
-	*/
 	return true;
 }

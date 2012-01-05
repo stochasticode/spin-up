@@ -40,6 +40,19 @@
 		</quad>
 	</entity>
 
+	<entity type="quad">
+		<vec2d name="position" x="0" y="0" />
+		<param name="layer" value="0" />
+		<quad>
+			<color name="color" r="1.0" g="1.0" b="1.0" a="1.0" />
+			<vec2d name="size" x="475" y="26" />
+			<vec2d name="position" x="-153.0" y="47.5" />
+			<param name="texture_key" value="metal" />
+			<param name="texture_mode" value="relative" />
+			<vec2d name="texture_scale" x="0.038" y="0.038" />
+		</quad>
+	</entity>
+
 	<entity type="static_body">
 
 		<!-- floor1 -->

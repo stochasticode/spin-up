@@ -68,6 +68,7 @@ bool SpinGame::LoadResources()
 	resources.LoadPNG( "assets/textures/creature.png", "creature" );
 	resources.LoadPNG( "assets/textures/burst.png", "burst" );
 	resources.LoadPNG( "assets/textures/beagle.png", "beagle" );
+	resources.LoadPNG( "assets/textures/metal.png", "metal" );
 	resources.LoadPNG( "assets/textures/stone.png", "stone" );
 	resources.LoadPNG( "assets/textures/dirt.png", "dirt" );
 	resources.LoadPNG( "assets/textures/crowbar.png", "crowbar" );

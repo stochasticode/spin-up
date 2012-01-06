@@ -37,6 +37,7 @@ bool Entity::TryLoadElement( TiXmlElement* element, bool& error )
 		// alias
 		if( name.compare( "alias" ) == 0 )
 			alias = value;
+		// layer
 		else if( name.compare( "layer" ) == 0 )
 		{
 			if( !SpinUtil::ToInt( value.c_str(), layer ) )

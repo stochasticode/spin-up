@@ -20,7 +20,7 @@ CXX_ARGS := -g -DCP_ALLOW_PRIVATE_ACCESS
 INCLUDES := -Iinclude/ -Iinclude/soil -Iinclude/chipmunk -Iinclude/tinyxml
 
 bin/spin: src/spin.cpp ${OBJS}
-	${CXX} ${CXX_ARGS} -Llib32/ ${INCLUDES} -o $@ $< ${OBJS} -lGL -lGLU -lGLEW -lglut -ltinyxml -lsoil -lchipmunk
+	${CXX} ${CXX_ARGS} -Llib/ ${INCLUDES} -o $@ $< ${OBJS} -lGL -lGLU -lGLEW -lglut -ltinyxml -lsoil -lchipmunk
 
 build/%.o: src/%.cpp
 	${CXX} ${CXX_ARGS} ${INCLUDES} -c -o $@ $<

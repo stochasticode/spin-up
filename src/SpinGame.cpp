@@ -38,7 +38,7 @@ bool SpinGame::Init( int argc, char** argv )
 	world.AddEntity( kevin, 6 );
 
 	// load level
-	if( !world.LoadXML( "assets/levels/test.xml" ) )
+	if( !world.LoadXML( "assets/levels/title.xml" ) )
 	{
 		fprintf( stderr, "Failed to load level!\n" );
 		return false;
@@ -54,7 +54,7 @@ bool SpinGame::InitGraphics()
 	glEnable( GL_TEXTURE_2D );
 	glEnable( GL_ALPHA_TEST );
 	glEnableClientState( GL_VERTEX_ARRAY );
-	glClearColor( 0.3, 0.3, 0.3, 1.0 );
+	glClearColor( 0.1, 0.1, 0.1, 1.0 );
 
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
@@ -63,6 +63,12 @@ bool SpinGame::InitGraphics()
 
 bool SpinGame::LoadResources()
 {
+	resources.LoadPNG( "assets/textures/letter_s.png", "letter_s" );
+	resources.LoadPNG( "assets/textures/letter_p.png", "letter_p" );
+	resources.LoadPNG( "assets/textures/letter_i.png", "letter_i" );
+	resources.LoadPNG( "assets/textures/letter_n.png", "letter_n" );
+
+
 	resources.LoadPNG( "assets/textures/space.png", "space" );
 	resources.LoadPNG( "assets/textures/kevin.png", "kevin" );
 	resources.LoadPNG( "assets/textures/creature.png", "creature" );

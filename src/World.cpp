@@ -3,6 +3,7 @@
 #include <Entity.h>
 #include <ConstraintEntity.h>
 #include <SnapConstraint.h>
+#include <LuaEntity.h>
 #include <SpinXML.h>
 #include <chipmunk.h>
 #include <tinyxml.h>
@@ -118,7 +119,7 @@ unsigned long World::AddEntity( Entity* entity, int layer )
 	// add to main map
 	last_entity_id++;
 	entities[last_entity_id] = entity;
-	entity->id = last_entity_id;
+	entity->SetID( last_entity_id );
 
 	// add to alias map
 	if( entity->alias.compare( "UNNAMED" ) != 0 )
@@ -212,14 +213,35 @@ bool World::TryLoadElement( TiXmlElement* element, bool& error )
 	return true;
 }
 
-bool World::LoadEntity( TiXmlElement* element )
+int World::LoadEntity( const char* xml_path )
+{
+	// load document
+	TiXmlDocument doc( xml_path );
+	if( !doc.LoadFile() )
+	{
+		fprintf( stderr, "World::LoadEntity -> unable to load entity xml: %s\n", xml_path );
+		return 0;
+	}
+
+	// find root
+	TiXmlElement* root = doc.FirstChildElement();
+	if( !root )
+	{
+		fprintf( stderr, "World::LoadEntity -> unable to find root tag in xml: %s\n", xml_path );
+		return 0;
+	}
+
+	return LoadEntity( root );
+}
+
+int World::LoadEntity( TiXmlElement* element )
 {
 	// get entity type
 	const char* type = element->Attribute( "type" );
 	if( type == 0 )
 	{
 		fprintf( stderr, "World::LoadEntity -> no type attribute!\n" );
-		return false;
+		return 0;
 	}
 
 	Entity* new_entity;
@@ -241,10 +263,12 @@ bool World::LoadEntity( TiXmlElement* element )
 	// SnapConstraint
 	else if( strcmp( type, "snap_constraint" ) == 0 )
 		new_entity = new SnapConstraint();
+	else if( strcmp( type, "lua_entity" ) == 0 )
+		new_entity = new LuaEntity();
 	else
 	{
 		fprintf( stderr, "World::LoadEntity -> unsupported entity type: '%s!'\n", type );
-		return false;
+		return 0;
 	}
 
 	if( new_entity->LoadElements( element ) )
@@ -258,8 +282,8 @@ bool World::LoadEntity( TiXmlElement* element )
 		if( entity_created )
 			delete new_entity;
 		fprintf( stderr, "Entity::LoadElements() failed!\n" );
-		return false;
+		return 0;
 	}
 
-	return true;
+	new_entity->GetID();
 }

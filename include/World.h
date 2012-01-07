@@ -43,6 +43,9 @@ namespace spin
 
 		virtual const char* GetDescription() { return "World"; }
 
+		int LoadEntity( const char* xml_path );
+		int LoadEntity( TiXmlElement* element );
+
 		private:
 		cpSpace* space;
 		StaticBody* static_body;
@@ -57,7 +60,6 @@ namespace spin
 
 		void RemoveEntityFromLayer( Entity* entity );
 
-		bool LoadEntity( TiXmlElement* element );
 	};
 }
 #endif

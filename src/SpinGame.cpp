@@ -31,6 +31,7 @@ bool SpinGame::Init( int argc, char** argv )
 
 	// set up camera
 	camera.zoom = 4.0;
+	camera_mode = CAMERA_FOLLOWING;
 
 	// create kevin object
 	kevin = new Kevin();
@@ -89,8 +90,11 @@ bool SpinGame::LoadResources()
 void SpinGame::Render()
 {
 	glClear( GL_COLOR_BUFFER_BIT );
-	camera.position_x = kevin->position.x;
-	camera.position_y = kevin->position.y;
+	if( camera_mode == CAMERA_FOLLOWING )
+	{
+		camera.position_x = kevin->position.x;
+		camera.position_y = kevin->position.y;
+	}
 
 	world.Render();
 	glutSwapBuffers();

@@ -1,215 +1,122 @@
 <spin_level>
-	<kevin x="0" y="50" />
+	<kevin x="0" y="20" />
 
 	<entity type="lua_entity">
 		<param name="script" value="assets/scripts/test.lua" />
 	</entity>
 
-
-	<entity type="static_body">
-
-		<!-- floor1 -->
-		<shape type="poly" friction="0.7">
-			<vec2d x="-100.0" y="-105.0" />
-			<vec2d x="-100.0" y="-95.0" />
-			<vec2d x="100.0" y="-95.0" />
-			<vec2d x="100.0" y="-105.0" />
-		</shape>
-		<quad>
-			<vec2d name="size" x="200" y="10" />
-			<vec2d name="position" x="0.0" y="-100.0" />
-			<param name="texture_key" value="stone" />
-			<param name="texture_mode" value="relative" />
-			<vec2d name="texture_scale" x="0.01" y="0.01" />
-		</quad>
-
-		<!-- floor2 -->
-		<shape type="poly" friction="0.7">
-			<vec2d x="-400.0" y="-105.0" />
-			<vec2d x="-400.0" y="-95.0" />
-			<vec2d x="-150.0" y="-95.0" />
-			<vec2d x="-150.0" y="-105.0" />
-		</shape>
-		<quad>
-			<vec2d name="size" x="250" y="10" />
-			<vec2d name="position" x="-275.0" y="-100.0" />
-			<param name="texture_key" value="stone" />
-			<param name="texture_mode" value="relative" />
-			<vec2d name="texture_scale" x="0.01" y="0.01" />
-		</quad>
-
-		<!-- vent floor -->
-		<shape type="poly" friction="0.7">
-			<vec2d x="-200.0" y="25.0" />
-			<vec2d x="-200.0" y="35.0" />
-			<vec2d x="40.0" y="35.0" />
-			<vec2d x="40.0" y="25.0" />
-		</shape>
-		<quad>
-			<vec2d name="size" x="240" y="10" />
-			<vec2d name="position" x="-80.0" y="30.0" />
-			<param name="texture_key" value="stone" />
-			<param name="texture_mode" value="relative" />
-			<vec2d name="texture_scale" x="0.01" y="0.01" />
-		</quad>
-		
-		<!-- vent floor 2-->
-		<shape type="poly" friction="0.7">
-			<vec2d x="-390.0" y="25.0" />
-			<vec2d x="-390.0" y="35.0" />
-			<vec2d x="-240.0" y="35.0" />
-			<vec2d x="-240.0" y="25.0" />
-		</shape>
-		<quad>
-			<vec2d name="size" x="150" y="10" />
-			<vec2d name="position" x="-315.0" y="30.0" />
-			<param name="texture_key" value="stone" />
-			<param name="texture_mode" value="relative" />
-			<vec2d name="texture_scale" x="0.01" y="0.01" />
-		</quad>
-
-		<shape type="poly" friction="0.7">
-			<vec2d x="80.0" y="25.0" />
-			<vec2d x="80.0" y="35.0" />
-			<vec2d x="100.0" y="35.0" />
-			<vec2d x="100.0" y="25.0" />
-		</shape>
-		<quad>
-			<vec2d name="size" x="20" y="10" />
-			<vec2d name="position" x="90.0" y="30.0" />
-			<param name="texture_key" value="stone" />
-			<param name="texture_mode" value="relative" />
-			<vec2d name="texture_scale" x="0.01" y="0.01" />
-		</quad>
-
-		<shape type="poly" friction="0.7">
-			<vec2d x="80.0" y="35.0" />
-			<vec2d x="80.0" y="500.0" />
-			<vec2d x="90.0" y="500.0" />
-			<vec2d x="90.0" y="35.0" />
-		</shape>
-		<quad>
-			<vec2d name="size" x="10" y="465" />
-			<vec2d name="position" x="85.0" y="267.25" />
-			<param name="texture_key" value="stone" />
-			<param name="texture_mode" value="relative" />
-			<vec2d name="texture_scale" x="0.01" y="0.01" />
-		</quad>
-
-		<shape type="poly" friction="0.7">
-			<vec2d x="30.0" y="70.0" />
-			<vec2d x="30.0" y="500.0" />
-			<vec2d x="40.0" y="500.0" />
-			<vec2d x="40.0" y="70.0" />
-		</shape>
-		<quad>
-			<vec2d name="size" x="10" y="430" />
-			<vec2d name="position" x="35.0" y="285" />
-			<param name="texture_key" value="stone" />
-			<param name="texture_mode" value="relative" />
-			<vec2d name="texture_scale" x="0.01" y="0.01" />
-		</quad>
-
-		<!-- vent ceiling -->
-		<shape type="poly" friction="0.7">
-			<vec2d x="-400.0" y="60.0" />
-			<vec2d x="-400.0" y="70.0" />
-			<vec2d x="40.0" y="70.0" />
-			<vec2d x="40.0" y="60.0" />
-		</shape>
-		<quad>
-			<vec2d name="size" x="440" y="10" />
-			<vec2d name="position" x="-180.0" y="65" />
-			<param name="texture_key" value="stone" />
-			<param name="texture_mode" value="relative" />
-			<vec2d name="texture_scale" x="0.01" y="0.01" />
-		</quad>
-
-		<!-- left wall 1 -->
-		<shape type="poly" friction="0.7">
-			<vec2d x="-100.0" y="-95.0" />
-			<vec2d x="-100.0" y="25.0" />
-			<vec2d x="-90.0" y="25.0" />
-			<vec2d x="-90.0" y="-95.0" />
-		</shape>
-		<quad>
-			<vec2d name="size" x="10" y="120" />
-			<vec2d name="position" x="-95.0" y="-35" />
-			<param name="texture_key" value="stone" />
-			<param name="texture_mode" value="relative" />
-			<vec2d name="texture_scale" x="0.01" y="0.01" />
-		</quad>
-
-		<!-- right wall 2 -->
-		<shape type="poly" friction="0.7">
-			<vec2d x="-160.0" y="-95.0" />
-			<vec2d x="-160.0" y="25.0" />
-			<vec2d x="-150.0" y="25.0" />
-			<vec2d x="-150.0" y="-95.0" />
-		</shape>
-		<quad>
-			<vec2d name="size" x="10" y="120" />
-			<vec2d name="position" x="-155.0" y="-35" />
-			<param name="texture_key" value="stone" />
-			<param name="texture_mode" value="relative" />
-			<vec2d name="texture_scale" x="0.01" y="0.01" />
-		</quad>
-
-		<!-- left wall 2 -->
-		<shape type="poly" friction="0.7">
-			<vec2d x="-400.0" y="-95.0" />
-			<vec2d x="-400.0" y="60.0" />
-			<vec2d x="-390.0" y="60.0" />
-			<vec2d x="-390.0" y="-95.0" />
-		</shape>
-		<quad>
-			<vec2d name="size" x="10" y="155" />
-			<vec2d name="position" x="-395.0" y="-17.5" />
-			<param name="texture_key" value="stone" />
-			<param name="texture_mode" value="relative" />
-			<vec2d name="texture_scale" x="0.01" y="0.01" />
-		</quad>
-
-		<shape type="poly" friction="0.7">
-			<vec2d x="100.0" y="25.0" />
-			<vec2d x="100.0" y="-95.0" />
-			<vec2d x="90.0" y="-95.0" />
-			<vec2d x="90.0" y="25.0" />
-		</shape>
-		<quad>
-			<vec2d name="size" x="10" y="120" />
-			<vec2d name="position" x="95.0" y="-35" />
-			<param name="texture_key" value="stone" />
-			<param name="texture_mode" value="relative" />
-			<vec2d name="texture_scale" x="0.01" y="0.01" />
-		</quad>
-
-	</entity>
-
 	<entity type="body">
+		<param name="alias" value="letter_s" />
 		<param name="external" value="assets/entities/letter_s.xml" />
 		<param name="scale" value="1.3" />
-		<vec2d name="position" x="-15.0" y="0" />
+		<vec2d name="position" x="-15.0" y="-5" />
 	</entity>
 
 	<entity type="body">
+		<param name="alias" value="letter_p" />
 		<param name="external" value="assets/entities/letter_p.xml" />
 		<param name="scale" value="1.3" />
 		<vec2d name="position" x="-5" y="0" />
 	</entity>
 
 	<entity type="body">
+		<param name="alias" value="letter_i" />
 		<param name="external" value="assets/entities/letter_i.xml" />
 		<param name="scale" value="1.3" />
 		<vec2d name="position" x="5.0" y="0.0" />
 	</entity>
 
 	<entity type="body">
+		<param name="alias" value="letter_n" />
 		<param name="external" value="assets/entities/letter_n.xml" />
 		<param name="scale" value="1.3" />
 		<vec2d name="position" x="15.0" y="0.0" />
 	</entity>
 
+	<entity type="snap_constraint">
+		<param name="alias" value="constraint_s_1" />
+		<param name="body_a_alias" value="STATIC" />
+		<param name="body_b_alias" value="letter_s" />
+		<vec2d name="body_a_offset" x="-50" y="0" />
+		<vec2d name="body_b_offset" x="0" y="20" />
+		<param name="strength" value="1200" />
+		<param name="max_length" value="100" />
+	</entity>
+	<entity type="snap_constraint">
+		<param name="alias" value="constraint_s_2" />
+		<param name="body_a_alias" value="STATIC" />
+		<param name="body_b_alias" value="letter_s" />
+		<vec2d name="body_a_offset" x="-40" y="-100" />
+		<vec2d name="body_b_offset" x="-10" y="-20" />
+		<param name="strength" value="1200" />
+		<param name="max_length" value="300" />
+	</entity>
 
+	<entity type="snap_constraint">
+		<param name="alias" value="constraint_p_1" />
+		<param name="body_a_alias" value="STATIC" />
+		<param name="body_b_alias" value="letter_p" />
+		<vec2d name="body_a_offset" x="-25" y="0" />
+		<vec2d name="body_b_offset" x="0" y="20" />
+		<param name="strength" value="1200" />
+		<param name="max_length" value="100" />
+	</entity>
+	<entity type="snap_constraint">
+		<param name="alias" value="constraint_p_2" />
+		<param name="body_a_alias" value="STATIC" />
+		<param name="body_b_alias" value="letter_p" />
+		<vec2d name="body_a_offset" x="-15" y="-100" />
+		<vec2d name="body_b_offset" x="-10" y="-20" />
+		<param name="strength" value="1200" />
+		<param name="max_length" value="300" />
+	</entity>
+
+	<entity type="snap_constraint">
+		<param name="alias" value="constraint_i_1" />
+		<param name="body_a_alias" value="STATIC" />
+		<param name="body_b_alias" value="letter_i" />
+		<vec2d name="body_a_offset" x="10" y="-100" />
+		<vec2d name="body_b_offset" x="-10" y="-20" />
+		<param name="strength" value="1200" />
+		<param name="max_length" value="300" />
+	</entity>
+
+	<entity type="snap_constraint">
+		<param name="alias" value="constraint_n_1" />
+		<param name="body_a_alias" value="STATIC" />
+		<param name="body_b_alias" value="letter_n" />
+		<vec2d name="body_a_offset" x="25" y="0" />
+		<vec2d name="body_b_offset" x="0" y="20" />
+		<param name="strength" value="1200" />
+		<param name="max_length" value="100" />
+	</entity>
+	<entity type="snap_constraint">
+		<param name="alias" value="constraint_n_2" />
+		<param name="body_a_alias" value="STATIC" />
+		<param name="body_b_alias" value="letter_n" />
+		<vec2d name="body_a_offset" x="35" y="-100" />
+		<vec2d name="body_b_offset" x="-10" y="-20" />
+		<param name="strength" value="1200" />
+		<param name="max_length" value="300" />
+	</entity>
+
+	<entity type="snap_constraint">
+		<param name="alias" value="constraint_i_2" />
+		<param name="body_a_alias" value="STATIC" />
+		<param name="body_b_alias" value="kevin" />
+		<vec2d name="body_a_offset" x="0" y="0" />
+		<vec2d name="body_b_offset" x="0" y="0" />
+		<param name="strength" value="1200" />
+		<param name="max_length" value="300" />
+	</entity>
+	<entity type="snap_constraint">
+		<param name="alias" value="constraint_i_3" />
+		<param name="body_a_alias" value="letter_i" />
+		<param name="body_b_alias" value="kevin" />
+		<vec2d name="body_a_offset" x="0" y="20" />
+		<vec2d name="body_b_offset" x="0" y="0" />
+		<param name="strength" value="2400" />
+		<param name="max_length" value="300" />
+	</entity>
 
 </spin_level>

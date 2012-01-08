@@ -1,5 +1,5 @@
 <entity type="body">
-	<param name="mass" value="100.0" />
+	<param name="mass" value="10.0" />
 	<param name="moment" value="2000" />
 
 	<quad>
@@ -9,10 +9,10 @@
 	</quad>
 
 	<shape type="poly" friction="0.7">
-		<vec2d x="-15.0" y="-20.0" />
-		<vec2d x="-15.0" y="20.0" />
-		<vec2d x="15" y="20.0" />
-		<vec2d x="15" y="-20.0" />
+		<vec2d x="-14.0" y="-14.0" />
+		<vec2d x="-14.0" y="17.0" />
+		<vec2d x="13" y="17.0" />
+		<vec2d x="13" y="-14.0" />
 	</shape>
 
 </entity>

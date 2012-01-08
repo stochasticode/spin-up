@@ -13,6 +13,8 @@ namespace spin
 	class SpinGame
 	{
 		public:
+		enum CameraMode { CAMERA_STATIONARY, CAMERA_FOLLOWING }; 
+
 		static SpinGame& Instance();
 
 		bool Init( int argc, char** argv );
@@ -30,6 +32,7 @@ namespace spin
 		World world;
 		Resources resources;
 		Camera camera;
+		CameraMode camera_mode;
 
 		Kevin* kevin;
 

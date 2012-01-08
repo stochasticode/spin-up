@@ -50,7 +50,7 @@ bool SpinXML::LoadElements( TiXmlElement* element )
 			if( error )
 				return false;
 			else
-				fprintf( stderr, "SpinXML::LoadElement -> (%s) unsupported element '%s'\n", GetXMLDesc().c_str(), child->Value() );
+				fprintf( stderr, "SpinXML::LoadElement -> (%s) unsupported element '%s', name='%s'\n", GetXMLDesc().c_str(), child->Value(), child->Attribute( "name" ) );
 		}
 		child = child->NextSiblingElement();
 	}

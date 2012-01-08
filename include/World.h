@@ -40,7 +40,6 @@ namespace spin
 		Entity* GetEntityByAlias( std::string& alias );
 
 		virtual bool TryLoadElement( TiXmlElement* element, bool& error );
-
 		virtual const char* GetDescription() { return "World"; }
 
 		int LoadEntity( const char* xml_path );

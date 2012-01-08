@@ -17,7 +17,7 @@ World::World(): space( cpSpaceNew() ), static_body( 0 ), delta_tick( 1000.0 / 80
 	// set up space
 	cpSpaceSetGravity( space, cpv( 0, -90 ) ); 
 	cpSpaceSetIterations( space, 25 );
-	cpSpaceSetDamping( space, 0.75 );
+	//cpSpaceSetDamping( space, 0.75 );
 
 	cpSpaceAddCollisionHandler( space, World::COL_TYPE_GRAPPLE, World::COL_TYPE_SURFACE, 0, 0, GrappleGun::PostSolveGrapple, 0, 0);
 	cpSpaceAddCollisionHandler( space, World::COL_TYPE_GRAPPLE, World::COL_TYPE_PROP, 0, 0, GrappleGun::PostSolveGrapple, 0, 0);
@@ -52,6 +52,7 @@ void World::Init()
 {
 	// set up static body
 	static_body = new StaticBody();
+	static_body->alias = "STATIC";
 	AddEntity( static_body, 1 );
 }
 

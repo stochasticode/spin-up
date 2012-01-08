@@ -16,7 +16,7 @@ namespace spin
 		void Render();
 		void Tick( int milliseconds );
 
-		virtual bool LoadElements( TiXmlElement* element );
+		virtual bool TryLoadElement( TiXmlElement* element, bool& error );
 		virtual std::string GetXMLDesc() { return "SnapConstraint"; }
 
 		friend class SpinXML;

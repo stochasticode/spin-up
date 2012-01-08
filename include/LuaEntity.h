@@ -16,6 +16,7 @@ namespace spin
 		virtual void SetID( int new_id );
 
 		bool LoadScript( const char* script );
+		void InitScript();
 		virtual void Tick( int milliseconds );
 
 		virtual bool TryLoadElement( TiXmlElement* element, bool& error );
@@ -26,6 +27,10 @@ namespace spin
 		static int lua_KillEntity( lua_State *L );
 		static int lua_LoadEntity( lua_State *L );
 		static int lua_QuadEntitySetPosition( lua_State *L );
+		static int lua_GetEntityID( lua_State *L );
+		static int lua_SetCameraMode( lua_State *L );
+		static int lua_SetCameraPosition( lua_State *L );
+		static int lua_SetCameraZoom( lua_State *L );
 	};
 }
 

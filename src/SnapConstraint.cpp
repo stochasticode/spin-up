@@ -13,7 +13,7 @@ SnapConstraint::SnapConstraint( float new_length, float new_strength, float new_
 
 void SnapConstraint::Render()
 {
-	if( constraint != 0 )
+	if( BodyEntity::render_shapes && constraint != 0 )
 	{
 		cpDampedSpring* spring = (cpDampedSpring*)constraint;
 		cpBody* a = spring->constraint.a;
@@ -76,6 +76,62 @@ void SnapConstraint::Tick( int milliseconds )
 	}
 }
 
+bool SnapConstraint::TryLoadElement( TiXmlElement* element, bool& error )
+{
+	error = false;
+
+	// check for NULL
+	if( element == 0 )
+	{
+		error = true;
+		fprintf( stderr, "SnapConstraint::TryLoadElement -> element was NULL!\n" );
+		return false;
+	}
+
+	// param
+	if( strcmp( "param", element->Value() ) == 0 )
+	{
+		std::string name = "";
+		std::string value = "";
+		if( !ReadParam( element, name, value ) )
+		{
+			error = true;
+			fprintf( stderr, "SnapConstraint::TryLoadElement -> ReadParam failed!\n" );
+			return false;
+		}
+
+		// strength 
+		if( name.compare( "strength" ) == 0 )
+		{
+			if( !SpinUtil::ToFloat( value.c_str(), strength ) )
+			{
+				error = true;
+				fprintf( stderr, "SnapConstraint::TryLoadElement -> ToFloat() failed for strength: '%s'!\n", value.c_str() );
+				return false;
+			}
+		}
+		// max_length 
+		else if( name.compare( "max_length" ) == 0 )
+		{
+			if( !SpinUtil::ToFloat( value.c_str(), max_length ) )
+			{
+				error = true;
+				fprintf( stderr, "SnapConstraint::TryLoadElement -> ToFloat() failed for max_length: '%s'!\n", value.c_str() );
+				return false;
+			}
+		}
+		// unsupported
+		else
+			return ConstraintEntity::TryLoadElement( element, error );
+	}
+	// unsupported
+	else
+		return ConstraintEntity::TryLoadElement( element, error );
+	
+	return true;
+}
+
+/*
 //TODO this needs to be changed so use TryLoadElement instead...
 bool SnapConstraint::LoadElements( TiXmlElement* element )
 {
@@ -173,3 +229,4 @@ bool SnapConstraint::LoadElements( TiXmlElement* element )
 	Attach( body_a, SPIN.world.GetStaticBody(), Vector( 0, 0 ), static_anchor );
 	return true;
 }
+*/

@@ -1,5 +1,5 @@
 #ifndef SPIN_QUAD_ENTITY_H
-#define SPIN_QUAD_ENTiTY_H
+#define SPIN_QUAD_ENTITY_H
 
 #include <Entity.h>
 #include <stdio.h>

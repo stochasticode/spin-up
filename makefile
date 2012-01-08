@@ -5,6 +5,7 @@ OBJS := \
 	build/Quad.o \
 	build/Entity.o \
 	build/QuadEntity.o \
+	build/TextEntity.o \
 	build/BodyEntity.o \
 	build/ConstraintEntity.o \
 	build/LuaEntity.o \

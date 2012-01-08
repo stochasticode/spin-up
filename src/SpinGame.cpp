@@ -5,6 +5,7 @@
 #include <Kevin.h>
 #include <Resources.h>
 #include <Entity.h>
+#include <TextEntity.h>
 #include <SnapConstraint.h>
 #include <cstdio>
 #include <cstring>
@@ -45,6 +46,10 @@ bool SpinGame::Init( int argc, char** argv )
 		return false;
 	}
 
+	TextEntity* text_entity = new TextEntity();
+	text_entity->SetText( "testing this thing" );
+	world.AddEntity( text_entity, 5 );
+
 	return true;
 }
 
@@ -70,6 +75,7 @@ bool SpinGame::LoadResources()
 	resources.LoadPNG( "assets/textures/letter_n.png", "letter_n" );
 
 
+	resources.LoadPNG( "assets/textures/alphabet.png", "alphabet" );
 	resources.LoadPNG( "assets/textures/space.png", "space" );
 	resources.LoadPNG( "assets/textures/kevin.png", "kevin" );
 	resources.LoadPNG( "assets/textures/creature.png", "creature" );

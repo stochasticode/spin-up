@@ -5,8 +5,10 @@ OBJS := \
 	build/Quad.o \
 	build/Entity.o \
 	build/QuadEntity.o \
+	build/TextEntity.o \
 	build/BodyEntity.o \
 	build/ConstraintEntity.o \
+	build/LuaEntity.o \
 	build/GrappleGun.o \
 	build/SnapConstraint.o \
 	build/Kevin.o \
@@ -19,8 +21,10 @@ CXX_ARGS := -g -DCP_ALLOW_PRIVATE_ACCESS
 
 INCLUDES := -Iinclude/ -Iinclude/soil -Iinclude/chipmunk -Iinclude/tinyxml
 
+.PHONY: run debug clean
+
 bin/spin: src/spin.cpp ${OBJS}
-	${CXX} ${CXX_ARGS} -Llib32/ ${INCLUDES} -o $@ $< ${OBJS} -lGL -lGLU -lGLEW -lglut -ltinyxml -lsoil -lchipmunk
+	${CXX} ${CXX_ARGS} -Llib/ ${INCLUDES} -o $@ $< ${OBJS} -llua5.1 -lGL -lGLU -lGLEW -lglut -ltinyxml -lsoil -lchipmunk
 
 build/%.o: src/%.cpp
 	${CXX} ${CXX_ARGS} ${INCLUDES} -c -o $@ $<

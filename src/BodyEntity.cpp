@@ -234,6 +234,7 @@ void BodyEntity::Scale( float scale_factor )
 			}
 			cpPolyShapeSetVerts( shape, poly->numVerts, new_verts, cpvzero );
 		}
+		//TODO circle
 	}
 }
 

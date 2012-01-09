@@ -18,11 +18,13 @@ namespace spin
 	{
 		public:
 		bool dead;
-		int id;
 		std::string alias;
 		int layer;
 
 		virtual ~Entity() {}
+
+		virtual void SetID( int new_id ) { id = new_id; }
+		int GetID() { return id; }
 
 		virtual void Tick( int milliseconds ) {}
 		virtual void Render() {}
@@ -30,6 +32,8 @@ namespace spin
 		virtual std::string GetXMLDesc() { return "Entity"; }
 
 		protected:
+		int id;
+
 		Entity(): dead( false ), id( -1 ), alias( "UNNAMED" ), layer( 4 ) {}
 
 		virtual bool TryLoadElement( TiXmlElement* element, bool& error );

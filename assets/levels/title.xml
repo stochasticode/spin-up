@@ -1,0 +1,141 @@
+<spin_level>
+	<kevin x="0" y="20" />
+
+	<!--
+	<entity type="lua_entity">
+		<param name="script" value="assets/scripts/test.lua" />
+	</entity>
+	-->
+
+	<entity type="body">
+		<param name="alias" value="letter_s" />
+		<param name="external" value="assets/entities/letter_s.xml" />
+		<param name="scale" value="1.3" />
+		<vec2d name="position" x="-15.0" y="-5" />
+	</entity>
+
+	<entity type="body">
+		<param name="alias" value="letter_p" />
+		<param name="external" value="assets/entities/letter_p.xml" />
+		<param name="scale" value="1.3" />
+		<vec2d name="position" x="-5" y="0" />
+	</entity>
+
+	<entity type="body">
+		<param name="alias" value="letter_i" />
+		<param name="external" value="assets/entities/letter_i.xml" />
+		<param name="scale" value="1.3" />
+		<vec2d name="position" x="5.0" y="0.0" />
+	</entity>
+
+	<entity type="body">
+		<param name="alias" value="letter_n" />
+		<param name="external" value="assets/entities/letter_n.xml" />
+		<param name="scale" value="1.3" />
+		<vec2d name="position" x="15.0" y="0.0" />
+	</entity>
+
+	<!--
+	<entity type="quad">
+		<vec2d name="position" x="0" y="0" />
+		<param name="layer" value="0" />
+		<quad>
+			<color name="color" r="1.0" g="1.0" b="1.0" a="1.0" />
+			<vec2d name="size" x="64" y="8" />
+			<vec2d name="position" x="0.0" y="0.0" />
+			<param name="texture_key" value="alphabet" />
+			<param name="texture_mode" value="relative" />
+			<vec2d name="texture_scale" x="64" y="64" />
+			<vec2d name="texture_offset" x="8" y="8" />
+		</quad>
+	</entity>
+	-->
+
+
+	<entity type="snap_constraint">
+		<param name="alias" value="constraint_s_1" />
+		<param name="body_a_alias" value="STATIC" />
+		<param name="body_b_alias" value="letter_s" />
+		<vec2d name="body_a_offset" x="-50" y="0" />
+		<vec2d name="body_b_offset" x="0" y="20" />
+		<param name="strength" value="1200" />
+		<param name="max_length" value="100" />
+	</entity>
+	<entity type="snap_constraint">
+		<param name="alias" value="constraint_s_2" />
+		<param name="body_a_alias" value="STATIC" />
+		<param name="body_b_alias" value="letter_s" />
+		<vec2d name="body_a_offset" x="-40" y="-100" />
+		<vec2d name="body_b_offset" x="-10" y="-20" />
+		<param name="strength" value="1200" />
+		<param name="max_length" value="300" />
+	</entity>
+
+	<entity type="snap_constraint">
+		<param name="alias" value="constraint_p_1" />
+		<param name="body_a_alias" value="STATIC" />
+		<param name="body_b_alias" value="letter_p" />
+		<vec2d name="body_a_offset" x="-25" y="0" />
+		<vec2d name="body_b_offset" x="0" y="20" />
+		<param name="strength" value="1200" />
+		<param name="max_length" value="100" />
+	</entity>
+	<entity type="snap_constraint">
+		<param name="alias" value="constraint_p_2" />
+		<param name="body_a_alias" value="STATIC" />
+		<param name="body_b_alias" value="letter_p" />
+		<vec2d name="body_a_offset" x="-15" y="-100" />
+		<vec2d name="body_b_offset" x="-10" y="-20" />
+		<param name="strength" value="1200" />
+		<param name="max_length" value="300" />
+	</entity>
+
+	<entity type="snap_constraint">
+		<param name="alias" value="constraint_i_1" />
+		<param name="body_a_alias" value="STATIC" />
+		<param name="body_b_alias" value="letter_i" />
+		<vec2d name="body_a_offset" x="10" y="-100" />
+		<vec2d name="body_b_offset" x="-10" y="-20" />
+		<param name="strength" value="1200" />
+		<param name="max_length" value="300" />
+	</entity>
+
+	<entity type="snap_constraint">
+		<param name="alias" value="constraint_n_1" />
+		<param name="body_a_alias" value="STATIC" />
+		<param name="body_b_alias" value="letter_n" />
+		<vec2d name="body_a_offset" x="25" y="0" />
+		<vec2d name="body_b_offset" x="0" y="20" />
+		<param name="strength" value="1200" />
+		<param name="max_length" value="100" />
+	</entity>
+	<entity type="snap_constraint">
+		<param name="alias" value="constraint_n_2" />
+		<param name="body_a_alias" value="STATIC" />
+		<param name="body_b_alias" value="letter_n" />
+		<vec2d name="body_a_offset" x="35" y="-100" />
+		<vec2d name="body_b_offset" x="-10" y="-20" />
+		<param name="strength" value="1200" />
+		<param name="max_length" value="300" />
+	</entity>
+
+	<entity type="snap_constraint">
+		<param name="alias" value="constraint_i_2" />
+		<param name="body_a_alias" value="STATIC" />
+		<param name="body_b_alias" value="kevin" />
+		<vec2d name="body_a_offset" x="0" y="0" />
+		<vec2d name="body_b_offset" x="0" y="0" />
+		<param name="strength" value="1200" />
+		<param name="max_length" value="300" />
+	</entity>
+	<entity type="snap_constraint">
+		<param name="alias" value="constraint_i_3" />
+		<param name="body_a_alias" value="letter_i" />
+		<param name="body_b_alias" value="kevin" />
+		<vec2d name="body_a_offset" x="0" y="20" />
+		<vec2d name="body_b_offset" x="0" y="0" />
+		<param name="strength" value="2400" />
+		<param name="max_length" value="300" />
+	</entity>
+
+</spin_level>

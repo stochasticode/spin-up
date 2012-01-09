@@ -40,8 +40,10 @@ namespace spin
 		Entity* GetEntityByAlias( std::string& alias );
 
 		virtual bool TryLoadElement( TiXmlElement* element, bool& error );
-
 		virtual const char* GetDescription() { return "World"; }
+
+		int LoadEntity( const char* xml_path );
+		int LoadEntity( TiXmlElement* element );
 
 		private:
 		cpSpace* space;
@@ -57,7 +59,6 @@ namespace spin
 
 		void RemoveEntityFromLayer( Entity* entity );
 
-		bool LoadEntity( TiXmlElement* element );
 	};
 }
 #endif

@@ -25,7 +25,7 @@ namespace spin
 		cpBody* GetBody() { return body; }
 
 		float GetRotation() { return body->a; }
-		void SetPosition( Vector new_position );
+		virtual void SetPosition( Vector new_position );
 		void SetVelocity( Vector new_velocity );
 		void SetMass( float mass );
 		void SetMoment( float moment );

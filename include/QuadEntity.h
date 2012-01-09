@@ -1,7 +1,8 @@
 #ifndef SPIN_QUAD_ENTITY_H
-#define SPIN_QUAD_ENTiTY_H
+#define SPIN_QUAD_ENTITY_H
 
 #include <Entity.h>
+#include <stdio.h>
 
 namespace spin
 {
@@ -14,6 +15,12 @@ namespace spin
 
 		QuadEntity();
 		virtual ~QuadEntity() {}
+
+		virtual void SetPosition( Vector new_position ) { 
+			position = new_position;
+			printf( "quad set\n" );
+			fflush( stdout );
+		}
 
 		virtual void Render();
 		void AddQuad( Quad new_quad ) { quads.push_back( new_quad ); }

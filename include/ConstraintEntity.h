@@ -14,12 +14,18 @@ namespace spin
 
 		virtual void Attach( BodyEntity* body_a, BodyEntity* body_b, Vector offset_a, Vector offset_b ) = 0;
 
+		virtual bool TryLoadElement( TiXmlElement* element, bool& error );
 		virtual std::string GetXMLDesc() { return "ConstraintEntity"; }
+		virtual void FinalizeLoadElements();
 
 		protected:
-		ConstraintEntity();
-
 		cpConstraint* constraint;
+		int body_a_id;
+		int body_b_id;
+		Vector offset_a;
+		Vector offset_b;
+
+		ConstraintEntity();
 
 		void ChipmunkCleanup();
 	};

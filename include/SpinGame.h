@@ -33,7 +33,6 @@ namespace spin
 		Resources resources;
 		Camera camera;
 		CameraMode camera_mode;
-
 		Kevin* kevin;
 
 		private:

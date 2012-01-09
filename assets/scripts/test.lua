@@ -4,11 +4,12 @@ function Init()
 	-- set up camera
 	SetCameraMode( "stationary" );
 	SetCameraPosition( 0, -50 );
+	SetCameraZoom( 0.01 )
 end
 
 function Tick( milliseconds )
 	total_tick = total_tick + milliseconds;
-	--print( total_tick );
+	print( total_tick );
 
 	-- zoom camera
 	ZoomCamera()

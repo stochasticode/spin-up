@@ -1,11 +1,9 @@
 <spin_level>
 	<kevin x="0" y="20" />
 
-	<!--
 	<entity type="lua_entity">
 		<param name="script" value="assets/scripts/test.lua" />
 	</entity>
-	-->
 
 	<entity type="body">
 		<param name="alias" value="letter_s" />

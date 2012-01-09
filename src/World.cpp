@@ -12,7 +12,7 @@
 
 using namespace spin;
 
-World::World(): space( cpSpaceNew() ), static_body( 0 ), delta_tick( 1000.0 / 80.0 ), delta_tick_seconds( delta_tick / 1000.0 )
+World::World(): space( cpSpaceNew() ), static_body( 0 ), delta_tick( 1000.0 / 80.0 ), delta_tick_seconds( delta_tick / 1000.0 ), last_tick( -1 )
 {
 	// set up space
 	cpSpaceSetGravity( space, cpv( 0, -90 ) ); 
@@ -73,6 +73,13 @@ void World::Render()
 
 bool World::Tick( int milliseconds )
 {
+	if( last_tick < 0 )
+	{
+		last_tick = milliseconds;
+		return false;
+	}
+
+
 	int new_delta_tick = milliseconds - last_tick;
 	int ticks_to_run = new_delta_tick / delta_tick;
 	if( ticks_to_run > 0 )

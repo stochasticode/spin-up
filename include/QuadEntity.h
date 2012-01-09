@@ -25,6 +25,8 @@ namespace spin
 		virtual void Render();
 		void AddQuad( Quad new_quad ) { quads.push_back( new_quad ); }
 
+		void SetColorAll( Color new_color );
+
 		virtual std::string GetXMLDesc() { return "QuadEntity"; }
 
 		protected:

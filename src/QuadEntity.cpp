@@ -71,3 +71,9 @@ void QuadEntity::Render()
 
 	glPopMatrix();
 }
+
+void QuadEntity::SetColorAll( Color new_color )
+{
+	for( int i = 0; i < quads.size(); i++ )
+		quads[i].color = new_color;
+}

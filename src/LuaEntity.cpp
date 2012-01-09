@@ -15,6 +15,7 @@ LuaEntity::LuaEntity()
 	lua_register( lua_state, "KillEntity", lua_KillEntity ); 
 	lua_register( lua_state, "LoadEntity", lua_LoadEntity ); 
 	lua_register( lua_state, "QuadEntitySetPosition", lua_QuadEntitySetPosition ); 
+	lua_register( lua_state, "QuadEntitySetColorAll", lua_QuadEntitySetColorAll ); 
 	lua_register( lua_state, "GetEntityID", lua_GetEntityID ); 
 	lua_register( lua_state, "SetCameraMode", lua_SetCameraMode ); 
 	lua_register( lua_state, "SetCameraPosition", lua_SetCameraPosition ); 
@@ -131,9 +132,6 @@ int LuaEntity::lua_QuadEntitySetPosition( lua_State *L )
 	new_position.x = lua_tonumber( L, 2 );
 	new_position.y = lua_tonumber( L, 3 );
 
-	printf( "quad_id: %d, x: %f, y: %f\n", quad_id, new_position.x, new_position.y );
-	fflush( stdout );
-
 	Entity* entity = SPIN.world.GetEntity( quad_id );
 	QuadEntity* quad_entity = 0;
 	if( entity == 0 || (quad_entity = dynamic_cast<QuadEntity*>(entity) ) == 0 )
@@ -142,6 +140,34 @@ int LuaEntity::lua_QuadEntitySetPosition( lua_State *L )
 		return 0;
 	}
 	quad_entity->SetPosition( new_position );
+
+	return 0;
+}
+
+int LuaEntity::lua_QuadEntitySetColorAll( lua_State *L )
+{
+	if( lua_gettop( L ) < 5 )
+	{
+		fprintf( stderr, "LuaEntity::lua_QuadEntityColorAll-> not enough lua arguments!\n" );
+		return 0;
+	}
+
+	// get entity_id
+	int quad_id = lua_tonumber( L, 1 );
+	Color new_color;
+	new_color.r = lua_tonumber( L, 2 );
+	new_color.g = lua_tonumber( L, 3 );
+	new_color.b = lua_tonumber( L, 4 );
+	new_color.a = lua_tonumber( L, 5 );
+
+	Entity* entity = SPIN.world.GetEntity( quad_id );
+	QuadEntity* quad_entity = 0;
+	if( entity == 0 || (quad_entity = dynamic_cast<QuadEntity*>(entity) ) == 0 )
+	{
+		fprintf( stderr, "LuaEntity::lua_QuadEntitySetColorAll -> no QuadEntity found for entity id: %d!\n", quad_id );
+		return 0;
+	}
+	quad_entity->SetColorAll( new_color );
 
 	return 0;
 }

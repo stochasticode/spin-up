@@ -9,8 +9,8 @@
 	</quad>
 
 	<shape type="poly" friction="0.7">
-		<vec2d x="-14.0" y="-14.0" />
-		<vec2d x="-14.0" y="17.0" />
+		<vec2d x="-17.0" y="-14.0" />
+		<vec2d x="-17.0" y="17.0" />
 		<vec2d x="13" y="17.0" />
 		<vec2d x="13" y="-14.0" />
 	</shape>

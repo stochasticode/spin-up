@@ -1,6 +1,7 @@
 #include <World.h>
 #include <SpinGame.h>
 #include <Entity.h>
+#include <TextEntity.h>
 #include <ConstraintEntity.h>
 #include <SnapConstraint.h>
 #include <LuaEntity.h>
@@ -259,6 +260,9 @@ int World::LoadEntity( TiXmlElement* element )
 	// QuadEntity
 	if( strcmp( type, "quad" ) == 0 )
 		new_entity = new QuadEntity();
+	// TextEntity
+	else if( strcmp( type, "text" ) == 0 )
+		new_entity = new TextEntity();
 	// BodyEntity
 	else if( strcmp( type, "body" ) == 0 )
 		new_entity = new BodyEntity();

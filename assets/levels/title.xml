@@ -1,10 +1,6 @@
 <spin_level>
 	<kevin x="0" y="20" />
 
-	<entity type="lua_entity">
-		<param name="script" value="assets/scripts/test.lua" />
-	</entity>
-
 	<entity type="body">
 		<param name="alias" value="letter_s" />
 		<param name="external" value="assets/entities/letter_s.xml" />
@@ -30,25 +26,15 @@
 		<param name="alias" value="letter_n" />
 		<param name="external" value="assets/entities/letter_n.xml" />
 		<param name="scale" value="1.3" />
-		<vec2d name="position" x="15.0" y="0.0" />
+		<vec2d name="position" x="18.0" y="0.0" />
 	</entity>
 
-	<!--
-	<entity type="quad">
-		<vec2d name="position" x="0" y="0" />
-		<param name="layer" value="0" />
-		<quad>
-			<color name="color" r="1.0" g="1.0" b="1.0" a="1.0" />
-			<vec2d name="size" x="64" y="8" />
-			<vec2d name="position" x="0.0" y="0.0" />
-			<param name="texture_key" value="alphabet" />
-			<param name="texture_mode" value="relative" />
-			<vec2d name="texture_scale" x="64" y="64" />
-			<vec2d name="texture_offset" x="8" y="8" />
-		</quad>
+	<entity type="text">
+		<vec2d name="position" x="-50" y="-100" />
+		<param name="alias" value="press_any_key_text" />
+		<param name="layer" value="5" />
+		<param name="text" value="press any key" />
 	</entity>
-	-->
-
 
 	<entity type="snap_constraint">
 		<param name="alias" value="constraint_s_1" />
@@ -135,5 +121,10 @@
 		<param name="strength" value="2400" />
 		<param name="max_length" value="300" />
 	</entity>
+
+	<entity type="lua_entity">
+		<param name="script" value="assets/scripts/test.lua" />
+	</entity>
+
 
 </spin_level>

@@ -11,8 +11,8 @@
 	<shape type="poly" friction="0.7">
 		<vec2d x="-17.0" y="-15.0" />
 		<vec2d x="-17.0" y="20.0" />
-		<vec2d x="5" y="20.0" />
-		<vec2d x="5" y="-15.0" />
+		<vec2d x="9" y="20.0" />
+		<vec2d x="9" y="-15.0" />
 	</shape>
 
 </entity>

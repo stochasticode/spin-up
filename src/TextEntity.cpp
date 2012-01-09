@@ -2,6 +2,7 @@
 #include <Vector.h>
 #include <string.h>
 #include <cctype>
+#include <tinyxml.h>
 
 using namespace spin;
 
@@ -43,4 +44,37 @@ void TextEntity::AddLetter( char character, int index )
 	new_quad.SetTextureModeRelative( Vector( 64, 64 ), Vector( x_ind*8, y_ind*8 ) );
 
 	quads.push_back( new_quad );
+}
+
+bool TextEntity::TryLoadElement( TiXmlElement* element, bool& error )
+{
+	error = false;
+
+	// check for NULL
+	if( element == 0 )
+	{
+		fprintf( stderr, "TextEntity::TryLoadElement -> element was NULL!\n" );
+		error = true;
+		return false;
+	}
+
+	// param
+	if( strcmp( "param", element->Value() ) == 0 )
+	{
+		std::string name = "";
+		std::string value = "";
+		SpinXML::ReadParam( element, name, value );
+
+		// text
+		if( name.compare( "text" ) == 0 )
+			SetText( value.c_str() );
+		// unsupported
+		else
+			return QuadEntity::TryLoadElement( element, error );
+	}
+	// unsupported
+	else
+		return QuadEntity::TryLoadElement( element, error );
+	
+	return true;
 }

@@ -27,6 +27,7 @@ namespace spin
 		static int lua_KillEntity( lua_State *L );
 		static int lua_LoadEntity( lua_State *L );
 		static int lua_QuadEntitySetPosition( lua_State *L );
+		static int lua_QuadEntitySetColorAll( lua_State *L );
 		static int lua_GetEntityID( lua_State *L );
 		static int lua_SetCameraMode( lua_State *L );
 		static int lua_SetCameraPosition( lua_State *L );

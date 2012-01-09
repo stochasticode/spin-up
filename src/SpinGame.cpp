@@ -46,10 +46,6 @@ bool SpinGame::Init( int argc, char** argv )
 		return false;
 	}
 
-	TextEntity* text_entity = new TextEntity();
-	text_entity->SetText( "testing this thing" );
-	world.AddEntity( text_entity, 5 );
-
 	return true;
 }
 

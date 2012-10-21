@@ -58,7 +58,6 @@ namespace spin
 		unsigned long last_entity_id;
 
 		void RemoveEntityFromLayer( Entity* entity );
-
 	};
 }
 #endif

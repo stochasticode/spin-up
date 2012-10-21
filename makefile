@@ -1,20 +1,22 @@
 OBJS := \
-	build/SpinGame.o \
-	build/Resources.o \
-	build/World.o \
-	build/Quad.o \
-	build/Entity.o \
-	build/QuadEntity.o \
-	build/TextEntity.o \
 	build/BodyEntity.o \
-	build/ConstraintEntity.o \
-	build/LuaEntity.o \
-	build/GrappleGun.o \
-	build/SnapConstraint.o \
-	build/Kevin.o \
 	build/Camera.o \
-	build/SpinXML.o \
+	build/ConstraintEntity.o \
+	build/Controls.o \
+	build/Entity.o \
+	build/GrappleGun.o \
+	build/Kevin.o \
+	build/LuaEntity.o \
+	build/QuadEntity.o \
+	build/Quad.o \
+	build/Resources.o \
+	build/SnapConstraint.o \
+	build/SpinGame.o \
 	build/SpinUtil.o \
+	build/SpinXML.o \
+	build/TextEditor.o \
+	build/TextEntity.o \
+	build/World.o \
 
 # chipmunk doesn't trust us...
 CXX_ARGS := -g -DCP_ALLOW_PRIVATE_ACCESS

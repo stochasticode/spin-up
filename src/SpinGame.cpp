@@ -46,6 +46,8 @@ bool SpinGame::Init( int argc, char** argv )
 		return false;
 	}
 
+	text_editor.SetText( "text in here\nand in here 2\n{something::->!}" );
+
 	return true;
 }
 
@@ -71,7 +73,7 @@ bool SpinGame::LoadResources()
 	resources.LoadPNG( "assets/textures/letter_n.png", "letter_n" );
 
 
-	resources.LoadPNG( "assets/textures/alphabet.png", "alphabet" );
+	resources.LoadPNG( "assets/textures/alphabet_ascii.png", "alphabet" );
 	resources.LoadPNG( "assets/textures/space.png", "space" );
 	resources.LoadPNG( "assets/textures/kevin.png", "kevin" );
 	resources.LoadPNG( "assets/textures/creature.png", "creature" );
@@ -99,11 +101,15 @@ void SpinGame::Render()
 	}
 
 	world.Render();
+	text_editor.Render();
+
 	glutSwapBuffers();
 }
 
 void SpinGame::Reshape( int width, int height )
 {
+	display_width = width;
+	display_height = height;
 	camera.Reshape( width, height );
 	glutPostRedisplay();
 }
@@ -171,3 +177,6 @@ void SpinGame::Mouse( int button, int state, int x, int y )
 		}
 	}
 }
+
+int SpinGame::GetDisplayWidth() { return display_width; }
+int SpinGame::GetDisplayHeight() { return display_height; }

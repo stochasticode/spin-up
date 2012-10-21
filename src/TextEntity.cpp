@@ -25,23 +25,14 @@ void TextEntity::AddLetter( char character, int index )
 	Quad new_quad;
 	new_quad.texture_key = "alphabet";
 	new_quad.SetSize( Vector( 8, 8 ) );
-	new_quad.position = Vector( index * 8, 0 );
+	new_quad.position = Vector( index * 4, 0 );
 
-	// make character upper case
-	character = toupper( character );
+	int character_index = (int)character;
 
-	int character_index = character - 65;
+	int y_ind = character_index / 16;
+	int x_ind = character_index % 16;
 
-	if( character_index < 0 || character_index > 25 )
-	{
-		fprintf( stderr, "TextEntity::AddLetter -> invalid character!\n" );
-		return;
-	}
-
-	int y_ind = character_index / 8;
-	int x_ind = character_index % 8;
-
-	new_quad.SetTextureModeRelative( Vector( 64, 64 ), Vector( x_ind*8, y_ind*8 ) );
+	new_quad.SetTextureModeRelative( Vector( 128, 128 ), Vector( x_ind*8, y_ind*8 ) );
 
 	quads.push_back( new_quad );
 }

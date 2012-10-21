@@ -4,6 +4,7 @@
 #include <Camera.h>
 #include <Kevin.h>
 #include <World.h>
+#include <TextEditor.h>
 #include <Resources.h>
 
 #define SPIN SpinGame::Instance()
@@ -21,6 +22,9 @@ namespace spin
 		bool InitGraphics();
 		bool LoadResources();
 
+		int GetDisplayWidth();
+		int GetDisplayHeight();
+
 		void Render();
 		void Reshape( int width, int height );
 		void Idle();
@@ -31,6 +35,7 @@ namespace spin
 
 		World world;
 		Resources resources;
+		TextEditor text_editor;
 		Camera camera;
 		CameraMode camera_mode;
 		Kevin* kevin;
@@ -38,6 +43,8 @@ namespace spin
 		private:
 		float mouse_x;
 		float mouse_y;
+		int display_width;
+		int display_height;
 		//float fps;
 		//int last_fps_time;
 		//int frames_since_last_fps;

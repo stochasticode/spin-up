@@ -8,10 +8,11 @@
 using namespace spin;
 using namespace std;
 
-TextEditor::TextEditor() 
+TextEditor::TextEditor() : Controls() 
 {
 	character_size = Vector( 10, 15 );
 	cursor_location = Vector( 0, 0 );
+	mode = ED_COMMAND;
 }
 
 void TextEditor::SetText( string text )
@@ -41,8 +42,26 @@ void TextEditor::SetText( string text )
 	}
 }
 
-void TextEditor::AddChar( char c )
+void TextEditor::SetCharAtCursor( char c )
 {
+	// make sure we are at a valid line
+	if( cursor_location.y < buffer.size() )
+	{
+		// make sure we are at a valid column
+		string line = buffer[cursor_location.y];
+		if( cursor_location.x < line.size() )
+		{
+			// change the character
+			line[cursor_location.x] = c;
+			buffer[cursor_location.y] = line;
+			cursor_location.x++;
+		}
+	}
+}
+
+bool TextEditor::TextAtCursor()
+{
+	return cursor_location.y < buffer.size() && cursor_location.x < buffer[cursor_location.y].size();
 }
 
 void TextEditor::Render()
@@ -57,6 +76,7 @@ void TextEditor::Render()
 	RenderPane();
 	RenderText();
 	RenderCursor();
+	RenderCommandString();
 	
 	glPopMatrix();
 }
@@ -123,4 +143,144 @@ void TextEditor::RenderCursor()
 	glEnable(GL_TEXTURE_2D);
 
 	glPopMatrix();
+}
+
+void TextEditor::RenderCommandString()
+{
+	glPushMatrix();
+	glTranslatef(10,-SPIN.GetDisplayHeight() + 15,0);
+	glScalef(2.0,2.0,2.0);
+
+	TextEntity text_entity;
+	text_entity.SetText( command_string.c_str() );
+	text_entity.Render();
+
+	glPopMatrix();
+}
+
+void TextEditor::ProcessRawKeyEvent( RawKeyEvent event )
+{
+	if( mode == ED_INSERT )
+		ProcessRawKeyEvent_Insert( event );
+	else if( mode == ED_COMMAND )
+		ProcessRawKeyEvent_Command( event );
+	else if( mode == ED_COMMAND_TEXT )
+		ProcessRawKeyEvent_CommandText( event );
+}
+
+void TextEditor::ProcessRawKeyEvent_Insert( RawKeyEvent event )
+{
+	if( event.is_down )
+	{
+		if( event.key == 8 || (event.key > 31 && event.key < 128))
+		{
+			// delete
+			if( event.key == 8 )
+			{
+				if( cursor_location.x > 0 )
+				{
+					cursor_location.x--;
+					if( TextAtCursor() )
+					{
+						SetCharAtCursor( ' ' );
+						cursor_location.x--;
+					}
+				}
+			}
+			// visible character
+			else
+				SetCharAtCursor( event.key );
+		}
+	}
+}
+
+void TextEditor::ProcessRawKeyEvent_Command( RawKeyEvent event )
+{
+	if( event.key == ':' )
+	{
+		command_string = ":";
+		mode = ED_COMMAND_TEXT;
+	}
+}
+
+void TextEditor::ProcessRawKeyEvent_CommandText( RawKeyEvent event )
+{
+	if( event.is_down )
+	{
+		// delete
+		if( event.key == 8 )
+		{
+			// don't delete the ':'
+			if( command_string.size() > 1 )
+				command_string.resize( command_string.size() - 1);
+		}
+		// visible character
+		else if(event.key > 31 && event.key < 128)
+			command_string += event.key;
+	}
+}
+
+void TextEditor::ProcessControlEvent( ControlEvent event )
+{
+	if( mode == ED_INSERT )
+		ProcessControlEvent_Insert( event );
+	else if( mode == ED_COMMAND )
+		ProcessControlEvent_Command( event );
+	else if( mode == ED_COMMAND_TEXT )
+		ProcessControlEvent_CommandText( event );
+}
+
+void TextEditor::ProcessControlEvent_Insert( ControlEvent event )
+{
+	if( event.is_down )
+	{
+		if( event.function == CTRL_EXIT )
+		{
+			mode = ED_COMMAND;
+			command_string = "";
+		}
+	}
+}
+
+void TextEditor::ProcessControlEvent_Command( ControlEvent event )
+{
+	if( event.is_down )
+	{
+		if( event.function == CTRL_LEFT && cursor_location.x > 0 )
+			cursor_location.x--;
+		else if( event.function == CTRL_UP && cursor_location.y > 0 )
+			cursor_location.y--;
+		else if( event.function == CTRL_RIGHT )
+			cursor_location.x++;
+		else if( event.function == CTRL_DOWN )
+			cursor_location.y++;
+		else if( event.function == CTRL_INSERT )
+		{
+			mode = ED_INSERT;
+			command_string = "INSERT";
+		}
+	}
+}
+
+void TextEditor::ProcessControlEvent_CommandText( ControlEvent event )
+{
+	if( event.is_down )
+	{
+		if( event.function == CTRL_EXIT )
+		{
+			command_string = "";
+			mode = ED_COMMAND;
+		}
+		else if( event.function == CTRL_ACCEPT )
+		{
+			ExecuteCommandString();
+			command_string = "";
+			mode = ED_COMMAND;
+		}
+	}
+}
+
+void TextEditor::ExecuteCommandString()
+{
+	cout << "EXECUTING: " << command_string << endl;
 }

@@ -2,10 +2,11 @@
 #define SPIN_GAME_H
 
 #include <Camera.h>
+#include <Controls.h>
 #include <Kevin.h>
-#include <World.h>
-#include <TextEditor.h>
 #include <Resources.h>
+#include <TextEditor.h>
+#include <World.h>
 
 #define SPIN SpinGame::Instance()
 
@@ -45,10 +46,6 @@ namespace spin
 		float mouse_y;
 		int display_width;
 		int display_height;
-		//float fps;
-		//int last_fps_time;
-		//int frames_since_last_fps;
-
 
 		SpinGame() {}
 		SpinGame( SpinGame const& game );

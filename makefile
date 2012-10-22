@@ -6,6 +6,7 @@ OBJS := \
 	build/Entity.o \
 	build/GrappleGun.o \
 	build/Kevin.o \
+	build/LuaBodyEntity.o \
 	build/LuaEntity.o \
 	build/QuadEntity.o \
 	build/Quad.o \

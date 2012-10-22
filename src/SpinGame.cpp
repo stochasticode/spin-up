@@ -46,6 +46,8 @@ bool SpinGame::Init( int argc, char** argv )
 		return false;
 	}
 
+	// set up text_editor
+	text_editor.SetScheme( "editor" );
 	text_editor.SetText( "text in here\nand in here 2\n{something::->!}" );
 
 	return true;
@@ -123,21 +125,12 @@ void SpinGame::Idle()
 
 void SpinGame::Keyboard( unsigned char key, int x, int y )
 {
-	if( key == 's' )
-		kevin->grapple_gun.SwitchHook( 0 );
-	if( key == 'd' )
-		kevin->grapple_gun.SwitchHook( 1 );
-	if( key == 'f' )
-		kevin->grapple_gun.SwitchHook( 2 );
-	if( key == 'a' )
-		kevin->grapple_gun.DeactivateAllHooks();
-
-	if( key == 'r' )
-		BodyEntity::render_shapes = !BodyEntity::render_shapes;
+	text_editor.KeyDown( key );
 }
 
 void SpinGame::KeyboardUp( unsigned char key, int x, int y )
 {
+	text_editor.KeyUp( key );
 }
 
 void SpinGame::Motion( int x, int y )

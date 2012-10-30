@@ -1,0 +1,251 @@
+<spin_level>
+	<entity type="quad">
+		<vec2d name="position" x="0" y="0" />
+		<param name="layer" value="0" />
+		<quad>
+			<color name="color" r="1.0" g="1.0" b="1.0" a="1.0" />
+			<vec2d name="size" x="1000" y="1000" />
+			<vec2d name="position" x="0.0" y="0.0" />
+			<param name="texture_key" value="dirt" />
+			<param name="texture_mode" value="relative" />
+			<vec2d name="texture_scale" x="0.008" y="0.008" />
+		</quad>
+	</entity>
+
+	<entity type="quad">
+		<vec2d name="position" x="0" y="-30" />
+		<param name="layer" value="0" />
+		<quad>
+			<color name="color" r="0.5" g="0.5" b="0.5" a="1.0" />
+			<vec2d name="size" x="200" y="130" />
+			<vec2d name="position" x="0.0" y="0.0" />
+			<param name="texture_key" value="stone" />
+			<param name="texture_mode" value="relative" />
+			<vec2d name="texture_scale" x="0.008" y="0.008" />
+		</quad>
+	</entity>
+
+	<entity type="quad">
+		<vec2d name="position" x="-275" y="-30" />
+		<param name="layer" value="0" />
+		<quad>
+			<color name="color" r="0.5" g="0.5" b="0.5" a="1.0" />
+			<vec2d name="size" x="250" y="130" />
+			<vec2d name="position" x="0.0" y="0.0" />
+			<param name="texture_key" value="stone" />
+			<param name="texture_mode" value="relative" />
+			<vec2d name="texture_scale" x="0.008" y="0.008" />
+		</quad>
+	</entity>
+
+	<entity type="quad">
+		<vec2d name="position" x="0" y="0" />
+		<param name="layer" value="0" />
+		<quad>
+			<color name="color" r="1.0" g="1.0" b="1.0" a="1.0" />
+			<vec2d name="size" x="475" y="26" />
+			<vec2d name="position" x="-153.0" y="47.5" />
+			<param name="texture_key" value="metal" />
+			<param name="texture_mode" value="relative" />
+			<vec2d name="texture_scale" x="0.038" y="0.038" />
+		</quad>
+	</entity>
+
+	<entity type="static_body">
+
+		<!-- floor1 -->
+		<shape type="poly" friction="0.7">
+			<vec2d x="-100.0" y="-105.0" />
+			<vec2d x="-100.0" y="-95.0" />
+			<vec2d x="100.0" y="-95.0" />
+			<vec2d x="100.0" y="-105.0" />
+		</shape>
+		<quad>
+			<vec2d name="size" x="200" y="10" />
+			<vec2d name="position" x="0.0" y="-100.0" />
+			<param name="texture_key" value="stone" />
+			<param name="texture_mode" value="relative" />
+			<vec2d name="texture_scale" x="0.01" y="0.01" />
+		</quad>
+
+		<!-- floor2 -->
+		<shape type="poly" friction="0.7">
+			<vec2d x="-400.0" y="-105.0" />
+			<vec2d x="-400.0" y="-95.0" />
+			<vec2d x="-150.0" y="-95.0" />
+			<vec2d x="-150.0" y="-105.0" />
+		</shape>
+		<quad>
+			<vec2d name="size" x="250" y="10" />
+			<vec2d name="position" x="-275.0" y="-100.0" />
+			<param name="texture_key" value="stone" />
+			<param name="texture_mode" value="relative" />
+			<vec2d name="texture_scale" x="0.01" y="0.01" />
+		</quad>
+
+		<!-- vent floor -->
+		<shape type="poly" friction="0.7">
+			<vec2d x="-200.0" y="25.0" />
+			<vec2d x="-200.0" y="35.0" />
+			<vec2d x="40.0" y="35.0" />
+			<vec2d x="40.0" y="25.0" />
+		</shape>
+		<quad>
+			<vec2d name="size" x="240" y="10" />
+			<vec2d name="position" x="-80.0" y="30.0" />
+			<param name="texture_key" value="stone" />
+			<param name="texture_mode" value="relative" />
+			<vec2d name="texture_scale" x="0.01" y="0.01" />
+		</quad>
+		
+		<!-- vent floor 2-->
+		<shape type="poly" friction="0.7">
+			<vec2d x="-390.0" y="25.0" />
+			<vec2d x="-390.0" y="35.0" />
+			<vec2d x="-240.0" y="35.0" />
+			<vec2d x="-240.0" y="25.0" />
+		</shape>
+		<quad>
+			<vec2d name="size" x="150" y="10" />
+			<vec2d name="position" x="-315.0" y="30.0" />
+			<param name="texture_key" value="stone" />
+			<param name="texture_mode" value="relative" />
+			<vec2d name="texture_scale" x="0.01" y="0.01" />
+		</quad>
+
+		<shape type="poly" friction="0.7">
+			<vec2d x="80.0" y="25.0" />
+			<vec2d x="80.0" y="35.0" />
+			<vec2d x="100.0" y="35.0" />
+			<vec2d x="100.0" y="25.0" />
+		</shape>
+		<quad>
+			<vec2d name="size" x="20" y="10" />
+			<vec2d name="position" x="90.0" y="30.0" />
+			<param name="texture_key" value="stone" />
+			<param name="texture_mode" value="relative" />
+			<vec2d name="texture_scale" x="0.01" y="0.01" />
+		</quad>
+
+		<shape type="poly" friction="0.7">
+			<vec2d x="80.0" y="35.0" />
+			<vec2d x="80.0" y="500.0" />
+			<vec2d x="90.0" y="500.0" />
+			<vec2d x="90.0" y="35.0" />
+		</shape>
+		<quad>
+			<vec2d name="size" x="10" y="465" />
+			<vec2d name="position" x="85.0" y="267.25" />
+			<param name="texture_key" value="stone" />
+			<param name="texture_mode" value="relative" />
+			<vec2d name="texture_scale" x="0.01" y="0.01" />
+		</quad>
+
+		<shape type="poly" friction="0.7">
+			<vec2d x="30.0" y="70.0" />
+			<vec2d x="30.0" y="500.0" />
+			<vec2d x="40.0" y="500.0" />
+			<vec2d x="40.0" y="70.0" />
+		</shape>
+		<quad>
+			<vec2d name="size" x="10" y="430" />
+			<vec2d name="position" x="35.0" y="285" />
+			<param name="texture_key" value="stone" />
+			<param name="texture_mode" value="relative" />
+			<vec2d name="texture_scale" x="0.01" y="0.01" />
+		</quad>
+
+		<!-- vent ceiling -->
+		<shape type="poly" friction="0.7">
+			<vec2d x="-400.0" y="60.0" />
+			<vec2d x="-400.0" y="70.0" />
+			<vec2d x="40.0" y="70.0" />
+			<vec2d x="40.0" y="60.0" />
+		</shape>
+		<quad>
+			<vec2d name="size" x="440" y="10" />
+			<vec2d name="position" x="-180.0" y="65" />
+			<param name="texture_key" value="stone" />
+			<param name="texture_mode" value="relative" />
+			<vec2d name="texture_scale" x="0.01" y="0.01" />
+		</quad>
+
+		<!-- left wall 1 -->
+		<shape type="poly" friction="0.7">
+			<vec2d x="-100.0" y="-95.0" />
+			<vec2d x="-100.0" y="25.0" />
+			<vec2d x="-90.0" y="25.0" />
+			<vec2d x="-90.0" y="-95.0" />
+		</shape>
+		<quad>
+			<vec2d name="size" x="10" y="120" />
+			<vec2d name="position" x="-95.0" y="-35" />
+			<param name="texture_key" value="stone" />
+			<param name="texture_mode" value="relative" />
+			<vec2d name="texture_scale" x="0.01" y="0.01" />
+		</quad>
+
+		<!-- right wall 2 -->
+		<shape type="poly" friction="0.7">
+			<vec2d x="-160.0" y="-95.0" />
+			<vec2d x="-160.0" y="25.0" />
+			<vec2d x="-150.0" y="25.0" />
+			<vec2d x="-150.0" y="-95.0" />
+		</shape>
+		<quad>
+			<vec2d name="size" x="10" y="120" />
+			<vec2d name="position" x="-155.0" y="-35" />
+			<param name="texture_key" value="stone" />
+			<param name="texture_mode" value="relative" />
+			<vec2d name="texture_scale" x="0.01" y="0.01" />
+		</quad>
+
+		<!-- left wall 2 -->
+		<shape type="poly" friction="0.7">
+			<vec2d x="-400.0" y="-95.0" />
+			<vec2d x="-400.0" y="60.0" />
+			<vec2d x="-390.0" y="60.0" />
+			<vec2d x="-390.0" y="-95.0" />
+		</shape>
+		<quad>
+			<vec2d name="size" x="10" y="155" />
+			<vec2d name="position" x="-395.0" y="-17.5" />
+			<param name="texture_key" value="stone" />
+			<param name="texture_mode" value="relative" />
+			<vec2d name="texture_scale" x="0.01" y="0.01" />
+		</quad>
+
+		<shape type="poly" friction="0.7">
+			<vec2d x="100.0" y="25.0" />
+			<vec2d x="100.0" y="-95.0" />
+			<vec2d x="90.0" y="-95.0" />
+			<vec2d x="90.0" y="25.0" />
+		</shape>
+		<quad>
+			<vec2d name="size" x="10" y="120" />
+			<vec2d name="position" x="95.0" y="-35" />
+			<param name="texture_key" value="stone" />
+			<param name="texture_mode" value="relative" />
+			<vec2d name="texture_scale" x="0.01" y="0.01" />
+		</quad>
+
+	</entity>
+
+	<entity type="quad">
+		<vec2d name="position" x="-60" y="-65" />
+		<quad>
+			<vec2d name="size" x="60" y="60" />
+			<vec2d name="position" x="0.0" y="0.0" />
+			<param name="texture_key" value="rack" />
+		</quad>
+	</entity>
+
+	<entity type="body">
+		<param name="alias" value="flask" />
+		<param name="external" value="assets/entities/flask.xml" />
+		<param name="scale" value="2.0" />
+		<param name="mass" value="50" />
+		<vec2d name="position" x="0.0" y="-20.0" />
+	</entity>
+
+</spin_level>

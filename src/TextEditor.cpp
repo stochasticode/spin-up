@@ -13,6 +13,7 @@ TextEditor::TextEditor() : Controls()
 	character_size = Vector( 10, 15 );
 	cursor_location = Vector( 0, 0 );
 	mode = ED_COMMAND;
+	SetScheme( "editor" );
 }
 
 void TextEditor::SetText( string text )
@@ -35,6 +36,10 @@ void TextEditor::SetText( string text )
 			buffer.insert( buffer.end(), current_line );
 			current_line = "";
 			line_index++;
+		}
+		else if( current_char == '\t' )
+		{
+			current_line += "    ";
 		}
 		// another character for current line
 		else
@@ -283,4 +288,23 @@ void TextEditor::ProcessControlEvent_CommandText( ControlEvent event )
 void TextEditor::ExecuteCommandString()
 {
 	cout << "EXECUTING: " << command_string << endl;
+	if( command_string == ":w" )
+		SPIN.TextEditorAction( ED_WRITE );
+	else if( command_string == ":wq" )
+	{
+		SPIN.TextEditorAction( ED_WRITE );
+		SPIN.TextEditorAction( ED_QUIT );
+	}
+	else if( command_string == ":q" )
+		SPIN.TextEditorAction( ED_QUIT );
+}
+
+string TextEditor::GetText()
+{
+	// TODO: could be more efficient
+	string text;
+	for( int i = 0; i < buffer.size(); i++ )
+		text += buffer[i] + "\n";
+	
+	return text;
 }

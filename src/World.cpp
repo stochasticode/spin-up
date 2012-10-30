@@ -13,15 +13,17 @@
 
 using namespace spin;
 
-World::World(): space( cpSpaceNew() ), static_body( 0 ), delta_tick( 1000.0 / 80.0 ), delta_tick_seconds( delta_tick / 1000.0 ), last_tick( -1 )
+World::World(): space( cpSpaceNew() ), static_body( 0 ), delta_tick( 100.0 / 80.0 ), delta_tick_seconds( delta_tick / 1000.0 ), last_tick( -1 )
 {
 	// set up space
-	cpSpaceSetGravity( space, cpv( 0, -90 ) ); 
-	cpSpaceSetIterations( space, 25 );
+	cpSpaceSetGravity( space, cpv( 0, -130 ) ); 
+	space->enableContactGraph = cpTrue;
+
+	//cpSpaceSetIterations( space, 30 );
 	//cpSpaceSetDamping( space, 0.75 );
 
-	cpSpaceAddCollisionHandler( space, World::COL_TYPE_GRAPPLE, World::COL_TYPE_SURFACE, 0, 0, GrappleGun::PostSolveGrapple, 0, 0);
-	cpSpaceAddCollisionHandler( space, World::COL_TYPE_GRAPPLE, World::COL_TYPE_PROP, 0, 0, GrappleGun::PostSolveGrapple, 0, 0);
+	//cpSpaceAddCollisionHandler( space, World::COL_TYPE_GRAPPLE, World::COL_TYPE_SURFACE, 0, 0, GrappleGun::PostSolveGrapple, 0, 0);
+	//cpSpaceAddCollisionHandler( space, World::COL_TYPE_GRAPPLE, World::COL_TYPE_PROP, 0, 0, GrappleGun::PostSolveGrapple, 0, 0);
 }
 
 World::~World()
@@ -156,6 +158,11 @@ Entity* World::GetEntity( unsigned long entity_id )
 	else
 		return (*it).second;
 }
+Entity* World::GetEntityByAlias( const char* alias )
+{
+	std::string alias_string( alias );
+	return GetEntityByAlias( alias_string );
+}
 
 Entity* World::GetEntityByAlias( std::string& alias )
 {
@@ -196,17 +203,8 @@ bool World::TryLoadElement( TiXmlElement* element, bool& error )
 		return false;
 	}
 
-	// kevin 
-	if( strcmp( "kevin", element->Value() ) == 0 )
-	{
-		// right now kevin is just like a vec2d, but could change in the future
-		Vector kevin_position;
-		std::string name;
-		if( ReadVec2D( element, name, kevin_position ) )
-			SPIN.kevin->SetPosition( kevin_position );
-	}
 	// entity
-	else if( strcmp( "entity", element->Value() ) == 0 )
+	if( strcmp( "entity", element->Value() ) == 0 )
 	{
 		if( !LoadEntity( element ) )
 		{

@@ -11,6 +11,7 @@
 #include <chipmunk.h>
 
 struct TiXmlElement;
+struct lua_State;
 
 namespace spin
 {
@@ -20,21 +21,28 @@ namespace spin
 		bool dead;
 		std::string alias;
 		int layer;
+		std::string master_script_text;
+		std::string script_text;
 
-		virtual ~Entity() {}
+		virtual ~Entity();
 
-		virtual void SetID( int new_id ) { id = new_id; }
+		virtual void SetID( int new_id );
 		int GetID() { return id; }
 
-		virtual void Tick( int milliseconds ) {}
+		virtual void Tick( int milliseconds );
 		virtual void Render() {}
+		std::string GetScriptText() { return script_text; }
 
 		virtual std::string GetXMLDesc() { return "Entity"; }
 
+		bool LoadScript( const char* script, bool master );
+		bool LoadScriptString( const char* script, bool master );
+
 		protected:
 		int id;
+		lua_State* lua_state;
 
-		Entity(): dead( false ), id( -1 ), alias( "UNNAMED" ), layer( 4 ) {}
+		Entity();
 
 		virtual bool TryLoadElement( TiXmlElement* element, bool& error );
 	};

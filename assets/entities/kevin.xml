@@ -1,12 +1,23 @@
 <entity type="body">
 	<param name="mass" value="5" />
-	<param name="moment" value="1000" />
+	<param name="moment" value="INFINITY" />
 	<quad>
 		<param name="texture_key" value="kevin" />
 		<vec2d name="position" x="0.0" y="0.0" />
 		<vec2d name="size" x="12.0" y="12.0" />
 	</quad>
-	<shape type="circle" friction="1.0" radius="5.0" >
-		<vec2d name="offset" x="0.0" y="0.0" />
+
+	<shape type="poly" friction="0.7">
+		<vec2d x="-5.0" y="-6.0" />
+		<vec2d x="-5.0" y="6.0" />
+		<vec2d x="5.0" y="6.0" />
+		<vec2d x="5.0" y="-6.0" />
+	</shape>
+
+	<shape type="poly" friction="10">
+		<vec2d x="-5.0" y="-8.0" />
+		<vec2d x="-5.0" y="-5.0" />
+		<vec2d x="5.0" y="-5.0" />
+		<vec2d x="5.0" y="-8.0" />
 	</shape>
 </entity>

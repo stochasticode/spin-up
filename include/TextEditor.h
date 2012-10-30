@@ -10,6 +10,7 @@
 namespace spin {
 
 	enum EditorMode { ED_COMMAND, ED_INSERT, ED_COMMAND_TEXT };
+	enum EditorAction { ED_WRITE, ED_QUIT };
 
 	class TextEditor : public Controls {
 		private:
@@ -18,7 +19,6 @@ namespace spin {
 		Vector cursor_location;
 		EditorMode mode;
 		std::string command_string;
-
 
 		void RenderPane();
 		void RenderText();
@@ -44,6 +44,7 @@ namespace spin {
 		TextEditor();
 
 		void SetText( std::string text );
+		std::string GetText();
 		void SetCharAtCursor( char c );
 		void Render();
 	};

@@ -6,8 +6,8 @@ OBJS := \
 	build/Entity.o \
 	build/GrappleGun.o \
 	build/Kevin.o \
-	build/LuaBodyEntity.o \
 	build/LuaEntity.o \
+	build/LuaExecutor.o \
 	build/QuadEntity.o \
 	build/Quad.o \
 	build/Resources.o \

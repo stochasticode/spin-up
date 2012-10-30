@@ -1,14 +1,20 @@
-#include <GL/glut.h>
-#include <BodyEntity.h>
-#include <Entity.h>
-#include <SpinGame.h>
-#include <SpinXML.h>
-#include <SpinUtil.h>
+#include <iostream>
+
 #include <chipmunk.h>
 #include <chipmunk_unsafe.h>
+#include <GL/glut.h>
+#include <lua5.1/lua.hpp>
 #include <tinyxml.h>
 
+#include <BodyEntity.h>
+#include <ConstraintEntity.h>
+#include <Entity.h>
+#include <SpinGame.h>
+#include <SpinUtil.h>
+#include <SpinXML.h>
+
 using namespace spin;
+using namespace std;
 
 // yanked from ChipmunkDebugDraw.c
 GLfloat BodyEntity::circle_points[] = {
@@ -42,11 +48,14 @@ GLfloat BodyEntity::circle_points[] = {
 
 bool BodyEntity::render_shapes = false;
 
-BodyEntity::BodyEntity()
+BodyEntity::BodyEntity() : QuadEntity()
 {
 	body = cpBodyNew( 1.0, 1.0 );
 	cpBodySetPos( body, cpv( 0, 0 ) );
 	cpSpaceAddBody( SPIN.world.GetCPSpace(), body );
+
+	// register lua functions
+	lua_register( lua_state, "AddImpulse", lua_AddImpulse ); 
 }
 
 BodyEntity::~BodyEntity()
@@ -124,6 +133,7 @@ void BodyEntity::AddShapePoly( std::vector<Vector>& points, float friction )
 	cpShape* shape = cpPolyShapeNew( body, points.size(), verts, cpv( 0, 0 ) );
 	shapes.push_back( shape );
 	cpShapeSetFriction( shape, friction );
+	cpShapeSetElasticity( shape, 0.5);
 	cpSpaceAddShape( SPIN.world.GetCPSpace(), shape );
 
 	// link body
@@ -177,6 +187,9 @@ void BodyEntity::RenderShapes()
 
 void BodyEntity::Tick( int milliseconds )
 {
+	QuadEntity::Tick( milliseconds );
+
+	// update body
 	if( body != 0 )
 	{
 		position.x = cpBodyGetPos( body ).x;
@@ -196,6 +209,16 @@ void BodyEntity::SetVelocity( Vector new_velocity )
 {
 	body->v.x = new_velocity.x;
 	body->v.y = new_velocity.y;
+}
+
+void BodyEntity::ApplyImpulse( Vector impulse )
+{
+	cpBodyApplyImpulse( body, cpv( impulse.x, impulse.y ), cpv( 0, 0 ) );
+}
+
+void BodyEntity::ApplyForce( Vector force )
+{
+	cpBodyApplyForce( body, cpv( force.x, force.y ), cpv( 0, 0 ) );
 }
 
 void BodyEntity::SetMass( float mass )
@@ -241,6 +264,41 @@ void BodyEntity::Scale( float scale_factor )
 float BodyEntity::MomentForCircle( float mass, float outer_radius, float inner_radius )
 {
 	return cpMomentForCircle( mass, outer_radius, inner_radius, cpvzero );
+}
+
+int BodyEntity::lua_AddImpulse( lua_State *L ) {
+
+	// check for right number of arguments
+	if( lua_gettop( L ) < 3 )
+	{
+		fprintf( stderr, "BodyEntity::lua_AddImpulse-> not enough lua arguments!\n" );
+		return 0;
+	}
+
+	// get entity_id
+	int entity_id = lua_tonumber( L, 1 );
+	int vel_x = lua_tonumber( L, 2 );
+	int vel_y = lua_tonumber( L, 3 );
+
+	// make sure it is a BodyEntity
+	BodyEntity* body_entity = dynamic_cast<BodyEntity*>(SPIN.world.GetEntity( entity_id ));
+	if( body_entity == 0 )
+	{
+		fprintf( stderr, "BodyEntity::lua_AddImpulse-> couldn't find BodyEntity for id: %d!\n", entity_id );
+		return 0;
+	}
+	else
+	{
+		// set velocity
+		Vector new_vel( vel_x, vel_y );
+		body_entity->SetVelocity( new_vel );
+	}
+}
+
+void BodyEntity::SetLayers( int layers )
+{
+	for( int i = 0; i < shapes.size(); i++ )
+		shapes[i]->layers = layers;
 }
 
 bool BodyEntity::TryLoadElement( TiXmlElement* element, bool& error )
@@ -304,6 +362,9 @@ bool BodyEntity::TryLoadElement( TiXmlElement* element, bool& error )
 			float new_moment;
 			if( SpinUtil::ToFloat( value.c_str(), new_moment ) )
 				SetMoment( new_moment );
+			// INFINITY
+			else if( value == "INFINITY" )
+				SetMoment( INFINITY );
 			else
 			{
 				fprintf( stderr, "BodyEntity::LoadXML -> invalid moment value: %s\n", value.c_str() );
@@ -423,4 +484,3 @@ StaticBody::~StaticBody()
 	// don't delete body in ~BodyEntity()
 	body = 0;
 }
-

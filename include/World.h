@@ -38,6 +38,7 @@ namespace spin
 		unsigned long AddEntity( Entity* entity, int layer );
 		Entity* GetEntity( unsigned long entity_id );
 		Entity* GetEntityByAlias( std::string& alias );
+		Entity* GetEntityByAlias( const char* alias );
 
 		virtual bool TryLoadElement( TiXmlElement* element, bool& error );
 		virtual const char* GetDescription() { return "World"; }

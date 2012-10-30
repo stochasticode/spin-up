@@ -10,6 +10,9 @@
 
 #define SPIN SpinGame::Instance()
 
+#define GRABABLE_MASK_BIT (1<<31)
+#define NOT_GRABABLE_MASK (~GRABABLE_MASK_BIT)
+
 namespace spin 
 {
 	class SpinGame
@@ -34,6 +37,10 @@ namespace spin
 		void Motion( int x, int y );
 		void Mouse( int button, int state, int x, int y );
 
+		void TextEditorAction( EditorAction action );
+
+		cpVect MouseToSpace( int x, int y );
+
 		World world;
 		Resources resources;
 		TextEditor text_editor;
@@ -46,6 +53,8 @@ namespace spin
 		float mouse_y;
 		int display_width;
 		int display_height;
+		bool editing;
+		BodyEntity* cursor_body;
 
 		SpinGame() {}
 		SpinGame( SpinGame const& game );
